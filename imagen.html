@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Analizador de Imágenes | FORENCOMMUNITY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-dark: #162c6d;
+            --secondary: #458091;
+            --accent: #FF9E1A;
+            --light: #F9FAFB;
+            --dark: #171717;
+            --gray: #6B7280;
+            --muted: #383868;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --maxw: 1000px;
+            --radius: 12px;
+            
+            /* Colores para iconos */
+            --icon-privacy: #3B82F6;
+            --icon-leak: #EF4444;
+            --icon-security: #10B981;
+            --icon-password: #F59E0B;
+            --icon-search: #8B5CF6;
+            --icon-encrypt: #06B6D4;
+            --icon-network: #6366F1;
+            --icon-phone: #EC4899;
+            --icon-scanner: #84CC16;
+            --icon-image: #F97316;
+            --icon-header: #8B5CF6;
+            --icon-device: #06B6D4;
+            --icon-photo: #EC4899;
+            --icon-messaging: #25D366;
+            --icon-vpn: #8B5CF6;
+            --icon-email: #8B5CF6;
+            --icon-speed: #3B82F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Header con el mismo estilo del index */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 280px;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            max-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            margin-left: 14px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+        }
+
+        /* Botón Volver al Inicio - POSICIÓN CORREGIDA */
+        .btn-volver-container {
+            max-width: var(--maxw);
+            margin: 20px auto 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 10px 16px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: var(--card-shadow);
+        }
+
+        .btn-volver i {
+            margin-right: 8px;
+        }
+
+        .btn-volver:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: var(--maxw);
+            margin: 15px auto 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Hero section igual al index */
+        .hero {
+            max-width: var(--maxw);
+            margin: 0 auto 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .hero > div:first-child {
+            flex: 1;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Card igual al index */
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .card-description {
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        /* Área de subida con estilo del index */
+        .upload-area {
+            border: 2px dashed var(--primary);
+            border-radius: var(--radius);
+            padding: 40px 20px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-area:hover {
+            background: #e3f2fd;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .upload-area h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .upload-area p {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        /* Botones de acción */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 160px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.camera {
+            background: var(--secondary);
+        }
+
+        .action-btn.camera:hover {
+            background: #3a7080;
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            max-height: 400px;
+            margin: 20px auto;
+            display: none;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            border: 2px solid #e5e7eb;
+        }
+
+        /* Pestañas con estilo del index */
+        .tabs {
+            display: flex;
+            margin: 25px 0 20px 0;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+        }
+
+        .tab:hover:not(.active) {
+            color: var(--primary-dark);
+            background: rgba(30, 58, 138, 0.05);
+        }
+
+        /* Secciones de análisis */
+        .analysis-section {
+            display: none;
+            margin: 20px 0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .analysis-section.active {
+            display: block;
+        }
+
+        .analysis-section h3 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .analysis-section p {
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .executive-summary {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: var(--radius);
+            margin: 25px 0;
+            border-left: 4px solid var(--primary);
+            display: none;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Tarjetas de resultados */
+        .result-card {
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: var(--radius);
+            border-left: 4px solid;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+            background: white;
+        }
+
+        .result-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .security-card { 
+            border-left-color: var(--icon-leak); 
+            background: linear-gradient(135deg, #fef2f2 0%, #fef7f7 100%);
+        }
+        .privacy-card { 
+            border-left-color: var(--icon-privacy); 
+            background: linear-gradient(135deg, #eff6ff 0%, #f8faff 100%);
+        }
+        .composition-card { 
+            border-left-color: var(--icon-security); 
+            background: linear-gradient(135deg, #f0f9f4 0%, #f7fcf9 100%);
+        }
+        .metadata-card { 
+            border-left-color: var(--icon-encrypt); 
+            background: linear-gradient(135deg, #f0f9ff 0%, #f7fbff 100%);
+        }
+
+        /* Grids responsivos */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .metadata-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+            align-items: flex-start;
+        }
+
+        .metadata-item:last-child {
+            border-bottom: none;
+        }
+
+        .metadata-label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+        .metadata-value {
+            color: var(--gray);
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        /* Barras de progreso */
+        .progress-bar {
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+            background: linear-gradient(90deg, var(--icon-leak), var(--icon-password), var(--icon-security));
+        }
+
+        /* Badges de riesgo */
+        .risk-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .risk-high { background: var(--icon-leak); color: white; }
+        .risk-medium { background: var(--icon-password); color: white; }
+        .risk-low { background: var(--icon-security); color: white; }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Footer igual al index */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        /* Toast para mensajes */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            max-width: 80%;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+        }
+
+        .toast.error { background: var(--icon-leak); }
+        .toast.warning { background: var(--icon-password); }
+        .toast.success { background: var(--icon-security); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            nav {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav a {
+                margin: 5px;
+            }
+            
+            .logo {
+                justify-content: center;
+                min-width: auto;
+            }
+            
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                width: 100%;
+                text-align: center;
+            }
+
+            .btn-volver-container {
+                text-align: center;
+                margin: 15px auto 0 auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .card h1 {
+                font-size: 1.5rem;
+            }
+            
+            .upload-area {
+                padding: 30px 15px;
+                min-height: 120px;
+            }
+            
+            .upload-icon {
+                font-size: 2.5rem;
+            }
+            
+            .upload-area h3 {
+                font-size: 1.1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                min-width: auto;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metadata-item {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .metadata-value {
+                text-align: left;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ENCABEZADO IDÉNTICO AL INDEX -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 12px;">
+                    <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+                </a>
+            </div>
+            <nav>
+            <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- BOTÓN VOLVER AL INICIO - POSICIÓN CORREGIDA -->
+    <div class="btn-volver-container">
+        <a href="/" class="btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver al Inicio
+        </a>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+        <div class="hero">
+            <div>
+                <h1><i class="fas fa-camera"></i> Analizador de Imágenes</h1>
+                <p>Analiza imágenes desde múltiples perspectivas de seguridad y privacidad. Detecta metadatos, ubicación GPS y riesgos potenciales.</p>
+            </div>
+            <div style="width:240px;text-align:center;color:var(--muted)">
+                <i class="fas fa-image" style="font-size: 80px; color: var(--icon-image);"></i>
+                <div style="font-size:13px;margin-top:8px">Análisis completo de imágenes</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <p class="card-description">Sube cualquier imagen para analizar seguridad, metadatos y privacidad</p>
+            
+            <!-- ÁREA DE SUBIDA -->
+            <div class="upload-area" id="dropZone">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3 id="uploadTitle">Selecciona o arrastra una imagen</h3>
+                <p id="uploadSubtitle">Desde tu galería o cámara</p>
+                <p><small>Fotos, screenshots, memes - todo funciona</small></p>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="action-buttons" id="actionButtons">
+                <button class="action-btn" onclick="openGallery()">
+                    <i class="fas fa-images"></i> Abrir Galería
+                </button>
+                <button class="action-btn camera" onclick="openCamera()">
+                    <i class="fas fa-camera"></i> Usar Cámara
+                </button>
+            </div>
+            
+            <img id="imagePreview" alt="Vista previa de la imagen">
+            
+            <div id="executiveSummary" class="executive-summary">
+                <h3><i class="fas fa-chart-bar"></i> Resumen Ejecutivo</h3>
+                <div id="summaryContent"></div>
+            </div>
+            
+            <!-- PESTAÑAS -->
+            <div class="tabs">
+                <div class="tab active" onclick="showAnalysis('security')">
+                    <i class="fas fa-shield-alt"></i> Seguridad
+                </div>
+                <div class="tab" onclick="showAnalysis('privacy')">
+                    <i class="fas fa-user-secret"></i> Privacidad
+                </div>
+                <div class="tab" onclick="showAnalysis('metadata')">
+                    <i class="fas fa-database"></i> Metadatos
+                </div>
+                <div class="tab" onclick="showAnalysis('composition')">
+                    <i class="fas fa-palette"></i> Composición
+                </div>
+            </div>
+            
+            <!-- SECCIONES DE ANÁLISIS -->
+            <div id="securityAnalysis" class="analysis-section active">
+                <h3><i class="fas fa-shield-alt"></i> Análisis de Seguridad</h3>
+                <p>Evalúa riesgos de información sensible en la imagen</p>
+                <div id="securityResults"></div>
+            </div>
+            
+            <div id="privacyAnalysis" class="analysis-section">
+                <h3><i class="fas fa-user-secret"></i> Análisis de Privacidad</h3>
+                <p>Detecta ubicación GPS e información personal expuesta</p>
+                <div id="privacyResults"></div>
+            </div>
+            
+            <div id="metadataAnalysis" class="analysis-section">
+                <h3><i class="fas fa-database"></i> Metadatos EXIF</h3>
+                <p>Información técnica y datos ocultos de la imagen</p>
+                <div id="metadataResults"></div>
+            </div>
+
+            <div id="compositionAnalysis" class="analysis-section">
+                <h3><i class="fas fa-palette"></i> Composición Visual</h3>
+                <p>Calidad y características técnicas de la imagen</p>
+                <div id="compositionResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST PARA MENSAJES -->
+    <div id="toast" class="toast"></div>
+
+    <!-- PIE DE PÁGINA IDÉNTICO AL INDEX -->
+    <footer>
+        © 2025 Proyecto de concientización sobre privacidad — Aviso de privacidad | Contacto
+    </footer>
+
+    <script>
+        // ========== CONFIGURACIÓN INICIAL ==========
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        // Elementos DOM
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const executiveSummary = document.getElementById('executiveSummary');
+        const summaryContent = document.getElementById('summaryContent');
+        const securityResults = document.getElementById('securityResults');
+        const privacyResults = document.getElementById('privacyResults');
+        const metadataResults = document.getElementById('metadataResults');
+        const compositionResults = document.getElementById('compositionResults');
+        const actionButtons = document.getElementById('actionButtons');
+        const uploadTitle = document.getElementById('uploadTitle');
+        const uploadSubtitle = document.getElementById('uploadSubtitle');
+        const toast = document.getElementById('toast');
+
+        let currentExifData = {};
+        let currentFile = null;
+        let analysisInProgress = false;
+
+        // ========== INICIALIZACIÓN ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isMobile) {
+                uploadTitle.textContent = 'Toca para seleccionar imagen';
+                uploadSubtitle.textContent = 'Galería o cámara';
+                actionButtons.style.display = 'flex';
+            } else {
+                uploadTitle.textContent = 'Arrastra una imagen o haz clic';
+                uploadSubtitle.textContent = 'También puedes arrastrar y soltar';
+                setupDragAndDrop();
+            }
+            setupUploadArea();
+        });
+
+        // ========== CONFIGURACIÓN DEL ÁREA DE SUBIDA ==========
+        function setupUploadArea() {
+            dropZone.addEventListener('click', function(e) {
+                if (isMobile) {
+                    openGallery();
+                } else {
+                    fileInput.click();
+                }
+            });
+
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length && !analysisInProgress) {
+                    handleImageFile(e.target.files[0]);
+                }
+            });
+        }
+
+        function setupDragAndDrop() {
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropZone.style.background = '#e3f2fd';
+                dropZone.style.borderColor = 'var(--accent)';
+            });
+
+            dropZone.addEventListener('dragleave', function() {
+                dropZone.style.background = '#f8f9fa';
+                dropZone.style.borderColor = 'var(--primary)';
+            });
+
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropZone.style.background = '#f8f9fa';
+                dropZone.style.borderColor = 'var(--primary)';
+                if (e.dataTransfer.files.length && !analysisInProgress) {
+                    handleImageFile(e.dataTransfer.files[0]);
+                }
+            });
+        }
+
+        // ========== FUNCIONES PARA MÓVIL ==========
+        function openGallery() {
+            if (analysisInProgress) return;
+            
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.multiple = false;
+            input.style.display = 'none';
+            
+            input.onchange = function(e) {
+                if (e.target.files.length > 0 && !analysisInProgress) {
+                    handleImageFile(e.target.files[0]);
+                }
+                document.body.removeChild(input);
+            };
+            
+            document.body.appendChild(input);
+            input.click();
+        }
+
+        function openCamera() {
+            if (analysisInProgress) return;
+            
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.capture = 'environment';
+            input.style.display = 'none';
+            
+            input.onchange = function(e) {
+                if (e.target.files.length > 0 && !analysisInProgress) {
+                    handleImageFile(e.target.files[0]);
+                }
+                document.body.removeChild(input);
+            };
+            
+            document.body.appendChild(input);
+            input.click();
+        }
+
+        // ========== MANEJO DE ARCHIVOS CON TIMEOUT ==========
+        function handleImageFile(file) {
+            if (analysisInProgress) {
+                showToast('⚠️ Ya se está analizando una imagen', 'warning');
+                return;
+            }
+            
+            if (!file.type.match('image.*')) {
+                showToast('Por favor, selecciona una imagen válida', 'error');
+                return;
+            }
+
+            if (file.size > 15 * 1024 * 1024) {
+                showToast('Imagen muy grande. Máximo 15MB.', 'warning');
+                return;
+            }
+
+            analysisInProgress = true;
+            currentFile = file;
+            showToast(`📷 Analizando: ${file.name}`, 'info');
+            
+            const reader = new FileReader();
+            
+            reader.onloadstart = function() {
+                showLoadingStates();
+            };
+            
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                extractExifDataFast(file, e.target.result);
+            };
+            
+            reader.onerror = function() {
+                analysisInProgress = false;
+                showToast('Error al leer la imagen', 'error');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // ========== EXIF RÁPIDO CON TIMEOUT ==========
+        function extractExifDataFast(file, dataUrl) {
+            console.log('🚀 Iniciando EXIF rápido...');
+            const startTime = Date.now();
+            
+            const timeoutId = setTimeout(() => {
+                console.log('⏰ Timeout: EXIF tardó demasiado, usando análisis básico');
+                analyzeWithBasicMetadata(file);
+            }, 3000);
+            
+            try {
+                EXIF.getData(imagePreview, function() {
+                    clearTimeout(timeoutId);
+                    const extractionTime = Date.now() - startTime;
+                    console.log(`✅ EXIF completado en ${extractionTime}ms`);
+                    
+                    currentExifData = EXIF.getAllTags(this) || {};
+                    console.log('Metadatos encontrados:', Object.keys(currentExifData).length);
+                    
+                    analyzeAllAspectsFast(file, currentExifData);
+                });
+            } catch (error) {
+                clearTimeout(timeoutId);
+                console.error('Error en EXIF:', error);
+                analyzeWithBasicMetadata(file);
+            }
+        }
+
+        // ========== ANÁLISIS RÁPIDO PERO COMPLETO ==========
+        function analyzeAllAspectsFast(file, exifData) {
+            const analysisStart = Date.now();
+            
+            const securityAnalysis = analyzeSecurity(file);
+            const privacyAnalysis = analyzePrivacy(file, exifData);
+            const compositionAnalysis = analyzeComposition(file, exifData);
+            const metadataAnalysis = analyzeMetadata(exifData, file);
+            
+            const analysisTime = Date.now() - analysisStart;
+            console.log(`📊 Análisis completado en ${analysisTime}ms`);
+            
+            displaySecurityResults(securityAnalysis);
+            displayPrivacyResults(privacyAnalysis);
+            displayCompositionResults(compositionAnalysis);
+            displayMetadataResults(metadataAnalysis);
+            generateExecutiveSummary(securityAnalysis, privacyAnalysis, compositionAnalysis, metadataAnalysis);
+            
+            executiveSummary.style.display = 'block';
+            analysisInProgress = false;
+            showToast(`✅ Análisis completo en ${analysisTime}ms`, 'success');
+        }
+
+        function analyzeWithBasicMetadata(file) {
+            console.log('🔄 Usando análisis con metadatos básicos');
+            const basicExifData = {
+                FileName: file.name,
+                FileSize: file.size,
+                FileType: file.type
+            };
+            analyzeAllAspectsFast(file, basicExifData);
+        }
+
+        // ========== FUNCIONES DE ANÁLISIS ==========
+        function analyzeSecurity(file) {
+            const riskLevel = calculateRiskLevel(file.name);
+            const riskScore = calculateRiskScore(file, riskLevel);
+            
+            return {
+                riskLevel: riskLevel,
+                riskScore: riskScore,
+                issues: getSecurityIssues(file),
+                recommendations: getSecurityRecommendations(file, riskLevel)
+            };
+        }
+
+        function analyzePrivacy(file, exifData) {
+            const privacyScore = calculatePrivacyScore(file, exifData);
+            
+            return {
+                privacyScore: privacyScore,
+                privacyLevel: privacyScore > 70 ? 'ALTA' : privacyScore > 40 ? 'MEDIA' : 'BAJA',
+                concerns: getPrivacyConcerns(file, exifData),
+                tips: getPrivacyTips(exifData)
+            };
+        }
+
+        function analyzeComposition(file, exifData) {
+            return {
+                qualityScore: calculateQualityScore(file, exifData),
+                format: file.type.split('/')[1].toUpperCase(),
+                fileSize: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                technicalInfo: getTechnicalInfo(exifData)
+            };
+        }
+
+        function analyzeMetadata(exifData, file) {
+            return {
+                totalMetadata: Object.keys(exifData).length,
+                hasGPS: !!(exifData.GPSLatitude && exifData.GPSLongitude),
+                hasCameraInfo: !!(exifData.Make || exifData.Model),
+                cameraInfo: {
+                    make: exifData.Make,
+                    model: exifData.Model
+                },
+                gpsInfo: exifData.GPSLatitude ? {
+                    coordinates: formatGPS(exifData)
+                } : null,
+                isLikelyScreenshot: Object.keys(exifData).length < 5 && file.type === 'image/png'
+            };
+        }
+
+        // ========== FUNCIONES AUXILIARES ==========
+        function calculateRiskLevel(filename) {
+            const lower = filename.toLowerCase();
+            const sensitiveWords = ['dni', 'pasaporte', 'tarjeta', 'contraseña', 'password', 'credito', 'banco'];
+            const mediumWords = ['documento', 'captura', 'pantalla', 'screenshot', 'recibo', 'factura'];
+            
+            if (sensitiveWords.some(word => lower.includes(word))) return 'ALTO';
+            if (mediumWords.some(word => lower.includes(word))) return 'MEDIO';
+            return 'BAJO';
+        }
+
+        function calculateRiskScore(file, riskLevel) {
+            const baseScores = { 'ALTO': 40, 'MEDIO': 70, 'BAJO': 95 };
+            return baseScores[riskLevel] || 85;
+        }
+
+        function calculatePrivacyScore(file, exifData) {
+            let score = 50;
+            if (exifData.GPSLatitude) score += 40;
+            if (exifData.Make) score += 20;
+            if (file.name.toLowerCase().includes('casa') || file.name.toLowerCase().includes('home')) score += 20;
+            return Math.max(0, Math.min(100, score));
+        }
+
+        function calculateQualityScore(file, exifData) {
+            let score = 70;
+            if (file.size > 2 * 1024 * 1024) score += 20;
+            if (exifData.Make) score += 10;
+            return Math.max(0, Math.min(100, score));
+        }
+
+        function getSecurityIssues(file) {
+            const issues = [];
+            const lower = file.name.toLowerCase();
+            
+            if (lower.includes('captura') || lower.includes('screenshot')) {
+                issues.push('Posible captura de pantalla con información visible');
+            }
+            if (lower.includes('documento') || lower.includes('doc')) {
+                issues.push('Nombre sugiere contenido documental');
+            }
+            if (file.size > 3 * 1024 * 1024) {
+                issues.push('Archivo grande - podría contener mucho detalle');
+            }
+            
+            return issues;
+        }
+
+        function getSecurityRecommendations(file, riskLevel) {
+            const recommendations = [];
+            
+            if (riskLevel === 'ALTO') {
+                recommendations.push('NO COMPARTIR - Contenido potencialmente sensible');
+                recommendations.push('Elimina o edita la imagen antes de compartir');
+            } else if (riskLevel === 'MEDIO') {
+                recommendations.push('Revisa que no se vean datos personales antes de compartir');
+                recommendations.push('Considera recortar áreas sensibles');
+            } else {
+                recommendations.push('Parece seguro para compartir');
+            }
+            
+            return recommendations;
+        }
+
+        function getPrivacyConcerns(file, exifData) {
+            const concerns = [];
+            
+            if (exifData.GPSLatitude) {
+                concerns.push(`📍 UBICACIÓN GPS: ${formatGPS(exifData)}`);
+            }
+            if (exifData.Make || exifData.Model) {
+                concerns.push(`📱 Dispositivo: ${exifData.Make || ''} ${exifData.Model || ''}`);
+            }
+            if (file.name.toLowerCase().includes('selfie') || file.name.toLowerCase().includes('foto')) {
+                concerns.push('👤 Rostro identificable posible');
+            }
+            
+            return concerns;
+        }
+
+        function getPrivacyTips(exifData) {
+            const tips = [];
+            
+            if (exifData.GPSLatitude) {
+                tips.push('🚫 ELIMINAR METADATOS GPS - Revela tu ubicación exacta');
+            }
+            tips.push('🎭 Considera pixelar rostros e información sensible');
+            tips.push('🛡️ Elimina metadatos antes de publicar en redes');
+            
+            return tips;
+        }
+
+        function getTechnicalInfo(exifData) {
+            return {
+                aperture: exifData.FNumber ? `f/${exifData.FNumber}` : 'No disponible',
+                iso: exifData.ISOSpeedRatings || 'No disponible',
+                exposure: exifData.ExposureTime ? `1/${Math.round(1/exifData.ExposureTime)}s` : 'No disponible'
+            };
+        }
+
+        function formatGPS(exifData) {
+            if (!exifData.GPSLatitude || !exifData.GPSLongitude) return 'No disponible';
+            
+            try {
+                function toDecimal(coord, ref) {
+                    const degrees = coord[0];
+                    const minutes = coord[1];
+                    const seconds = coord[2];
+                    let decimal = degrees + (minutes / 60) + (seconds / 3600);
+                    if (ref === 'S' || ref === 'W') decimal = -decimal;
+                    return decimal.toFixed(6);
+                }
+                
+                const lat = toDecimal(exifData.GPSLatitude, exifData.GPSLatitudeRef);
+                const lon = toDecimal(exifData.GPSLongitude, exifData.GPSLongitudeRef);
+                return `${lat}, ${lon}`;
+            } catch (error) {
+                return 'Formato GPS no reconocido';
+            }
+        }
+
+        // ========== VISUALIZACIÓN DE RESULTADOS ==========
+        function displaySecurityResults(analysis) {
+            const riskBadge = `<span class="risk-badge risk-${analysis.riskLevel.toLowerCase()}">${analysis.riskLevel}</span>`;
+            
+            securityResults.innerHTML = `
+                <div class="result-card security-card">
+                    <h4><i class="fas fa-shield-alt"></i> Seguridad ${riskBadge}</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${analysis.riskScore}%"></div>
+                    </div>
+                    <p>Puntuación: ${analysis.riskScore}/100</p>
+                    
+                    ${analysis.issues.length > 0 ? `
+                        <div style="margin: 15px 0;">
+                            <strong><i class="fas fa-exclamation-triangle"></i> Detectado:</strong>
+                            <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.95rem;">
+                                ${analysis.issues.map(issue => `<li>${issue}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : '<p><i class="fas fa-check-circle"></i> Sin problemas graves detectados</p>'}
+                    
+                    <div style="margin: 15px 0;">
+                        <strong><i class="fas fa-lightbulb"></i> Recomendación:</strong>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.95rem;">
+                            ${analysis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayPrivacyResults(analysis) {
+            const privacyColor = analysis.privacyScore > 70 ? 'var(--icon-leak)' : analysis.privacyScore > 40 ? 'var(--icon-password)' : 'var(--icon-security)';
+            const privacyBadge = `<span class="risk-badge" style="background: ${privacyColor}">${analysis.privacyLevel}</span>`;
+            
+            privacyResults.innerHTML = `
+                <div class="result-card privacy-card">
+                    <h4><i class="fas fa-user-secret"></i> Privacidad ${privacyBadge}</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${analysis.privacyScore}%"></div>
+                    </div>
+                    <p>Puntuación: ${analysis.privacyScore}/100</p>
+                    
+                    ${analysis.concerns.length > 0 ? `
+                        <div style="margin: 15px 0;">
+                            <strong><i class="fas fa-exclamation-circle"></i> Preocupaciones:</strong>
+                            <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.95rem;">
+                                ${analysis.concerns.map(concern => `<li>${concern}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : '<p><i class="fas fa-check-circle"></i> Buena privacidad</p>'}
+                    
+                    <div style="margin: 15px 0;">
+                        <strong><i class="fas fa-lock"></i> Consejos:</strong>
+                        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.95rem;">
+                            ${analysis.tips.map(tip => `<li>${tip}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayCompositionResults(analysis) {
+            compositionResults.innerHTML = `
+                <div class="result-card composition-card">
+                    <h4><i class="fas fa-palette"></i> Composición</h4>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <strong>Calidad</strong>
+                            <div style="font-size: 24px; margin: 10px 0; color: var(--icon-security);">${analysis.qualityScore}/100</div>
+                            <small>Puntuación</small>
+                        </div>
+                        <div class="metric-card">
+                            <strong>Formato</strong>
+                            <div style="font-size: 20px; margin: 10px 0; color: var(--icon-security);">${analysis.format}</div>
+                            <small>Tipo</small>
+                        </div>
+                        <div class="metric-card">
+                            <strong>Tamaño</strong>
+                            <div style="font-size: 18px; margin: 10px 0; color: var(--icon-security);">${analysis.fileSize}</div>
+                            <small>Peso</small>
+                        </div>
+                    </div>
+                    
+                    ${analysis.technicalInfo.aperture !== 'No disponible' ? `
+                    <div style="margin: 15px 0;">
+                        <strong><i class="fas fa-camera"></i> Configuración:</strong>
+                        <div class="metadata-grid">
+                            <div class="metadata-item">
+                                <span class="metadata-label">Apertura:</span>
+                                <span class="metadata-value">${analysis.technicalInfo.aperture}</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">ISO:</span>
+                                <span class="metadata-value">${analysis.technicalInfo.iso}</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Exposición:</span>
+                                <span class="metadata-value">${analysis.technicalInfo.exposure}</span>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function displayMetadataResults(analysis) {
+            let metadataHTML = `
+                <div class="result-card metadata-card">
+                    <h4><i class="fas fa-database"></i> Metadatos</h4>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <strong>Total</strong>
+                            <div style="font-size: 24px; margin: 10px 0; color: var(--icon-encrypt);">${analysis.totalMetadata}</div>
+                            <small>Campos</small>
+                        </div>
+                        <div class="metric-card">
+                            <strong>GPS</strong>
+                            <div style="font-size: 24px; margin: 10px 0; color: ${analysis.hasGPS ? 'var(--icon-leak)' : 'var(--icon-security)'};">
+                                ${analysis.hasGPS ? 'SÍ' : 'NO'}
+                            </div>
+                            <small>Ubicación</small>
+                        </div>
+                        <div class="metric-card">
+                            <strong>Cámara</strong>
+                            <div style="font-size: 24px; margin: 10px 0; color: ${analysis.hasCameraInfo ? 'var(--icon-password)' : 'var(--gray)'};">
+                                ${analysis.hasCameraInfo ? 'SÍ' : 'NO'}
+                            </div>
+                            <small>Dispositivo</small>
+                        </div>
+                    </div>
+            `;
+
+            if (analysis.hasCameraInfo) {
+                metadataHTML += `
+                    <div style="margin: 15px 0;">
+                        <strong><i class="fas fa-camera"></i> Información:</strong>
+                        <div class="metadata-grid">
+                            ${analysis.cameraInfo.make ? `
+                                <div class="metadata-item">
+                                    <span class="metadata-label">Marca:</span>
+                                    <span class="metadata-value">${analysis.cameraInfo.make}</span>
+                                </div>
+                            ` : ''}
+                            ${analysis.cameraInfo.model ? `
+                                <div class="metadata-item">
+                                    <span class="metadata-label">Modelo:</span>
+                                    <span class="metadata-value">${analysis.cameraInfo.model}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (analysis.hasGPS) {
+                metadataHTML += `
+                    <div style="margin: 15px 0;">
+                        <strong><i class="fas fa-map-marker-alt"></i> Ubicación GPS:</strong>
+                        <div class="metadata-item">
+                            <span class="metadata-label">Coordenadas:</span>
+                            <span class="metadata-value">${analysis.gpsInfo.coordinates}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (analysis.isLikelyScreenshot) {
+                metadataHTML += `
+                    <div style="margin: 15px 0; padding: 15px; background: #e3f2fd; border-radius: 6px;">
+                        <p><i class="fas fa-desktop"></i> <strong>Captura de pantalla detectada</strong></p>
+                        <p style="font-size: 0.9rem; margin-top: 8px;">Los screenshots generalmente no contienen metadatos EXIF.</p>
+                    </div>
+                `;
+            }
+
+            metadataHTML += `</div>`;
+            metadataResults.innerHTML = metadataHTML;
+        }
+
+        function generateExecutiveSummary(security, privacy, composition, metadata) {
+            const overallScore = Math.round(
+                security.riskScore * 0.4 + 
+                (100 - privacy.privacyScore) * 0.3 + 
+                composition.qualityScore * 0.3
+            );
+            
+            const overallAssessment = overallScore >= 70 ? '✅ SEGURA' : overallScore >= 40 ? '⚠️ MODERADA' : '❌ RIESGOSA';
+            const mainRecommendation = getMainRecommendation(security, privacy, metadata);
+            
+            summaryContent.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div style="text-align: center;">
+                        <h4>Puntuación</h4>
+                        <div style="font-size: 36px; font-weight: bold; margin: 15px 0; 
+                                    color: ${overallScore > 70 ? 'var(--icon-security)' : overallScore > 40 ? 'var(--icon-password)' : 'var(--icon-leak)'}">
+                            ${overallScore}/100
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <h4>Evaluación</h4>
+                        <div style="font-size: 18px; font-weight: bold; padding: 12px; 
+                                    background: ${overallScore > 70 ? '#f0f9f4' : overallScore > 40 ? '#fffbeb' : '#fef2f2'};
+                                    border-radius: 8px; border: 2px solid ${overallScore > 70 ? 'var(--icon-security)' : overallScore > 40 ? 'var(--icon-password)' : 'var(--icon-leak)'}">
+                            ${overallAssessment}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="padding: 20px; background: white; border-radius: 8px; border-left: 4px solid var(--primary);">
+                    <strong style="font-size: 16px;"><i class="fas fa-lightbulb"></i> Recomendación:</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 15px;">${mainRecommendation}</p>
+                </div>
+            `;
+        }
+
+        function getMainRecommendation(security, privacy, metadata) {
+            if (security.riskLevel === 'ALTO') {
+                return 'NO COMPARTIR - Contenido sensible detectado. Edita antes de compartir.';
+            }
+            if (privacy.privacyScore > 70) {
+                return 'Edita para proteger privacidad. Elimina metadatos GPS si existen.';
+            }
+            if (metadata.hasGPS) {
+                return 'ELIMINA METADATOS GPS antes de compartir. Revela ubicación exacta.';
+            }
+            return 'Puedes compartir esta imagen. Revisa los detalles para mayor seguridad.';
+        }
+
+        // ========== UTILIDADES ==========
+        function showToast(message, type = 'info') {
+            toast.textContent = message;
+            toast.className = 'toast';
+            toast.classList.add(type);
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        function showLoadingStates() {
+            const loadingHTML = `
+                <div class="result-card" style="border-left-color: var(--primary); text-align: center;">
+                    <div class="pulse"><i class="fas fa-sync-alt fa-spin"></i> Analizando...</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 70%"></div>
+                    </div>
+                    <p>${isMobile ? 'Procesando en tu dispositivo...' : 'Procesando imagen...'}</p>
+                </div>
+            `;
+            
+            securityResults.innerHTML = loadingHTML;
+            privacyResults.innerHTML = loadingHTML;
+            compositionResults.innerHTML = loadingHTML;
+            metadataResults.innerHTML = loadingHTML;
+        }
+
+        function showAnalysis(section) {
+            document.querySelectorAll('.analysis-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(section + 'Analysis').classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if (isMobile) {
+                document.getElementById(section + 'Analysis').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'nearest'
+                });
+            }
+        }
+
+        console.log('✅ Analizador de imágenes cargado - Con diseño del index');
+    </script>
+</body>
+</html>

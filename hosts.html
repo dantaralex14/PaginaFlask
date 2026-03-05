@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Puertos | FORENCOMMUNITY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary:#1E3A8A; --primary-dark:#162c6d; --secondary:#458091;
+            --accent:#FF9E1A; --light:#F9FAFB; --dark:#171717; --gray:#6B7280; --muted:#383868;
+            --card-shadow:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);
+            --maxw:1200px; --radius:12px;
+            --success:#16a34a; --danger:#dc2626; --warning:#d97706; --info:#2563eb;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:linear-gradient(135deg,#f5f7fa,#c3cfe2);color:var(--dark);font-family:'Segoe UI',sans-serif;min-height:100vh;}
+        header{background:linear-gradient(to right,var(--primary),var(--secondary));color:white;padding:20px 0;box-shadow:0 4px 6px rgba(0,0,0,.1);margin-bottom:30px;}
+        .hdr{max-width:var(--maxw);margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center;}
+        .logo{font-size:1.8rem;font-weight:700;display:flex;align-items:center;gap:12px;}
+        .logo-img{height:50px;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.2);}
+        nav{display:flex;align-items:center;flex-wrap:wrap;}
+        nav a{margin-left:14px;color:white;text-decoration:none;font-weight:500;padding:8px 12px;border-radius:6px;transition:all .3s;}
+        nav a:hover{background:rgba(255,255,255,.1);color:var(--accent);}
+        .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px;}
+        .volver{display:inline-flex;align-items:center;background:transparent;color:var(--primary);border:2px solid var(--primary);padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:600;transition:all .3s;margin-bottom:20px;}
+        .volver:hover{background:var(--primary);color:white;transform:translateY(-2px);}
+        .volver i{margin-right:8px;}
+        .card{background:white;padding:30px;border-radius:var(--radius);box-shadow:var(--card-shadow);margin-bottom:30px;}
+        .card h1{font-size:2rem;color:var(--primary);margin-bottom:8px;text-align:center;}
+        .desc{color:var(--muted);text-align:center;margin-bottom:25px;font-size:1.05rem;}
+        /* Aviso */
+        .aviso{background:#fef3c7;border:2px solid #f59e0b;border-radius:10px;padding:15px 20px;margin-bottom:25px;display:flex;gap:12px;align-items:flex-start;}
+        .aviso i{color:#d97706;font-size:1.2rem;margin-top:2px;flex-shrink:0;}
+        .aviso p{color:#78350f;font-size:.9rem;line-height:1.5;}
+        /* Form */
+        .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+        @media(max-width:768px){.fgrid{grid-template-columns:1fr;}}
+        .fg{display:flex;flex-direction:column;gap:6px;}
+        .fg.full{grid-column:1/-1;}
+        label{font-weight:600;color:var(--dark);font-size:.95rem;}
+        input[type=text],select{padding:12px 14px;border:2px solid #e5e7eb;border-radius:8px;font-size:1rem;transition:border-color .3s;}
+        input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,58,138,.1);}
+        .hint{color:var(--gray);font-size:.82rem;}
+        /* Presets */
+        .presets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+        .pre{background:#f1f5f9;border:2px solid #e2e8f0;padding:6px 14px;border-radius:20px;font-size:.85rem;font-weight:600;cursor:pointer;color:var(--primary);transition:all .2s;}
+        .pre:hover{background:var(--primary);color:white;border-color:var(--primary);}
+        /* Botones */
+        .btnrow{display:flex;gap:12px;margin-top:20px;}
+        .btn{background:var(--primary);color:white;padding:13px 22px;border-radius:8px;border:none;cursor:pointer;font-size:1rem;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:all .3s;flex:1;justify-content:center;}
+        .btn:hover:not(:disabled){background:var(--primary-dark);transform:translateY(-2px);}
+        .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+        .btn-stop{background:var(--danger);flex:0 0 auto;}
+        .btn-stop:hover:not(:disabled){background:#b91c1c;}
+        .btn-exp{background:transparent;border:2px solid var(--primary);color:var(--primary);flex:0 0 auto;}
+        .btn-exp:hover:not(:disabled){background:var(--primary);color:white;}
+        /* Progreso */
+        .sec-prog{display:none;margin-top:25px;}
+        .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+        .plabel{font-weight:600;color:var(--primary);}
+        .ppct{font-size:.85rem;color:var(--gray);}
+        .pwrap{background:#e5e7eb;border-radius:999px;height:10px;overflow:hidden;}
+        .pbar{height:100%;background:linear-gradient(to right,var(--primary),var(--secondary));border-radius:999px;transition:width .25s;width:0%;}
+        .pfoot{display:flex;justify-content:space-between;font-size:.82rem;color:var(--gray);margin-top:4px;}
+        /* Terminal */
+        .term{background:#0f172a;border-radius:10px;padding:14px 18px;margin-top:14px;font-family:'Courier New',monospace;font-size:.8rem;max-height:200px;overflow-y:auto;border:2px solid #1e3a8a;}
+        .ti{color:#60a5fa;} .to{color:#4ade80;} .tw{color:#fbbf24;} .te{color:#f87171;}
+        /* Resumen */
+        .sumbox{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border-radius:12px;padding:25px;margin-top:25px;display:none;}
+        .sumbox h3{margin-bottom:15px;font-size:1.2rem;}
+        .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;}
+        .si{background:rgba(255,255,255,.15);border-radius:8px;padding:12px;text-align:center;}
+        .sn{font-size:2rem;font-weight:800;} .sl{font-size:.78rem;opacity:.85;margin-top:2px;}
+        /* Resultados */
+        .sec-res{display:none;margin-top:25px;}
+        .rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #e5e7eb;flex-wrap:wrap;gap:10px;}
+        .rt{font-size:1.3rem;font-weight:700;color:var(--primary);}
+        .badge{padding:5px 14px;border-radius:20px;font-size:.82rem;font-weight:700;}
+        .b-ok{background:#dcfce7;color:#166534;} .b-warn{background:#fef3c7;color:#92400e;}
+        .b-info{background:#dbeafe;color:#1e40af;} .b-stop{background:#fee2e2;color:#991b1b;}
+        /* Host card */
+        .hcard{background:#f8fafc;border-radius:10px;padding:20px;border-left:4px solid var(--success);box-shadow:0 2px 6px rgba(0,0,0,.07);}
+        .hcard.ra{border-left-color:var(--danger);}
+        .hcard.rm{border-left-color:var(--warning);}
+        .hch{display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+        .hip{font-size:1.15rem;font-weight:700;color:var(--primary);}
+        .hsub{font-size:.88rem;color:var(--gray);font-style:italic;margin-top:2px;}
+        /* Alertas */
+        .ralert{background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;margin-bottom:8px;color:#991b1b;font-size:.88rem;}
+        .ralert.med{background:#fef3c7;border-color:#fcd34d;color:#92400e;}
+        /* Chips */
+        .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
+        .chip{padding:5px 12px;border-radius:6px;font-size:.8rem;font-weight:700;display:flex;align-items:center;gap:5px;}
+        .c-safe{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;}
+        .c-http{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;}
+        .c-risk{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+        .c-warn{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+        .c-db{background:#f0fdf4;color:#14532d;border:1px solid #86efac;}
+        .c-ssh{background:#ede9fe;color:#5b21b6;border:1px solid #c4b5fd;}
+        /* Meta */
+        .hmeta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px;border-top:1px solid #e2e8f0;padding-top:14px;}
+        .ml{color:var(--gray);font-size:.78rem;font-weight:600;text-transform:uppercase;}
+        .mv{font-weight:700;color:var(--dark);margin-top:2px;}
+        footer{background:var(--dark);color:white;padding:30px 0;margin-top:50px;text-align:center;}
+        @media(max-width:900px){.hdr{flex-direction:column;gap:15px;text-align:center;}nav{justify-content:center;}.btnrow{flex-direction:column;}}
+    </style>
+</head>
+<body>
+<header>
+    <div class="hdr">
+        <div class="logo">
+            <a href="/" style="text-decoration:none;color:white;display:flex;align-items:center;gap:12px;">
+                <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+            </a>
+        </div>
+        <nav>
+            <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+        </nav>
+    </div>
+</header>
+
+<div class="wrap">
+    <a href="/" class="volver"><i class="fas fa-arrow-left"></i> Volver al Inicio</a>
+
+    <div class="card">
+        <h1><i class="fas fa-network-wired"></i> Escáner de Puertos TCP</h1>
+        <p class="desc">Escaneo real desde el servidor — conexiones TCP directas, sin simulaciones, con resultados en tiempo real</p>
+
+        <div class="aviso">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p><strong>Uso responsable:</strong> Escanea únicamente hosts de tu propiedad o con autorización expresa. El escaneo no autorizado puede ser ilegal. Esta herramienta hace conexiones TCP reales desde el servidor Flask.</p>
+        </div>
+
+        <div style="margin-bottom:18px;">
+            <label style="display:block;margin-bottom:10px;">Objetivos de ejemplo (autorizados):</label>
+            <div class="presets">
+                <button class="pre" onclick="pr('scanme.nmap.org','comun')">🎯 scanme.nmap.org</button>
+                <button class="pre" onclick="pr('localhost','web')">🖥️ localhost</button>
+                <button class="pre" onclick="pr('google.com','web')">🌐 google.com</button>
+                <button class="pre" onclick="pr('cloudflare.com','web')">☁️ cloudflare.com</button>
+                <button class="pre" onclick="pr('github.com','web')">🐙 github.com</button>
+            </div>
+        </div>
+
+        <div class="fgrid">
+            <div class="fg">
+                <label><i class="fas fa-crosshairs"></i> Host / IP objetivo</label>
+                <input type="text" id="tgt" value="scanme.nmap.org" placeholder="ej: 192.168.1.1 o sitio.com">
+                <span class="hint">IP o nombre de dominio. Un host por escaneo.</span>
+            </div>
+            <div class="fg">
+                <label><i class="fas fa-door-open"></i> Perfil de puertos</label>
+                <select id="perfil" onchange="uHint()">
+                    <option value="web">🌐 Web — 80,443,8080,8443</option>
+                    <option value="comun" selected>📋 Comunes — 21 puertos clave</option>
+                    <option value="top50">🔍 Top 50</option>
+                    <option value="top100">🔬 Top 100</option>
+                    <option value="custom">✏️ Personalizado</option>
+                </select>
+                <span class="hint" id="phint">21,22,23,25,53,80,110,143,443... (21 puertos)</span>
+            </div>
+            <div class="fg full" id="cgrp" style="display:none;">
+                <label>Puertos personalizados (coma separados, máx 200)</label>
+                <input type="text" id="cports" placeholder="ej: 22,80,443,8080,3000">
+            </div>
+            <div class="fg">
+                <label><i class="fas fa-clock"></i> Timeout por puerto</label>
+                <select id="tmo">
+                    <option value="500">500ms — Red local</option>
+                    <option value="1000" selected>1000ms — Normal</option>
+                    <option value="2000">2000ms — Internet lento</option>
+                    <option value="3000">3000ms — Muy lento</option>
+                </select>
+            </div>
+            <div class="fg">
+                <label><i class="fas fa-search"></i> Resolución DNS</label>
+                <select id="dns">
+                    <option value="1" selected>Resolver hostname antes de escanear</option>
+                    <option value="0">Solo IPs (sin resolución DNS)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="btnrow">
+            <button class="btn" id="bScan" onclick="scan()"><i class="fas fa-play"></i> Iniciar Escaneo</button>
+            <button class="btn btn-stop" id="bStop" onclick="stop()" style="display:none;"><i class="fas fa-stop"></i> Detener</button>
+            <button class="btn btn-exp" id="bExp" onclick="exp()" style="display:none;"><i class="fas fa-download"></i> Exportar JSON</button>
+        </div>
+
+        <div class="sec-prog" id="secProg">
+            <div class="ph">
+                <span class="plabel" id="pLbl">Iniciando...</span>
+                <span class="ppct" id="pPct">0%</span>
+            </div>
+            <div class="pwrap"><div class="pbar" id="pBar"></div></div>
+            <div class="pfoot">
+                <span id="pPorts">0 / 0 puertos</span>
+                <span id="pOpen" style="color:var(--success);font-weight:600;">0 abiertos</span>
+            </div>
+            <div class="term" id="term"><div class="ti">▶ Listo para escanear...</div></div>
+        </div>
+
+        <div class="sumbox" id="sumbox">
+            <h3><i class="fas fa-chart-bar"></i> Resumen del Escaneo</h3>
+            <div class="sgrid">
+                <div class="si"><div class="sn" id="s1">1</div><div class="sl">Host analizado</div></div>
+                <div class="si"><div class="sn" id="s2">0</div><div class="sl">Puertos abiertos</div></div>
+                <div class="si"><div class="sn" id="s3">0</div><div class="sl">Puertos escaneados</div></div>
+                <div class="si"><div class="sn" id="s4">0s</div><div class="sl">Tiempo total</div></div>
+                <div class="si"><div class="sn" id="s5">0</div><div class="sl">Puertos de riesgo</div></div>
+            </div>
+        </div>
+
+        <div class="sec-res" id="secRes">
+            <div class="rh">
+                <span class="rt"><i class="fas fa-list-alt"></i> Resultados detallados</span>
+                <span class="badge b-ok" id="rbadge">COMPLETADO</span>
+            </div>
+            <div id="rbody"></div>
+        </div>
+    </div>
+</div>
+<footer><p>&copy; 2025 FORENCOMMUNITY · Tu privacidad es tu derecho</p></footer>
+
+<script>
+const P = {
+    web:   [80,443,8080,8443,8000,3000,4443],
+    comun: [21,22,23,25,53,80,110,143,443,445,993,995,1433,1521,3306,3389,5432,5900,6379,8080,8443],
+    top50: [21,22,23,25,53,79,80,88,110,111,119,135,139,143,443,445,465,587,631,993,995,1080,1433,1521,1723,2049,3306,3389,4444,4899,5432,5900,6379,7001,8080,8443,8888,9200,10000,27017,50000,50070],
+    top100:[7,9,13,21,22,23,25,26,37,53,79,80,81,88,106,110,111,113,119,135,139,143,144,179,199,389,427,443,444,445,465,513,514,515,543,548,554,587,631,873,990,993,995,1025,1026,1027,1028,1029,1080,1433,1521,1720,1723,1900,2000,2049,2121,2717,3000,3128,3306,3389,3986,4444,4899,5000,5009,5051,5060,5190,5357,5432,5631,5800,5900,6000,6001,6379,7070,8000,8008,8080,8443,8888,9100,9200,9999,10000,27017,32768,49152,49153,49154,49155,50000]
+};
+const SVC={21:'FTP',22:'SSH',23:'Telnet',25:'SMTP',53:'DNS',80:'HTTP',110:'POP3',111:'RPC',135:'RPC/DCOM',139:'NetBIOS',143:'IMAP',443:'HTTPS',445:'SMB',465:'SMTPS',587:'SMTP-S',631:'IPP',993:'IMAPS',995:'POP3S',1433:'SQL Srv',1521:'Oracle',1723:'PPTP',2049:'NFS',3000:'Dev',3306:'MySQL',3389:'RDP',4444:'Backdoor',4899:'Radmin',5432:'Postgres',5900:'VNC',6379:'Redis',7001:'WebLogic',8080:'HTTP-Alt',8443:'HTTPS-Alt',8888:'Jupyter',9200:'Elastic',10000:'Webmin',27017:'MongoDB',50000:'DB2'};
+const RA=new Set([21,23,25,135,139,445,3389,4444,5900,6379,27017,50000]);
+const RM=new Set([22,80,110,143,1433,1521,3306,5432,9200,7001,10000,8080]);
+const ALERTS={21:['r','🔴 FTP — Credenciales en texto plano, sin cifrado.'],23:['r','🔴 Telnet — Sin cifrado. Extremadamente inseguro.'],25:['w','⚠️ SMTP abierto — Posible relay de spam.'],135:['r','🔴 RPC/DCOM — Explotado por malware Windows.'],139:['w','⚠️ NetBIOS — Expone información de red Windows.'],445:['r','🔴 SMB — Vector de EternalBlue/WannaCry.'],3389:['r','🔴 RDP expuesto — Objetivo directo de ransomware.'],4444:['r','🔴 Puerto 4444 — Asociado a backdoors/Metasploit.'],5900:['w','⚠️ VNC — Escritorio remoto expuesto.'],6379:['r','🔴 Redis — Sin auth por defecto. Data dump total.'],27017:['r','🔴 MongoDB — Frecuentemente expuesto sin autenticación.']};
+
+let vivo=false,res=null,t0=null,tot=0,esc=0,ab=0;
+
+function pr(h,p){document.getElementById('tgt').value=h;document.getElementById('perfil').value=p;uHint();}
+function uHint(){
+    const v=document.getElementById('perfil').value;
+    document.getElementById('cgrp').style.display=v==='custom'?'flex':'none';
+    const l=P[v]||[];
+    document.getElementById('phint').textContent=v==='custom'?'Define tus puertos abajo':l.slice(0,10).join(',')+' ('+l.length+' puertos)';
+}
+function getPorts(){
+    const v=document.getElementById('perfil').value;
+    if(v==='custom'){const r=document.getElementById('cports').value;return[...new Set(r.split(',').map(x=>parseInt(x.trim())).filter(x=>x>0&&x<=65535))].slice(0,200);}
+    return P[v]||P.comun;
+}
+function log(t,c=''){const d=document.getElementById('term');const e=document.createElement('div');e.className=c;e.textContent=t;d.appendChild(e);d.scrollTop=d.scrollHeight;}
+
+async function scan(){
+    const target=document.getElementById('tgt').value.trim();
+    const ports=getPorts();
+    const tmo=parseInt(document.getElementById('tmo').value);
+    const resolve=document.getElementById('dns').value==='1';
+    if(!target){alert('Introduce un host o IP.');return;}
+    if(!ports.length){alert('Selecciona al menos un puerto.');return;}
+
+    vivo=true;esc=0;ab=0;tot=ports.length;t0=Date.now();res=null;
+    document.getElementById('bScan').disabled=true;
+    document.getElementById('bStop').style.display='inline-flex';
+    document.getElementById('bExp').style.display='none';
+    document.getElementById('secProg').style.display='block';
+    document.getElementById('secRes').style.display='none';
+    document.getElementById('sumbox').style.display='none';
+    document.getElementById('pBar').style.width='0%';
+    document.getElementById('term').innerHTML='';
+    document.getElementById('rbody').innerHTML='';
+    document.getElementById('pOpen').textContent='0 abiertos';
+
+    log('▶ Iniciando escaneo real de '+target,'ti');
+    log('  '+ports.length+' puertos | timeout '+tmo+'ms | DNS: '+(resolve?'sí':'no'),'ti');
+
+    try{
+        const r=await fetch('/api/port-scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target,ports,timeout:tmo,resolve})});
+        if(!r.ok){const e=await r.json().catch(()=>({}));log('✖ Error: '+(e.error||r.statusText),'te');end(false);return;}
+        const reader=r.body.getReader();const dec=new TextDecoder();let buf='';
+        while(vivo){
+            const{value,done}=await reader.read();if(done)break;
+            buf+=dec.decode(value,{stream:true});
+            const ls=buf.split('\n');buf=ls.pop();
+            for(const l of ls){if(!l.startsWith('data:'))continue;try{ev(JSON.parse(l.slice(5).trim()));}catch(e){}}
+        }
+        reader.cancel();
+    }catch(e){log('✖ Error de conexión: '+e.message,'te');end(false);return;}
+    if(vivo)end(true);
+}
+
+function ev(e){
+    if(!vivo&&e.type!=='done')return;
+    if(e.type==='resolved'){log('  DNS: '+e.host+' → '+e.ip,'ti');}
+    else if(e.type==='progress'){
+        esc++;const p=Math.round(esc/tot*100);
+        document.getElementById('pBar').style.width=p+'%';
+        document.getElementById('pPct').textContent=p+'%';
+        document.getElementById('pPorts').textContent=esc+' / '+tot+' puertos';
+        document.getElementById('pLbl').textContent='Escaneando '+e.port+'/TCP...';
+    }else if(e.type==='open'){
+        ab++;document.getElementById('pOpen').textContent=ab+' abiertos';
+        const s=e.service||SVC[e.port]||'?';
+        log('  ✔  '+e.port+'/TCP   ABIERTO   ['+s+']   '+e.latency+'ms',RA.has(e.port)?'tw':'to');
+    }else if(e.type==='done'){res=e.result;}
+    else if(e.type==='error'){log('  ✖ '+e.message,'te');end(false);}
+}
+
+function stop(){vivo=false;log('⏹ Detenido por el usuario.','tw');document.getElementById('rbadge').textContent='DETENIDO';document.getElementById('rbadge').className='badge b-stop';end(false);}
+
+function end(ok){
+    vivo=false;
+    const el=((Date.now()-t0)/1000).toFixed(1);
+    document.getElementById('bScan').disabled=false;
+    document.getElementById('bStop').style.display='none';
+    if(ok)log('✔ Completado en '+el+'s — '+ab+' abiertos de '+tot,'to');
+    document.getElementById('sumbox').style.display='block';
+    document.getElementById('s2').textContent=ab;
+    document.getElementById('s3').textContent=tot;
+    document.getElementById('s4').textContent=el+'s';
+    if(res){
+        const rc=(res.open_ports||[]).filter(p=>RA.has(p.port)).length;
+        document.getElementById('s5').textContent=rc;
+        render(res);document.getElementById('bExp').style.display='inline-flex';
+        if(ok){document.getElementById('rbadge').textContent='COMPLETADO';document.getElementById('rbadge').className='badge b-ok';}
+    }
+}
+
+function cClass(p){
+    if(RA.has(p))return'chip c-risk';if(RM.has(p))return'chip c-warn';
+    const s=(SVC[p]||'').toLowerCase();
+    if(s==='https'||s==='imaps'||s==='pop3s')return'chip c-safe';
+    if(s.includes('http'))return'chip c-http';if(s==='ssh')return'chip c-ssh';
+    if(['mysql','postgres','oracle','sql srv','mongodb','redis','elastic'].some(d=>s.includes(d.split(' ')[0])))return'chip c-db';
+    return'chip c-safe';
+}
+
+function render(r){
+    const op=r.open_ports||[];
+    const ri=op.filter(p=>RA.has(p.port));
+    const cls=ri.length>3?'ra':ri.length>0?'rm':'';
+    let alH=ri.length>0?'<div style="margin-bottom:14px;">'+ri.map(p=>{const a=ALERTS[p.port];if(!a)return'';return'<div class="ralert '+(a[0]==='w'?'med':'')+'"><i class="fas fa-exclamation-circle"></i> Puerto <strong>'+p.port+'</strong> — '+a[1]+'</div>';}).join('')+'</div>':'';
+    const ch=op.length>0?'<div class="chips">'+op.map(p=>'<span class="'+cClass(p.port)+'" title="Latencia: '+p.latency+'ms">'+(RA.has(p.port)?'🔴':RM.has(p.port)?'🟡':'🟢')+' '+p.port+' <small style="opacity:.8">'+(SVC[p.port]||'TCP')+'</small></span>').join('')+'</div>':'<div style="color:var(--gray);font-style:italic;margin-top:8px;">Sin puertos abiertos en este perfil.</div>';
+    const meta=[r.ip&&r.ip!==r.target?'<div class="meta-i"><div class="ml">IP resuelta</div><div class="mv">'+r.ip+'</div></div>':'',r.rdns?'<div class="meta-i"><div class="ml">rDNS</div><div class="mv">'+r.rdns+'</div></div>':'','<div class="meta-i"><div class="ml">Escaneados</div><div class="mv">'+r.total_scanned+' puertos</div></div>','<div class="meta-i"><div class="ml">Tiempo</div><div class="mv">'+r.scan_time+'s</div></div>','<div class="meta-i"><div class="ml">Timeout</div><div class="mv">'+r.timeout_ms+'ms</div></div>'].filter(Boolean).join('');
+    document.getElementById('rbody').innerHTML='<div class="hcard '+cls+'"><div class="hch"><div><div class="hip"><i class="fas fa-server"></i> '+r.target+'</div>'+(r.ip&&r.ip!==r.target?'<div class="hsub">IP: '+r.ip+'</div>':'')+'</div><span class="badge '+(op.length>0?'b-warn':'b-info')+'">'+(op.length>0?op.length+' PUERTOS ABIERTOS':'SIN PUERTOS ABIERTOS')+'</span></div>'+alH+'<div style="font-weight:700;color:var(--muted);font-size:.88rem;margin-bottom:6px;"><i class="fas fa-door-open"></i> Puertos abiertos</div>'+ch+'<div class="hmeta">'+meta+'</div></div>';
+    document.getElementById('secRes').style.display='block';
+}
+
+function exp(){
+    if(!res)return;
+    const b=new Blob([JSON.stringify(res,null,2)],{type:'application/json'});
+    const u=URL.createObjectURL(b);
+    const a=Object.assign(document.createElement('a'),{href:u,download:'scan_'+res.target+'_'+Date.now()+'.json'});
+    a.click();URL.revokeObjectURL(u);
+}
+
+uHint();
+</script>
+</body>
+</html>

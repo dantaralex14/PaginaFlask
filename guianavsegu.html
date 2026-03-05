@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navegación Segura | FORENCOMMUNITY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-dark: #162c6d;
+            --secondary: #458091;
+            --accent: #FF9E1A;
+            --light: #F9FAFB;
+            --dark: #171717;
+            --gray: #6B7280;
+            --muted: #383868;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --maxw: 1200px;
+            --radius: 12px;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --info: #2563eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Header - Mismo estilo que el index */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 280px;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            max-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            margin-left: 14px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .btn-volver:hover {
+            background: var(--light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Card Principal - Mismo estilo que index */
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        /* Sistema de páginas */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navegación entre páginas */
+        .page-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .btn-nav {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-nav:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-nav:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .page-indicator {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .page-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .page-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-content {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--dark);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .info-card {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card ul {
+            padding-left: 20px;
+        }
+
+        .info-card li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .success-box {
+            background: #dcfce7;
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .danger-box {
+            background: #fee2e2;
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            margin-bottom: 15px;
+            padding-left: 35px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 25px;
+            height: 25px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .danger-list li:before {
+            content: "!";
+            background: var(--danger);
+        }
+
+        /* Quick Tips */
+        .quick-tips {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-top: 30px;
+        }
+
+        .quick-tips h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .tip-item {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .tip-item:hover {
+            border-color: var(--primary);
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer - Mismo estilo que index */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            nav {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav a {
+                margin: 5px;
+            }
+            
+            .logo {
+                justify-content: center;
+                min-width: auto;
+            }
+            
+            .logo-img {
+                max-width: 180px;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn-nav {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ENCABEZADO - Mismo que index -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 12px;">
+                    <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+                </a>
+            </div>
+            <nav>
+            <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+        <a href="/" class="btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver al Inicio
+        </a>
+        
+        <div class="card">
+            <h1><i class="fas fa-lock"></i> Guía Completa de Navegación Segura</h1>
+            <p class="description">
+                Protege tu información personal y navega con confianza en Internet. 
+                Aprende las mejores prácticas para mantener tu seguridad en línea.
+            </p>
+
+            <!-- PÁGINA 1: INTRODUCCIÓN -->
+            <div class="page active" id="page1">
+                <!-- Introducción -->
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-info-circle"></i> ¿Por qué es importante la navegación segura?
+                    </h2>
+                    <div class="section-content">
+                        <p>La navegación segura es esencial para proteger tu información personal, financiera y de identidad al visitar sitios web. Los ciberdelincuentes utilizan técnicas cada vez más sofisticadas para robar datos, por lo que conocer las prácticas de seguridad es fundamental.</p>
+                        
+                        <div class="warning-box">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Datos Alarmantes</h3>
+                            <p>Según estudios recientes, más del 60% de los ataques cibernéticos comienzan con el acceso a sitios web inseguros o mediante técnicas de phishing.</p>
+                        </div>
+
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <h3><i class="fas fa-shield-alt"></i> Protección de Datos</h3>
+                                <p>Evita que tu información personal caiga en manos equivocadas y sea utilizada para fraudes o suplantación de identidad.</p>
+                            </div>
+                            <div class="info-card">
+                                <h3><i class="fas fa-lock"></i> Seguridad Financiera</h3>
+                                <p>Protege tus cuentas bancarias, tarjetas de crédito y transacciones online de posibles robos.</p>
+                            </div>
+                            <div class="info-card">
+                                <h3><i class="fas fa-user-secret"></i> Privacidad Digital</h3>
+                                <p>Mantén tu actividad online privada y evita el rastreo no autorizado de tus hábitos de navegación.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navegación -->
+                <div class="page-navigation">
+                    <button class="btn-nav" disabled>
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <div class="page-indicator">
+                        <div class="page-dot active"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                    </div>
+                    <button class="btn-nav" onclick="nextPage()">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PÁGINA 2: ELEMENTOS DE SEGURIDAD -->
+            <div class="page" id="page2">
+                <!-- Elementos de seguridad -->
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-shield-alt"></i> Elementos Clave de un Sitio Web Seguro
+                    </h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3><i class="fas fa-lock"></i> Certificado SSL</h3>
+                            <ul class="checklist">
+                                <li>Verifica que la dirección empiece con <strong>https://</strong></li>
+                                <li>Busca el ícono del candado en la barra de direcciones</li>
+                                <li>Haz clic en el candado para ver los detalles del certificado</li>
+                                <li>Asegúrate de que el certificado sea válido y actual</li>
+                                <li>Verifica que el nombre del dominio coincida con el sitio</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3><i class="fas fa-eye"></i> Inspección Visual</h3>
+                            <ul class="checklist">
+                                <li>Revisa que el diseño sea profesional y coherente</li>
+                                <li>Verifica que no haya errores ortográficos evidentes</li>
+                                <li>Confirma que los enlaces funcionen correctamente</li>
+                                <li>Observa que no haya ventanas emergentes excesivas</li>
+                                <li>Comprueba la calidad de las imágenes y el contenido</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3><i class="fas fa-search"></i> Verificación de Reputación</h3>
+                            <ul class="checklist">
+                                <li>Busca reseñas y comentarios sobre el sitio</li>
+                                <li>Verifica la antigüedad del dominio</li>
+                                <li>Consulta en herramientas de reputación en línea</li>
+                                <li>Revisa la información de contacto y ubicación</li>
+                                <li>Investiga la empresa o organización detrás del sitio</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navegación -->
+                <div class="page-navigation">
+                    <button class="btn-nav" onclick="prevPage()">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <div class="page-indicator">
+                        <div class="page-dot"></div>
+                        <div class="page-dot active"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                    </div>
+                    <button class="btn-nav" onclick="nextPage()">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PÁGINA 3: PRÁCTICAS RECOMENDADAS -->
+            <div class="page" id="page3">
+                <!-- Prácticas recomendadas -->
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-check-double"></i> Prácticas Recomendadas para Navegar con Seguridad
+                    </h2>
+                    <div class="section-content">
+                        <div class="success-box">
+                            <h3><i class="fas fa-thumbs-up"></i> Lo que SÍ debes hacer:</h3>
+                            <ul class="checklist">
+                                <li>Mantén tu navegador y sistema operativo actualizados</li>
+                                <li>Utiliza un antivirus confiable y mantenlo activo</li>
+                                <li>Emplea contraseñas seguras y únicas para cada sitio</li>
+                                <li>Habilita la autenticación de dos factores cuando esté disponible</li>
+                                <li>Realiza copias de seguridad periódicas de tus datos importantes</li>
+                                <li>Utiliza una VPN en redes WiFi públicas</li>
+                                <li>Revisa regularmente los permisos de las aplicaciones</li>
+                                <li>Usa extensiones de seguridad en tu navegador</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="danger-box">
+                            <h3><i class="fas fa-ban"></i> Lo que NO debes hacer:</h3>
+                            <ul class="checklist danger-list">
+                                <li>No hagas clic en enlaces sospechosos en correos electrónicos</li>
+                                <li>No descargues archivos de fuentes no confiables</li>
+                                <li>No proporciones información personal en sitios no seguros</li>
+                                <li>No uses la misma contraseña para múltiples servicios</li>
+                                <li>No ignores las advertencias de seguridad de tu navegador</li>
+                                <li>No realices transacciones financieras en redes WiFi públicas</li>
+                                <li>No compartas información sensible en redes sociales</li>
+                                <li>No guardes contraseñas en navegadores públicos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navegación -->
+                <div class="page-navigation">
+                    <button class="btn-nav" onclick="prevPage()">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <div class="page-indicator">
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot active"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                    </div>
+                    <button class="btn-nav" onclick="nextPage()">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PÁGINA 4: AMENAZAS COMUNES -->
+            <div class="page" id="page4">
+                <!-- Tipos de amenazas -->
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-bug"></i> Amenazas Comunes en Internet
+                    </h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3><i class="fas fa-fish"></i> Phishing</h3>
+                            <p>Intentos de obtener información confidencial haciéndose pasar por una entidad confiable.</p>
+                            <ul>
+                                <li><strong>Señales:</strong> Urgencia artificial, errores gramaticales, enlaces sospechosos, remitentes desconocidos</li>
+                                <li><strong>Protección:</strong> Verifica el remitente, no hagas clic en enlaces directos, usa autenticación de dos factores</li>
+                                <li><strong>Ejemplo:</strong> Correos que parecen de tu banco pidiendo actualizar datos</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3><i class="fas fa-virus"></i> Malware</h3>
+                            <p>Software malicioso diseñado para dañar o acceder no autorizadamente a sistemas.</p>
+                            <ul>
+                                <li><strong>Señales:</strong> Descargas no solicitadas, rendimiento lento del sistema, ventanas emergentes inusuales</li>
+                                <li><strong>Protección:</strong> Antivirus actualizado, evitar descargas sospechosas, mantener software actualizado</li>
+                                <li><strong>Tipos:</strong> Virus, troyanos, ransomware, spyware, adware</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3><i class="fas fa-user-secret"></i> Suplantación de Identidad</h3>
+                            <p>Creación de sitios web falsos que imitan a legítimos para robar credenciales.</p>
+                            <ul>
+                                <li><strong>Señales:</strong> URLs similares pero no idénticas, diseño ligeramente diferente, certificados SSL inválidos</li>
+                                <li><strong>Protección:</strong> Verificar siempre la URL exacta, usar marcadores, habilitar autenticación de dos factores</li>
+                                <li><strong>Común en:</strong> Bancos, redes sociales, servicios de correo</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Otras Amenazas Importantes</h3>
+                        <ul>
+                            <li><strong>Ransomware:</strong> Bloquea tu dispositivo y exige rescate</li>
+                            <li><strong>Spyware:</strong> Monitorea tu actividad sin consentimiento</li>
+                            <li><strong>Adware:</strong> Muestra publicidad excesiva y no deseada</li>
+                            <li><strong>Keyloggers:</strong> Registra todo lo que escribes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Navegación -->
+                <div class="page-navigation">
+                    <button class="btn-nav" onclick="prevPage()">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <div class="page-indicator">
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot active"></div>
+                        <div class="page-dot"></div>
+                    </div>
+                    <button class="btn-nav" onclick="nextPage()">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PÁGINA 5: HERRAMIENTAS Y RECURSOS -->
+            <div class="page" id="page5">
+                <!-- Consejos rápidos -->
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-lightbulb"></i> Consejos Rápidos de Seguridad
+                    </h2>
+                    <div class="quick-tips">
+                        <div class="tips-grid">
+                            <div class="tip-item">
+                                <i class="fas fa-lock"></i> Verifica HTTPS
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-key"></i> Usa Contraseñas Fuertes
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-sync-alt"></i> Actualiza Software
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-shield-alt"></i> Instala Antivirus
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-wifi"></i> Cuidado con WiFi Público
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-backup"></i> Haz Copias de Seguridad
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-user-shield"></i> Autenticación 2FA
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-eye"></i> Revisa Permisos
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recursos adicionales -->
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-tools"></i> Herramientas y Recursos Adicionales
+                    </h2>
+                    <div class="section-content">
+                        <p>Para mejorar aún más tu seguridad en línea, considera utilizar estas herramientas:</p>
+                        
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <h3><i class="fas fa-key"></i> Gestores de Contraseñas</h3>
+                                <ul>
+                                    <li><strong>LastPass:</strong> Sincronización multiplataforma</li>
+                                    <li><strong>1Password:</strong> Interfaz intuitiva y segura</li>
+                                    <li><strong>Bitwarden:</strong> Código abierto y gratuito</li>
+                                    <li><strong>Dashlane:</strong> VPN integrada</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h3><i class="fas fa-shield-virus"></i> Antivirus</h3>
+                                <ul>
+                                    <li><strong>Bitdefender:</strong> Protección completa</li>
+                                    <li><strong>Norton:</strong> Detección avanzada</li>
+                                    <li><strong>Kaspersky:</strong> Análisis en tiempo real</li>
+                                    <li><strong>Windows Defender:</strong> Integrado en Windows</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h3><i class="fas fa-network-wired"></i> VPNs Confiables</h3>
+                                <ul>
+                                    <li><strong>ExpressVPN:</strong> Velocidad y seguridad</li>
+                                    <li><strong>NordVPN:</strong> Funciones avanzadas</li>
+                                    <li><strong>ProtonVPN:</strong> Enfocado en privacidad</li>
+                                    <li><strong>Surfshark:</strong> Dispositivos ilimitados</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="success-box">
+                            <h3><i class="fas fa-check-circle"></i> Navegadores Seguros</h3>
+                            <ul>
+                                <li><strong>Firefox:</strong> Personalizable y con buen soporte de extensiones de privacidad</li>
+                                <li><strong>Brave:</strong> Bloqueador de anuncios y rastreadores integrado</li>
+                                <li><strong>Chrome:</strong> Con extensiones de seguridad como uBlock Origin</li>
+                                <li><strong>Tor Browser:</strong> Máxima privacidad y anonimato</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navegación -->
+                <div class="page-navigation">
+                    <button class="btn-nav" onclick="prevPage()">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <div class="page-indicator">
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot"></div>
+                        <div class="page-dot active"></div>
+                    </div>
+                    <button class="btn-nav" disabled>
+                        Finalizar <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer>
+        <p>&copy; 2025 FORENCOMMUNITY · Tu privacidad es tu derecho</p>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+            <i class="fas fa-shield-alt"></i> Navega Seguro, Navega Protegido
+        </p>
+    </footer>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 5;
+
+        function showPage(pageNumber) {
+            // Ocultar todas las páginas
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Mostrar la página actual
+            document.getElementById(`page${pageNumber}`).classList.add('active');
+            
+            // Actualizar indicadores
+            document.querySelectorAll('.page-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === pageNumber - 1);
+            });
+            
+            currentPage = pageNumber;
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                showPage(currentPage + 1);
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                showPage(currentPage - 1);
+            }
+        }
+
+        // Inicializar
+        showPage(1);
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextPage();
+            } else if (e.key === 'ArrowLeft') {
+                prevPage();
+            }
+        });
+    </script>
+</body>
+</html>

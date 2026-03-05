@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Ingeniería Social | FORENCOMMUNITY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1E3A8A; --primary-dark: #162c6d; --secondary: #458091;
+            --accent: #FF9E1A; --dark: #171717; --gray: #6B7280; --muted: #383868;
+            --success: #16a34a; --danger: #dc2626; --warning: #d97706;
+            --card-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --radius: 12px; --maxw: 1200px;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background: linear-gradient(135deg,#f5f7fa,#c3cfe2); font-family:'Segoe UI',sans-serif; min-height:100vh; }
+
+        /* HEADER */
+        header { background:linear-gradient(to right,var(--primary),var(--secondary)); color:white; padding:20px 0; box-shadow:0 4px 6px rgba(0,0,0,.1); margin-bottom:30px; }
+        .hdr { max-width:var(--maxw); margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
+        .logo-img { height:50px; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,.2); }
+        nav { display:flex; flex-wrap:wrap; }
+        nav a { margin-left:14px; color:white; text-decoration:none; font-weight:500; padding:8px 12px; border-radius:6px; transition:all .3s; }
+        nav a:hover { background:rgba(255,255,255,.1); color:var(--accent); }
+
+        .wrap { max-width:860px; margin:0 auto; padding:0 20px 40px; }
+        .volver { display:inline-flex; align-items:center; gap:8px; color:var(--primary); border:2px solid var(--primary); background:transparent; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600; transition:all .3s; margin-bottom:20px; cursor:pointer; font-size:.95rem; }
+        .volver:hover { background:var(--primary); color:white; transform:translateY(-2px); }
+
+        /* JUEGO */
+        .game-box { background:white; border-radius:var(--radius); box-shadow:var(--card-shadow); overflow:hidden; }
+        .game-header { background:#2c3e50; color:white; padding:22px 28px; }
+        .game-header h1 { font-size:1.5rem; margin-bottom:4px; }
+        .game-header p { font-size:.9rem; opacity:.75; }
+        .stats { display:flex; gap:20px; margin-top:14px; flex-wrap:wrap; }
+        .stat { background:rgba(255,255,255,.12); padding:8px 16px; border-radius:8px; font-size:.9rem; font-weight:600; }
+
+        /* PROGRESO */
+        .prog-wrap { background:#ecf0f1; height:8px; }
+        .prog { height:100%; background:linear-gradient(to right,#27ae60,#2ecc71); width:0%; transition:width .4s; }
+
+        /* ESCENARIO */
+        .scenario { padding:28px; display:none; }
+        .scenario.active { display:block; animation:fadeIn .4s ease; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+
+        .sc-num { display:inline-block; background:var(--primary); color:white; font-size:.75rem; font-weight:700; padding:3px 10px; border-radius:20px; margin-bottom:12px; letter-spacing:.5px; }
+        .sc-content { background:#f8fafc; border-radius:10px; padding:22px; margin-bottom:20px; border-left:5px solid #3498db; }
+        .sc-content h3 { color:#2c3e50; margin-bottom:10px; font-size:1.1rem; }
+        .sc-content .msg { background:white; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin:12px 0; font-family:'Courier New',monospace; font-size:.9rem; line-height:1.6; color:#374151; }
+        .sc-content .detail { font-size:.88rem; color:var(--gray); margin-top:8px; font-style:italic; }
+        .sc-content .red-flag { color:#dc2626; font-size:.82rem; margin-top:8px; font-weight:600; }
+
+        .options { display:grid; gap:12px; margin-bottom:20px; }
+        .opt { padding:14px 18px; border:2px solid #e2e8f0; border-radius:8px; background:white; cursor:pointer; text-align:left; font-size:.95rem; transition:all .25s; display:flex; align-items:center; gap:10px; }
+        .opt:hover:not(:disabled) { border-color:var(--primary); background:#f0f7ff; transform:translateY(-2px); box-shadow:0 4px 8px rgba(0,0,0,.08); }
+        .opt:disabled { opacity:.65; cursor:not-allowed; transform:none; }
+        .opt-icon { font-size:1.2rem; flex-shrink:0; }
+
+        /* RESULTADO */
+        .result { border-radius:10px; padding:18px 22px; display:none; animation:fadeIn .4s; }
+        .result.ok { background:#d1fae5; border:2px solid #34d399; }
+        .result.fail { background:#fee2e2; border:2px solid #f87171; }
+        .result.partial { background:#fef3c7; border:2px solid #fbbf24; }
+        .result h4 { margin-bottom:8px; font-size:1.05rem; }
+        .result p { font-size:.9rem; line-height:1.6; }
+        .result .tip { margin-top:10px; font-size:.85rem; background:rgba(0,0,0,.05); padding:10px; border-radius:6px; }
+        .next-btn { display:inline-flex; align-items:center; gap:8px; margin-top:14px; background:#e74c3c; color:white; border:none; padding:10px 22px; border-radius:25px; cursor:pointer; font-size:.95rem; font-weight:600; transition:background .3s; }
+        .next-btn:hover { background:#c0392b; }
+
+        /* FINAL */
+        .final { display:none; padding:40px 28px; text-align:center; }
+        .final h2 { font-size:1.8rem; color:#2c3e50; margin-bottom:10px; }
+        .final-score { font-size:3rem; font-weight:800; color:var(--primary); margin:20px 0 8px; }
+        .final-sub { font-size:.95rem; color:var(--gray); margin-bottom:20px; }
+        .medal { font-size:3.5rem; margin:10px 0; }
+        .final-msg { background:#f8fafc; border-radius:10px; padding:20px; margin:20px 0; font-size:1rem; color:#374151; border-left:4px solid var(--primary); text-align:left; }
+        .restart-btn { background:var(--primary); color:white; border:none; padding:13px 30px; border-radius:25px; cursor:pointer; font-size:1rem; font-weight:600; transition:all .3s; }
+        .restart-btn:hover { background:var(--primary-dark); transform:translateY(-2px); }
+
+        footer { background:var(--dark); color:white; padding:30px 0; text-align:center; margin-top:0; }
+        @media(max-width:700px){ .hdr{flex-direction:column;gap:15px;text-align:center;} nav{justify-content:center;} .stats{flex-direction:column;gap:8px;} }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="hdr">
+        <a href="/" style="text-decoration:none;color:white;">
+            <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+        </a>
+        <nav>
+            <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+        </nav>
+    </div>
+</header>
+
+<div class="wrap">
+    <button class="volver" onclick="window.location.href='/'">
+        <i class="fas fa-arrow-left"></i> Volver al Inicio
+    </button>
+
+    <div class="game-box">
+        <div class="game-header">
+            <h1>🎭 Simulador de Ingeniería Social</h1>
+            <p>¿Sabrías detectar un ataque de manipulación psicológica? Pon a prueba tus conocimientos.</p>
+            <div class="stats">
+                <div class="stat">Puntuación: <span id="score">0</span> / 10</div>
+                <div class="stat">Escenario: <span id="cur">1</span> / 10</div>
+            </div>
+        </div>
+        <div class="prog-wrap"><div class="prog" id="prog"></div></div>
+
+        <!-- ===== ESCENARIO 1 ===== -->
+        <div id="sc-1" class="scenario active">
+            <span class="sc-num">ESCENARIO 1 · PHISHING</span>
+            <div class="sc-content">
+                <h3><i class="fas fa-envelope"></i> Correo de Netflix</h3>
+                <div class="msg">De: netflix-soporte@netflix-seguridad.com<br>Asunto: ⚠️ URGENTE: Tu cuenta será cancelada en 24h<br><br>"Tu suscripción expira pronto. Haz clic aquí para actualizar tu método de pago y evitar la cancelación."<br><br>→ Enlace: <strong>http://netflix-seguridad.com/verificar</strong></div>
+                <div class="red-flag">🔍 Fíjate: el dominio del correo y el enlace NO son netflix.com</div>
+            </div>
+            <div class="options">
+                <button class="opt" onclick="answer(1,'A')"><span class="opt-icon">🚨</span> Es phishing — No hacer clic, reportar y eliminar</button>
+                <button class="opt" onclick="answer(1,'B')"><span class="opt-icon">✅</span> Es legítimo — Netflix me avisa cuando hay problemas</button>
+                <button class="opt" onclick="answer(1,'C')"><span class="opt-icon">🔗</span> Entrar al link para verificar si es real</button>
+            </div>
+            <div id="res-1" class="result"></div>
+        </div>
+
+        <!-- ===== ESCENARIO 2 ===== -->
+        <div id="sc-2" class="scenario">
+            <span class="sc-num">ESCENARIO 2 · VISHING</span>
+            <div class="sc-content">
+                <h3><i class="fas fa-phone"></i> Llamada de "soporte Microsoft"</h3>
+                <div class="msg">"Hola, soy Carlos del soporte técnico de Microsoft. Detectamos que tu computadora tiene un virus grave. Necesito que descargues AnyDesk ahora mismo para que pueda solucionarlo remotamente."</div>
+                <div class="detail">La persona suena profesional y urgente. No solicitaste ningún servicio.</div>
+            </div>
+            <div class="options">
+                <button class="opt" onclick="answer(2,'A')"><span class="opt-icon">📞</span> Colgar de inmediato — Microsoft nunca llama sin solicitud</button>
+                <button class="opt" onclick="answer(2,'B')"><span class="opt-icon">💬</span> Seguir hablando para entender el "problema"</button>
+                <button class="opt" onclick="answer(2,'C')"><span class="opt-icon">💻</span> Descargar AnyDesk, si tiene virus es urgente solucionarlo</button>
+            </div>
+            <div id="res-2" class="result"></div>
+        </div>
+
+        <!-- ===== ESCENARIO 3 ===== -->
+        <div id="sc-3" class="scenario">
+            <span class="sc-num">ESCENARIO 3 · SMISHING</span>
+            <div class="sc-content">
+                <h3><i class="fas fa-sms"></i> SMS del banco</h3>
+                <div class="msg">BBVA: Actividad sospechosa detectada en tu cuenta. Para evitar el bloqueo confirma tu identidad ahora: https://bbva-soporte.net/verificar</div>
+                <div class="detail">El mensaje llega de un número desconocido, no del número oficial del banco.</div>
+                <div class="red-flag">🔍 El dominio es bbva-soporte.net — BBVA oficial siempre usa bbva.es / bbva.mx</div>
+            </div>
+            <div class="options">
+                <button class="opt" onclick="answer(3,'A')"><span class="opt-icon">📱</span> Llamar al banco usando el número de tu tarjeta o app oficial</button>
+                <button class="opt" onclick="answer(3,'B')"><span class="opt-icon">🔗</span> Entrar al enlace rápido — si bloquean mi cuenta es un problema</button>
+                <button class="opt" onclick="answer(3,'C')"><span class="opt-icon">🗑️</span> Eliminar el SMS e ignorarlo completamente</button>
+            </div>
+            <div id="res-3" class="result"></div>
+        </div>
+
+        <!-- ===== ESCENARIO 4 ===== -->
+        <div id="sc-4" class="scenario">
+            <span class="sc-num">ESCENARIO 4 · PRETEXTING</span>
+            <div class="sc-content">
+                <h3><i class="fas fa-user-tie"></i> "Auditor de IT" en la oficina</h3>
+                <div class="msg">Un hombre con traje y credencial se acerca a tu escritorio: "Hola, soy Pedro Ramírez de auditoría interna. Necesito acceder brevemente a tu computadora para una revisión de cumplimiento. Solo son 2 minutos, tu jefe ya lo sabe."</div>
+                <div class="detail">No recibiste ninguna notificación previa de auditoría.</div>
+            </div>
+            <div class="options">
+                <button class="opt" onclick="answer(4,'A')"><span class="opt-icon">✔️</span> Dejarle usar el equipo — tiene credencial y parece oficial</button>
+                <button class="opt" onclick="answer(4,'B')"><span class="opt-icon">📋</span> Verificar con tu jefe directamente antes de dar acceso</button>
+                <button class="opt" onclick="answer(4,'C')"><span class="opt-icon">🔐</span> Negarte y pedirle que contacte a IT para una solicitud formal</button>
+            </div>
+            <div id="res-4" class="result"></div>
+        </div>
+
+        <!-- ===== ESCENARIO 5 ===== -->
+        <div id="sc-5" class="scenario">
+            <span class="sc-num">ESCENARIO 5 · BAITING</span>
+            <div class="sc-content">
+                <h3><i class="fas fa-usb"></i> USB en el estacionamiento</h3>
+                <div class="msg">Encuentras un USB en el estacionamiento de tu trabajo. Tiene una etiqueta que dice: <strong>"NÓMINAS CONFIDENCIALES — DICIEMBRE"</strong></div>
+                <div class="detail">Es una técnica clásica de baiting. El atacante espera que la curiosidad haga el trabajo.</div>
+            </div>
+            <div class="options">
+                <button class="opt" onclick="answer(5,'A')"><span class="opt-icon">💻</span> Conectarlo a tu PC para ver si es de algún compañero</button>
+                <button class="opt" onclick="answer(5,'B')"><span class="opt-icon">🗑️</span> Entregarlo al área de IT sin conectarlo a ningún equipo</button>
+                <button class="opt" onclick="answer(5,'C')"><span class="opt-icon">🏠</span> Llevártelo a casa para ver el contenido con más calma</button>
+            </div>
+            <div id="res-5" class="result"></div>
+        </div>
+
+        <!-- ===== ESCENARIO 6 ===== -->
+        <div id="sc-6" class="scenario">
+            <span class="sc-num">ESCENARIO 6 · QUID PRO QUO</span>
+            <div class="sc-content">
+                <h3><i class="fas fa-exchange-alt"></i> "Soporte gratuito" en redes</h3>
+                <div class="msg">Publicas en Twitter que tu internet está lento. En minutos recibes un mensaje: "¡Hola! Vi tu problema. Soy técnico certificado y puedo solucionarlo gratis. Solo necesito que instales este programa de diagnóstico: [enlace]"</div>
+                <div class="detail">El ofrecimiento es espontáneo, no solicitado. El "técnico" insiste en que es urgente instalar el software.</div>
+            </div>
+            <div class="options">
+                <button class="opt" onclick="answer(6,'A')"><span class="opt-icon">📥</span> Instalar el programa — si es gratis y puede ayudar, ¿por qué no?</button>
+                <button class="opt" onclick="answer(6,'B')"><span class="opt-icon">🚫</span> Ignorar — las ayudas espontáneas de desconocidos en internet son sospechosas</button>
+                <button class="opt" onclick="answer(6,'C')"><span class="opt-icon">🔍</span> Buscar el nombre del programa en Google antes de instalarlo</button>
+            </div>
+            <div id="res-6" class="result"></div>
+        </div>
+
+        <!-- ===== ESCENARIO 7 ===== -->
+        <div id="sc-7" class="scenario">
+            <span class="sc-num">ESCENARIO 7 · SPEAR PHISHING</span>
+            <div class="sc-content">
+                <h3><i class="fas fa-crosshairs"></i> Email del "CEO"</h3>
+                <div class="msg">De: ceo@empresa-corp.net (tu empresa es empresa-corp.com)<br>Para: ti<br><br>"Necesito que hagas una transferencia urgente de $8,500 a este proveedor nuevo antes de que cierren hoy. Es confidencial, no lo menciones con nadie todavía. Yo lo apruebo. — Lic. Roberto García, Director General"</div>
+                <div class="red-flag">🔍 El dominio .net no coincide con el .com oficial de tu empresa</div>
+            </div>
+            <div class="options">
+                <button class="opt" onclick="answer(7,'A')"><span class="opt-icon">💸</span> Hacer la transferencia — el CEO lo pidió personalmente</button>
+                <button class="opt" onclick="answer(7,'B')"><span class="opt-icon">📞</span> Llamar directamente al CEO por teléfono para confirmar</button>
+                <button class="opt" onclick="answer(7,'C')"><span class="opt-icon">📧</span> Responder el correo pidiendo más detalles del proveedor</button>
+            </div>
+            <div id="res-7" class="result"></div>
+        </div>
+
+        <!-- ===== ESCENARIO 8 ===== -->
+        <div id="sc-8" class="scenario">
+            <span class="sc-num">ESCENARIO 8 · TAILGATING</span>
+            <div class="sc-content">
+                <h3><i class="fas fa-door-open"></i> Acceso físico a la oficina</h3>
+                <div class="msg">Estás entrando a tu edificio con tu tarjeta. Una persona detrás de ti carga cajas pesadas y dice: "¿Me puedes abrir? Traigo equipo nuevo para el piso 3, olvidé mi tarjeta arriba."</div>
+                <div class="detail">Parece una situación normal y te da pena no ayudar.</div>
+            </div>
+            <div class="options">
+                <button class="opt" onclick="answer(8,'A')"><span class="opt-icon">🚪</span> Abrirle la puerta — claramente trabaja aquí y necesita ayuda</button>
+                <button class="opt" onclick="answer(8,'B')"><span class="opt-icon">📞</span> Decirle amablemente que llame a recepción o seguridad para que verifiquen</button>
+                <button class="opt" onclick="answer(8,'C')"><span class="opt-icon">🏃</span> Entrar tú rápido y cerrar la puerta antes de que pase</button>
+            </div>
+            <div id="res-8" class="result"></div>
+        </div>
+
+        <!-- ===== ESCENARIO 9 ===== -->
+        <div id="sc-9" class="scenario">
+            <span class="sc-num">ESCENARIO 9 · REDES SOCIALES</span>
+            <div class="sc-content">
+                <h3><i class="fas fa-user-friends"></i> Solicitud de amistad sospechosa</h3>
+                <div class="msg">Recibes solicitud de amistad en Facebook de alguien atractivo que tiene solo 3 fotos, ningún amigo en común, y que al aceptarla te escribe inmediatamente: "Hola! Te vi en el grupo de [tu empresa]. ¿Me puedes ayudar con un trámite? Necesito que me reenvíes un código SMS que llegará a tu número."</div>
+            </div>
+            <div class="options">
+                <button class="opt" onclick="answer(9,'A')"><span class="opt-icon">📱</span> Ayudarle — es solo reenviar un código, no parece peligroso</button>
+                <button class="opt" onclick="answer(9,'B')"><span class="opt-icon">🚫</span> Rechazar — los códigos SMS son de autenticación, nunca compartirlos</button>
+                <button class="opt" onclick="answer(9,'C')"><span class="opt-icon">❓</span> Preguntar para qué necesita el código antes de decidir</button>
+            </div>
+            <div id="res-9" class="result"></div>
+        </div>
+
+        <!-- ===== ESCENARIO 10 ===== -->
+        <div id="sc-10" class="scenario">
+            <span class="sc-num">ESCENARIO 10 · CONTRASEÑAS</span>
+            <div class="sc-content">
+                <h3><i class="fas fa-key"></i> Compañero pide tu contraseña</h3>
+                <div class="msg">"Oye, necesito acceder al sistema de reportes para terminar un informe urgente para el cliente. Mi usuario está bloqueado y TI tarda 2 horas en desbloquearlo. ¿Me prestas tu contraseña solo un momento? Yo lo haría por ti."</div>
+                <div class="detail">Es un compañero de trabajo con el que llevas tiempo, no un desconocido.</div>
+            </div>
+            <div class="options">
+                <button class="opt" onclick="answer(10,'A')"><span class="opt-icon">🔑</span> Darle la contraseña — es de confianza y es una emergencia</button>
+                <button class="opt" onclick="answer(10,'B')"><span class="opt-icon">🚫</span> Negarse — las contraseñas son personales e intransferibles, siempre</button>
+                <button class="opt" onclick="answer(10,'C')"><span class="opt-icon">💻</span> Dejarle usar tu equipo con tu sesión abierta pero sin decirle la contraseña</button>
+            </div>
+            <div id="res-10" class="result"></div>
+        </div>
+
+        <!-- PANTALLA FINAL -->
+        <div id="final" class="final">
+            <div class="medal" id="medal">🏆</div>
+            <h2>Simulación Completada</h2>
+            <div class="final-score" id="fscore">0/10</div>
+            <div class="final-sub" id="fstar">★★★★★</div>
+            <div class="final-msg" id="fmsg"></div>
+            <button class="restart-btn" onclick="restart()"><i class="fas fa-redo"></i> Jugar de Nuevo</button>
+        </div>
+    </div>
+</div>
+
+<footer><p>&copy; 2025 FORENCOMMUNITY · Tu privacidad es tu derecho</p></footer>
+
+<script>
+// =============================================
+// DATOS: respuesta correcta + explicaciones
+// =============================================
+const DATA = {
+    1: {
+        ok: 'A',
+        partial: null,
+        exps: {
+            A: ['ok',   '✅ Correcto', 'Los atacantes imitan servicios populares creando dominios similares. La señal clave: Netflix.com nunca será "netflix-seguridad.com". Siempre revisa el dominio real del remitente y el enlace antes de hacer clic.'],
+            B: ['fail', '❌ Incorrecto', 'Ese correo es phishing. La urgencia ("24 horas") y el dominio falso son señales claras. Netflix nunca usa dominios diferentes para contactarte.'],
+            C: ['fail', '❌ Peligroso', 'Entrar al enlace ya puede ejecutar código malicioso. Nunca abras links sospechosos "para verificar" — esa es la trampa.']
+        }
+    },
+    2: {
+        ok: 'A',
+        partial: null,
+        exps: {
+            A: ['ok',   '✅ Correcto', 'Microsoft, Apple y empresas tecnológicas NUNCA te llaman proactivamente para decirte que tienes un virus. Estas llamadas son 100% estafas de "soporte técnico falso" (tech support scam).'],
+            B: ['fail', '❌ Riesgo alto', 'Seguir hablando les da más tiempo para manipularte. Los estafadores son muy persuasivos y pueden lograr que actúes antes de que te des cuenta.'],
+            C: ['fail', '⚠️ Muy peligroso', 'AnyDesk es una herramienta real de acceso remoto. Al instalarlo, el estafador tomaría control total de tu computadora, podría robar contraseñas y datos bancarios.']
+        }
+    },
+    3: {
+        ok: 'A',
+        partial: null,
+        exps: {
+            A: ['ok',   '✅ Correcto', 'La única forma segura de verificar un aviso bancario es contactar tú al banco, usando el número del reverso de tu tarjeta o la app oficial. Nunca uses los datos del mensaje sospechoso.'],
+            B: ['fail', '❌ Peligroso', 'El enlace falso está diseñado para robar tus credenciales bancarias. Aunque parezca urgente, ir al enlace es caer directamente en la trampa.'],
+            C: ['partial','⚠️ Parcialmente correcto', 'Eliminarlo está bien, pero lo ideal es también llamar al banco para confirmar que tu cuenta está bien y reportar el intento de fraude.']
+        }
+    },
+    4: {
+        ok: 'C',
+        partial: 'B',
+        exps: {
+            A: ['fail', '❌ Incorrecto', 'Una credencial se puede falsificar fácilmente. Sin verificación formal, cualquier persona puede hacerse pasar por auditor. Nunca des acceso a tu equipo sin confirmación oficial.'],
+            B: ['partial','⚠️ Bien, pero insuficiente', 'Verificar con el jefe es bueno, pero el atacante puede haber preparado esa respuesta. Lo más seguro es exigir una solicitud formal a través de IT.'],
+            C: ['ok',   '✅ Correcto', 'El proceso correcto es no dar acceso físico sin solicitud formal del área de IT. Cualquier auditoría legítima llega con notificación previa y proceso oficial.']
+        }
+    },
+    5: {
+        ok: 'B',
+        partial: null,
+        exps: {
+            A: ['fail', '❌ Muy peligroso', 'El USB puede contener malware que se ejecuta automáticamente al conectarlo. Esta técnica (baiting) funciona precisamente porque aprovecha la curiosidad humana.'],
+            B: ['ok',   '✅ Correcto', 'El área de IT tiene herramientas para analizar el USB de forma segura. Entregarlo sin conectarlo es la respuesta correcta. Si era de un compañero, ellos lo recuperan. Si era un ataque, lo detectaron.'],
+            C: ['fail', '❌ Peligroso', 'Conectarlo en casa sigue siendo peligroso — tu red doméstica también tiene información valiosa. El lugar donde lo conectes no importa, el riesgo es el mismo.']
+        }
+    },
+    6: {
+        ok: 'B',
+        partial: 'C',
+        exps: {
+            A: ['fail', '❌ Incorrecto', 'Instalar software desconocido de un desconocido en internet es una de las formas más comunes de infectar un equipo. Aunque sea "gratis", el precio real puede ser el acceso total a tu dispositivo.'],
+            B: ['ok',   '✅ Correcto', 'Las ofertas de ayuda técnica espontánea de desconocidos son una táctica clásica de ingeniería social (quid pro quo). Nadie da nada gratis sin esperar algo a cambio.'],
+            C: ['partial','⚠️ Parcialmente correcto', 'Buscar el nombre es mejor que instalarlo ciegamente, pero si el software es nuevo o malicioso, puede no aparecer en resultados aún. Lo más seguro es ignorar este tipo de ofertas.']
+        }
+    },
+    7: {
+        ok: 'B',
+        partial: null,
+        exps: {
+            A: ['fail', '❌ Muy peligroso', 'Esta es la estafa del "CEO Fraud" o BEC (Business Email Compromise). El dominio .net vs .com es la pista clave. Empresas pierden millones así. Nunca hagas transferencias urgentes sin verificación de voz.'],
+            B: ['ok',   '✅ Correcto', 'Llamar directamente al CEO por un número conocido (no el del correo) es la verificación correcta. Si el pedido es legítimo, no hay problema en confirmar. Si es fraude, lo detectaste.'],
+            C: ['fail', '❌ Incorrecto', 'Responder al correo falso solo confirma que tu email existe y está activo. El atacante puede seguir el juego y convencerte. La verificación debe ser por otro canal (teléfono).']
+        }
+    },
+    8: {
+        ok: 'B',
+        partial: null,
+        exps: {
+            A: ['fail', '❌ Incorrecto', 'El tailgating es una técnica real de acceso físico no autorizado. Aunque parezca descortés, abrir puertas de seguridad a desconocidos viola los protocolos de acceso del edificio.'],
+            B: ['ok',   '✅ Correcto', 'Redirigir amablemente a recepción o seguridad es la respuesta correcta. Si la persona es legítima, no tendrá problema en verificarse. Si es un intruso, lo detuviste sin confrontación directa.'],
+            C: ['fail', '❌ Inadecuado', 'Aunque es mejor que dejarlo entrar, cerrar la puerta de golpe puede crear conflicto innecesario. La respuesta correcta es redirigir a seguridad, no ignorar.']
+        }
+    },
+    9: {
+        ok: 'B',
+        partial: null,
+        exps: {
+            A: ['fail', '❌ Muy peligroso', 'Los códigos SMS son tokens de autenticación de dos factores. Darlos a alguien significa darles acceso a tu cuenta bancaria, email u otros servicios. Nunca compartas un código SMS recibido.'],
+            B: ['ok',   '✅ Correcto', 'Esta es una técnica de ingeniería social para bypass de 2FA. El atacante ya tiene tu contraseña y necesita el código para entrar. El perfil falso es el pretexto para obtenerlo.'],
+            C: ['fail', '❌ Incorrecto', 'Preguntar da oportunidad al atacante de inventar una excusa convincente. El resultado final puede ser el mismo. Con los códigos de autenticación la respuesta siempre es no.']
+        }
+    },
+    10: {
+        ok: 'B',
+        partial: null,
+        exps: {
+            A: ['fail', '❌ Incorrecto', 'Las contraseñas son personales e intransferibles sin excepción. Si algo sale mal mientras otra persona usa tu cuenta, eres tú el responsable. Además, esta puede ser una táctica de ingeniería social.'],
+            B: ['ok',   '✅ Correcto', 'Las contraseñas nunca se comparten, independientemente de la confianza o la urgencia. La política de seguridad existe para todos. Puedes ofrecer escalar el problema a IT para acelerar el desbloqueo.'],
+            C: ['fail', '❌ Igualmente peligroso', 'Dejar a alguien usar tu sesión abierta es equivalente a darle tu contraseña. Cualquier acción que haga queda registrada bajo tu usuario y eres el responsable.']
+        }
+    }
+};
+
+let score = 0;
+let cur   = 1;
+const TOTAL = 10;
+
+function answer(sc, opt) {
+    const d = DATA[sc];
+    if (!d) return;
+
+    // Deshabilitar botones
+    document.querySelectorAll(`#sc-${sc} .opt`).forEach(b => b.disabled = true);
+
+    const exp = d.exps[opt];
+    const tipo = exp[0]; // 'ok', 'fail', 'partial'
+    const titulo = exp[1];
+    const texto  = exp[2];
+
+    if (tipo === 'ok')       score++;
+    if (tipo === 'partial')  score += 0.5;
+
+    const res = document.getElementById(`res-${sc}`);
+    res.className = `result ${tipo === 'ok' ? 'ok' : tipo === 'partial' ? 'partial' : 'fail'}`;
+    res.innerHTML = `
+        <h4>${titulo}</h4>
+        <p>${texto}</p>
+        <button class="next-btn" onclick="next()">
+            ${cur < TOTAL ? 'Siguiente escenario <i class="fas fa-arrow-right"></i>' : 'Ver resultados <i class="fas fa-flag-checkered"></i>'}
+        </button>`;
+    res.style.display = 'block';
+
+    updateUI();
+}
+
+function next() {
+    document.getElementById(`sc-${cur}`).classList.remove('active');
+    cur++;
+    if (cur <= TOTAL) {
+        document.getElementById(`sc-${cur}`).classList.add('active');
+        updateUI();
+    } else {
+        showFinal();
+    }
+}
+
+function updateUI() {
+    document.getElementById('score').textContent = score;
+    document.getElementById('cur').textContent   = Math.min(cur, TOTAL);
+    document.getElementById('prog').style.width  = (Math.min(cur, TOTAL) / TOTAL * 100) + '%';
+}
+
+function showFinal() {
+    document.getElementById('final').style.display = 'block';
+    document.getElementById('fscore').textContent  = score + '/10';
+
+    let medal, stars, msg;
+    if (score >= 9.5) {
+        medal = '🏆'; stars = '★★★★★';
+        msg = '<strong>¡Experto en seguridad!</strong><br>Detectaste prácticamente todos los ataques. Tienes un excelente ojo para la ingeniería social. Comparte este conocimiento con tu equipo.';
+    } else if (score >= 8) {
+        medal = '🥇'; stars = '★★★★☆';
+        msg = '<strong>¡Muy buen trabajo!</strong><br>Reconoces la mayoría de los ataques. Repasa los escenarios que fallaste — suelen ser los más sofisticados como spear phishing y quid pro quo.';
+    } else if (score >= 6) {
+        medal = '🥈'; stars = '★★★☆☆';
+        msg = '<strong>Buen intento.</strong><br>Tienes bases sólidas pero algunos ataques te engañaron. Los atacantes cuentan precisamente con situaciones que parecen normales — la desconfianza sana es tu mejor defensa.';
+    } else if (score >= 4) {
+        medal = '🥉'; stars = '★★☆☆☆';
+        msg = '<strong>Hay margen de mejora.</strong><br>Varios ataques te sorprendieron. Te recomendamos revisar las guías de phishing y vishing del sitio. La ingeniería social funciona porque apela a emociones como urgencia, miedo y amabilidad.';
+    } else {
+        medal = '📚'; stars = '★☆☆☆☆';
+        msg = '<strong>¡No te desanimes!</strong><br>Los ataques de ingeniería social están diseñados para engañar incluso a personas experimentadas. Lee nuestras guías y vuelve a intentarlo — el conocimiento es la mejor defensa.';
+    }
+
+    document.getElementById('medal').textContent = medal;
+    document.getElementById('fstar').textContent = stars;
+    document.getElementById('fmsg').innerHTML    = msg;
+}
+
+function restart() {
+    score = 0; cur = 1;
+    document.getElementById('final').style.display = 'none';
+    document.querySelectorAll('.scenario').forEach((s,i) => {
+        s.classList.toggle('active', i === 0);
+    });
+    document.querySelectorAll('.result').forEach(r => r.style.display = 'none');
+    document.querySelectorAll('.opt').forEach(b => { b.disabled = false; b.style.opacity = '1'; });
+    updateUI();
+}
+
+updateUI();
+</script>
+</body>
+</html>

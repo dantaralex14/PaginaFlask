@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de Cabeceras | FORENCOMMUNITY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-dark: #162c6d;
+            --secondary: #458091;
+            --accent: #FF9E1A;
+            --light: #F9FAFB;
+            --dark: #171717;
+            --gray: #6B7280;
+            --muted: #383868;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --maxw: 1200px;
+            --radius: 12px;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --info: #2563eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            max-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            margin-left: 14px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-volver i {
+            margin-right: 8px;
+        }
+
+        .btn-volver:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .card h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card-description {
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        /* Input mejorado */
+        .url-input-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .url-input-wrapper {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .url-input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            z-index: 2;
+        }
+
+        #urlInput {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        #urlInput:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        /* Resultados */
+        .results {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.5s;
+        }
+
+        .security-score {
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .security-score::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--danger), var(--warning), var(--success));
+        }
+
+        .score-excellent { 
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            color: var(--success);
+            border-color: var(--success);
+        }
+        
+        .score-good { 
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            color: var(--warning);
+            border-color: var(--warning);
+        }
+        
+        .score-fair { 
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #b45309;
+            border-color: #f59e0b;
+        }
+        
+        .score-poor { 
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .summary {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 5px solid var(--primary);
+        }
+
+        .headers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .header-item {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border-left: 5px solid #bdc3c7;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s;
+        }
+
+        .header-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .header-present { border-left-color: var(--success); }
+        .header-missing { border-left-color: var(--danger); }
+        
+        .header-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-value {
+            background: var(--light);
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            word-break: break-all;
+            border: 1px solid #e5e7eb;
+        }
+
+        .recommendation {
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .rec-good { 
+            background: #f0fdf4; 
+            border-left: 3px solid var(--success);
+            color: #166534;
+        }
+        
+        .rec-danger { 
+            background: #fef2f2; 
+            border-left: 3px solid var(--danger);
+            color: #991b1b;
+        }
+
+        /* Secciones de análisis */
+        .analysis-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid var(--info);
+        }
+
+        .vulnerability-item {
+            background: #fffbeb;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid var(--warning);
+        }
+
+        .vulnerability-high {
+            background: #fef2f2;
+            border-left: 4px solid var(--danger);
+        }
+
+        .tech-recommendation {
+            background: #f0fdf4;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid var(--success);
+        }
+
+        .btn-test {
+            padding: 12px 18px;
+            background: var(--warning);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-test:hover {
+            background: #b45309;
+            transform: translateY(-2px);
+        }
+
+        .test-results {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Ejemplos */
+        .examples-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .example-item {
+            color: var(--primary);
+            cursor: pointer;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .example-item:hover {
+            background: white;
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        /* Mensajes de error */
+        .error-message {
+            display: none;
+            background: #fef2f2;
+            color: var(--danger);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid var(--danger);
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 900px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            nav {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            nav a {
+                margin: 5px;
+            }
+            
+            .url-input-container {
+                flex-direction: column;
+            }
+            
+            .url-input-wrapper {
+                min-width: auto;
+            }
+            
+            .headers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+            
+            .card h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 12px;">
+                    <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+                </a>
+            </div>
+            <nav>
+            <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+        <a href="/" class="btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver al Inicio
+        </a>
+        
+        <div class="card">
+            <h1><i class="fas fa-shield-alt"></i> Escáner de Cabeceras Avanzado</h1>
+            <p class="card-description">Análisis inteligente de cabeceras HTTP con detección de vulnerabilidades</p>
+            <div class="url-input-container">
+                <div class="url-input-wrapper">
+                    <i class="fas fa-link"></i>
+                    <input type="url" id="urlInput" placeholder="https://ejemplo.com" autocomplete="off">
+                </div>
+                <button class="btn" id="scanButton">
+                    <i class="fas fa-search"></i> Escanear Cabeceras
+                </button>
+            </div>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Analizando cabeceras de seguridad...</p>
+            </div>
+            
+            <div class="results" id="results">
+                <div id="securityScore" class="security-score"></div>
+                
+                <div class="summary" id="summary"></div>
+                
+                <div id="vulnerabilitySection"></div>
+                <div id="effectivenessSection"></div>
+                <div id="techSection"></div>
+                <div id="simulatorSection"></div>
+                
+                <h3><i class="fas fa-list-alt"></i> Análisis Detallado de Cabeceras</h3>
+                <div class="headers-grid" id="headersGrid"></div>
+            </div>
+            
+            <div class="examples-section">
+                <h4><i class="fas fa-flask"></i> Ejemplos para probar:</h4>
+                <div class="example-item" onclick="testExample('https://securityheaders.com')">
+                    <strong><i class="fas fa-check-circle"></i> Seguridad avanzada:</strong> https://securityheaders.com
+                </div>
+                <div class="example-item" onclick="testExample('https://httpbin.org/headers')">
+                    <strong><i class="fas fa-tools"></i> Herramienta básica:</strong> https://httpbin.org/headers
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer>
+        <p>&copy; 2025 FORENCOMMUNITY · Tu privacidad es tu derecho</p>
+    </footer>
+
+    <script>
+        let currentAnalysis = null;
+        const urlInput = document.getElementById('urlInput');
+        const scanButton = document.getElementById('scanButton');
+        const loadingDiv = document.getElementById('loading');
+        const resultsDiv = document.getElementById('results');
+        const securityScoreDiv = document.getElementById('securityScore');
+        const summaryDiv = document.getElementById('summary');
+        const headersGridDiv = document.getElementById('headersGrid');
+        const errorMessageDiv = document.getElementById('errorMessage');
+        const vulnerabilitySection = document.getElementById('vulnerabilitySection');
+        const effectivenessSection = document.getElementById('effectivenessSection');
+        const techSection = document.getElementById('techSection');
+        const simulatorSection = document.getElementById('simulatorSection');
+        
+        const securityHeaders = [
+            {
+                name: 'Strict-Transport-Security',
+                description: 'Fuerza el uso de HTTPS',
+                importance: 'high',
+                recommended: 'max-age=31536000; includeSubDomains',
+                icon: '🔒'
+            },
+            {
+                name: 'Content-Security-Policy',
+                description: 'Previene ataques XSS',
+                importance: 'high',
+                recommended: 'default-src https:; script-src https:',
+                icon: '🛡️'
+            },
+            {
+                name: 'X-Frame-Options',
+                description: 'Previene clickjacking',
+                importance: 'high',
+                recommended: 'DENY o SAMEORIGIN',
+                icon: '🚫'
+            },
+            {
+                name: 'X-Content-Type-Options',
+                description: 'Previene MIME sniffing',
+                importance: 'medium',
+                recommended: 'nosniff',
+                icon: '📄'
+            },
+            {
+                name: 'Referrer-Policy',
+                description: 'Controla información del referente',
+                importance: 'medium',
+                recommended: 'strict-origin-when-cross-origin',
+                icon: '🔗'
+            }
+        ];
+
+        // Event listeners
+        scanButton.addEventListener('click', scanHeaders);
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') scanHeaders();
+        });
+
+        async function scanHeaders() {
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                showError('Por favor, ingresa una URL');
+                return;
+            }
+
+            if (!isValidURL(url) && !url.includes('.')) {
+                showError('Por favor, ingresa una URL válida (ej: https://ejemplo.com)');
+                return;
+            }
+
+            showLoading();
+            hideError();
+            hideResults();
+            
+            try {
+                // Llamada real al endpoint Flask — actúa como proxy HTTP
+                const response = await fetch('/api/scan-headers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    hideLoading();
+                    showError('❌ ' + data.error);
+                    return;
+                }
+
+                // Convertir la respuesta del servidor al formato esperado por analyzeHeaders
+                const headersFromServer = {};
+                for (const [name, value] of Object.entries(data.security_headers)) {
+                    if (value) headersFromServer[name] = value;
+                }
+                // Añadir info de servidor si está disponible
+                if (data.server_info.server && data.server_info.server !== 'No revelado') {
+                    headersFromServer['server'] = data.server_info.server;
+                }
+                if (data.server_info['x-powered-by'] && data.server_info['x-powered-by'] !== 'No revelado') {
+                    headersFromServer['x-powered-by'] = data.server_info['x-powered-by'];
+                }
+
+                currentAnalysis = analyzeHeaders(headersFromServer, data.url_final || url);
+                // Usar score calculado por el servidor (más preciso)
+                currentAnalysis.score = data.score;
+                currentAnalysis.serverInfo = data.server_info;
+                currentAnalysis.statusCode = data.status_code;
+                currentAnalysis.usesHttps = data.https;
+                displayResults(currentAnalysis);
+                
+            } catch (error) {
+                hideLoading();
+                showError('Error al conectar con el servidor: ' + error.message);
+            }
+        }
+
+        function analyzeHeaders(headers, url) {
+            let score = 100;
+            const foundHeaders = [];
+            const missingHeaders = [];
+            const vulnerabilities = [];
+            const effectiveness = {};
+            
+            securityHeaders.forEach(header => {
+                const value = headers[header.name];
+                
+                if (value) {
+                    foundHeaders.push({ ...header, value, status: 'present' });
+                    effectiveness[header.name] = analyzeHeaderEffectiveness(header.name, value);
+                    
+                } else {
+                    missingHeaders.push({ ...header, value: null, status: 'missing' });
+                    score -= header.importance === 'high' ? 15 : 10;
+                    if (header.importance === 'high') {
+                        vulnerabilities.push({
+                            type: `FALTA_${header.name.toUpperCase().replace(/-/g, '_')}`,
+                            severity: 'ALTA',
+                            message: `Falta ${header.name} - ${header.description}`,
+                            recommendation: header.recommended
+                        });
+                    }
+                }
+            });
+            
+            if (headers['Strict-Transport-Security']) {
+                const hsts = headers['Strict-Transport-Security'];
+                const maxAgeMatch = hsts.match(/max-age=(\d+)/);
+                if (maxAgeMatch && parseInt(maxAgeMatch[1]) < 300) {
+                    vulnerabilities.push({
+                        type: "HSTS_CORTO",
+                        severity: "MEDIA",
+                        message: `HSTS con max-age muy corto: ${maxAgeMatch[1]} segundos`,
+                        recommendation: "Usar max-age=31536000 (1 año)"
+                    });
+                }
+            }
+            
+            const backendTech = detectBackendTechnology(headers);
+
+            return {
+                url,
+                score: Math.max(0, score),
+                foundHeaders,
+                missingHeaders,
+                vulnerabilities,
+                effectiveness,
+                backendTech,
+                headers
+            };
+        }
+
+        function analyzeHeaderEffectiveness(headerName, value) {
+            switch(headerName) {
+                case 'Content-Security-Policy':
+                    let cspScore = 100;
+                    const cspIssues = [];
+                    
+                    if (value.includes('*')) {
+                        cspScore -= 40;
+                        cspIssues.push('Permite cualquier origen (*)');
+                    }
+                    if (value.includes("'unsafe-inline'")) {
+                        cspScore -= 30;
+                        cspIssues.push('Permite scripts inline');
+                    }
+                    if (value.length < 50) {
+                        cspScore -= 20;
+                        cspIssues.push('Configuración muy básica');
+                    }
+                    
+                    return { score: cspScore, issues: cspIssues };
+                    
+                case 'Strict-Transport-Security':
+                    let hstsScore = 100;
+                    const hstsIssues = [];
+                    const maxAgeMatch = value.match(/max-age=(\d+)/);
+                    
+                    if (maxAgeMatch) {
+                        const age = parseInt(maxAgeMatch[1]);
+                        if (age < 31536000) {
+                            hstsScore -= 30;
+                            hstsIssues.push(`Duración corta: ${age} segundos`);
+                        }
+                    }
+                    if (!value.includes('includeSubDomains')) {
+                        hstsScore -= 10;
+                        hstsIssues.push('No incluye subdominios');
+                    }
+                    
+                    return { score: hstsScore, issues: hstsIssues };
+                    
+                default:
+                    return { score: value ? 100 : 0, issues: [] };
+            }
+        }
+
+        function detectBackendTechnology(headers) {
+            const server = headers['server'] || '';
+            if (server.includes('nginx')) return 'nginx';
+            if (server.includes('Apache')) return 'apache';
+            if (server.includes('IIS')) return 'iis';
+            if (headers['x-powered-by']?.includes('Express')) return 'nodejs';
+            return 'desconocido';
+        }
+
+        function displayResults(analysis) {
+            hideLoading();
+            
+            let scoreClass, scoreText;
+            if (analysis.score >= 80) {
+                scoreClass = 'score-excellent';
+                scoreText = 'EXCELENTE';
+            } else if (analysis.score >= 60) {
+                scoreClass = 'score-good';
+                scoreText = 'BUENA';
+            } else {
+                scoreClass = 'score-poor';
+                scoreText = 'DEFICIENTE';
+            }
+            
+            securityScoreDiv.className = `security-score ${scoreClass}`;
+            securityScoreDiv.innerHTML = `
+                <div>Puntuación: ${analysis.score}/100</div>
+                <div style="font-size: 0.6em; margin-top: 10px;">Nivel: ${scoreText}</div>
+            `;
+            
+            summaryDiv.innerHTML = `
+                <strong><i class="fas fa-chart-bar"></i> Resumen de Análisis</strong><br>
+                • <i class="fas fa-search"></i> URL analizada: ${analysis.url}<br>
+                • <i class="fas fa-server"></i> Tecnología detectada: ${analysis.backendTech}<br>
+                • <i class="fas fa-check-circle"></i> Cabeceras presentes: ${analysis.foundHeaders.length}<br>
+                • <i class="fas fa-times-circle"></i> Cabeceras faltantes: ${analysis.missingHeaders.length}<br>
+                • <i class="fas fa-exclamation-triangle"></i> Vulnerabilidades: ${analysis.vulnerabilities.length}
+            `;
+            
+            vulnerabilitySection.innerHTML = `
+                <div class="analysis-section">
+                    <h3><i class="fas fa-search"></i> Vulnerabilidades Detectadas</h3>
+                    ${analysis.vulnerabilities.length > 0 ? 
+                        analysis.vulnerabilities.map(vuln => `
+                            <div class="vulnerability-item ${vuln.severity === 'ALTA' ? 'vulnerability-high' : ''}">
+                                <strong>${vuln.severity}: ${vuln.message}</strong><br>
+                                <small><i class="fas fa-tools"></i> ${vuln.recommendation}</small>
+                            </div>
+                        `).join('') 
+                        : '<p><i class="fas fa-check-circle"></i> No se detectaron vulnerabilidades críticas</p>'
+                    }
+                </div>
+            `;
+            
+            effectivenessSection.innerHTML = `
+                <div class="analysis-section">
+                    <h3><i class="fas fa-bolt"></i> Análisis de Efectividad</h3>
+                    ${analysis.foundHeaders.map(header => {
+                        const eff = analysis.effectiveness[header.name];
+                        return `
+                            <div style="margin: 15px 0;">
+                                <strong>${header.name}:</strong> ${eff.score}/100
+                                ${eff.issues.length > 0 ? `
+                                    <br><small><i class="fas fa-exclamation-circle"></i> Problemas: ${eff.issues.join(', ')}</small>
+                                ` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            
+            techSection.innerHTML = `
+                <div class="tech-recommendation">
+                    <h3><i class="fas fa-tools"></i> Recomendaciones para ${analysis.backendTech.toUpperCase()}</h3>
+                    <div style="background: white; padding: 15px; border-radius: 6px; margin-top: 10px; font-family: 'Courier New', monospace; font-size: 14px;">
+                        ${getTechRecommendations(analysis.backendTech, analysis.headers)}
+                    </div>
+                </div>
+            `;
+            
+            simulatorSection.innerHTML = `
+                <div class="analysis-section">
+                    <h3><i class="fas fa-vial"></i> Pruebas de Seguridad</h3>
+                    <p>Verifica la efectividad de tus configuraciones:</p>
+                    <button class="btn-test" onclick="testXSSProtection()">
+                        <i class="fas fa-shield-alt"></i> Probar Protección XSS
+                    </button>
+                    <button class="btn-test" onclick="testClickjackingProtection()">
+                        <i class="fas fa-mouse-pointer"></i> Probar Anti-Clickjacking
+                    </button>
+                    <div id="testResults" class="test-results">
+                        <i class="fas fa-info-circle"></i> Haz clic en una prueba para ver resultados...
+                    </div>
+                </div>
+            `;
+            
+            headersGridDiv.innerHTML = '';
+            [...analysis.foundHeaders, ...analysis.missingHeaders].forEach(header => {
+                headersGridDiv.innerHTML += `
+                    <div class="header-item header-${header.status}">
+                        <div class="header-name">
+                            ${header.status === 'present' ? '<i class="fas fa-check-circle" style="color: var(--success);"></i>' : '<i class="fas fa-times-circle" style="color: var(--danger);"></i>'} 
+                            ${header.icon} ${header.name}
+                        </div>
+                        <div><small>${header.description}</small></div>
+                        ${header.value ? `<div class="header-value">${header.value}</div>` : ''}
+                        ${header.status === 'missing' ? `
+                            <div class="recommendation rec-danger">
+                                <strong><i class="fas fa-lightbulb"></i> Recomendación:</strong> ${header.recommended}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            showResults();
+        }
+
+        function getTechRecommendations(tech, headers) {
+            const recommendations = {
+                'nginx': `
+                    # Agregar en nginx.conf:
+                    add_header Content-Security-Policy "default-src 'self';";
+                    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+                    add_header X-Frame-Options "DENY";
+                    add_header X-Content-Type-Options "nosniff";
+                `,
+                'apache': `
+                    # Agregar en .htaccess:
+                    Header always set Content-Security-Policy "default-src 'self'"
+                    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+                    Header always set X-Frame-Options "DENY" 
+                    Header always set X-Content-Type-Options "nosniff"
+                `,
+                'nodejs': `
+                    // Usar helmet.js:
+                    const helmet = require('helmet');
+                    app.use(helmet());
+                    app.use(helmet.hsts({ maxAge: 31536000 }));
+                `,
+                'iis': `
+                    <!-- En web.config -->
+                    <httpProtocol>
+                      <customHeaders>
+                        <add name="Content-Security-Policy" value="default-src 'self'" />
+                        <add name="Strict-Transport-Security" value="max-age=31536000" />
+                      </customHeaders>
+                    </httpProtocol>
+                `
+            };
+            
+            return recommendations[tech] || 'Configura las cabeceras de seguridad según tu stack tecnológico.';
+        }
+
+        window.testXSSProtection = function() {
+            const results = document.getElementById('testResults');
+            const csp = currentAnalysis?.headers['Content-Security-Policy'];
+            
+            if (!csp) {
+                results.innerHTML = '<div class="vulnerability-high"><i class="fas fa-exclamation-triangle"></i> VULNERABLE: Sin CSP - XSS posible</div>';
+                return;
+            }
+            
+            let protectionLevel = 'MEDIA';
+            if (csp.includes('script-src') && !csp.includes('unsafe-inline')) {
+                protectionLevel = 'ALTA';
+            }
+            
+            results.innerHTML = `
+                <div style="background: #f0fdf4; padding: 15px; border-radius: 6px; color: #166534;">
+                    <i class="fas fa-check-circle"></i> Protección XSS: <strong>${protectionLevel}</strong><br>
+                    <small>CSP configurado: ${csp.substring(0, 100)}...</small>
+                </div>
+            `;
+        };
+
+        window.testClickjackingProtection = function() {
+            const results = document.getElementById('testResults');
+            const xframe = currentAnalysis?.headers['X-Frame-Options'];
+            
+            if (!xframe) {
+                results.innerHTML = '<div class="vulnerability-high"><i class="fas fa-exclamation-triangle"></i> VULNERABLE: Sin protección contra clickjacking</div>';
+                return;
+            }
+            
+            const isProtected = xframe.toUpperCase() === 'DENY';
+            results.innerHTML = `
+                <div style="background: ${isProtected ? '#f0fdf4' : '#fffbeb'}; padding: 15px; border-radius: 6px; color: ${isProtected ? '#166534' : '#b45309'};">
+                    ${isProtected ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-triangle"></i>'} 
+                    Protección Clickjacking: <strong>${isProtected ? 'ALTA' : 'MEDIA'}</strong><br>
+                    <small>X-Frame-Options: ${xframe}</small>
+                </div>
+            `;
+        };
+
+        // getExampleHeaders eliminado — ahora se usan cabeceras reales via /api/scan-headers
+
+        // Funciones básicas
+        function isValidURL(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function showLoading() {
+            loadingDiv.style.display = 'block';
+            scanButton.disabled = true;
+        }
+
+        function hideLoading() {
+            loadingDiv.style.display = 'none';
+            scanButton.disabled = false;
+        }
+
+        function showResults() {
+            resultsDiv.style.display = 'block';
+        }
+
+        function hideResults() {
+            resultsDiv.style.display = 'none';
+        }
+
+        function showError(message) {
+            errorMessageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            errorMessageDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            errorMessageDiv.style.display = 'none';
+        }
+
+        function testExample(url) {
+            urlInput.value = url;
+            hideError();
+            scanHeaders();
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            urlInput.focus();
+        });
+    </script>
+</body>
+</html>

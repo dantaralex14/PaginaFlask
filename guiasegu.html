@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguridad en Mensajería | FORENCOMMUNITY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-dark: #162c6d;
+            --secondary: #458091;
+            --accent: #FF9E1A;
+            --light: #F9FAFB;
+            --dark: #171717;
+            --gray: #6B7280;
+            --muted: #383868;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --maxw: 1000px;
+            --radius: 12px;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --whatsapp: #25D366;
+            --messenger: #006AFF;
+            --icon-messaging: #25D366;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Header con el estilo de FORENCOMMUNITY */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 280px;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            max-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            margin-left: 14px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Botón volver */
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .btn-volver i {
+            margin-right: 8px;
+        }
+
+        .btn-volver:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Cards principales */
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .card h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .card-description {
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-content {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--dark);
+        }
+
+        /* Grids y cards de información */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .info-card.whatsapp {
+            border-left-color: var(--whatsapp);
+        }
+
+        .info-card.messenger {
+            border-left-color: var(--messenger);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card.whatsapp h3 {
+            color: var(--whatsapp);
+        }
+
+        .info-card.messenger h3 {
+            color: var(--messenger);
+        }
+
+        .info-card ul {
+            padding-left: 20px;
+        }
+
+        .info-card li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        /* Boxes de alerta */
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .success-box {
+            background: #dcfce7;
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .danger-box {
+            background: #fee2e2;
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Listas con check */
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            margin-bottom: 15px;
+            padding-left: 35px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 25px;
+            height: 25px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .danger-list li:before {
+            content: "!";
+            background: var(--danger);
+        }
+
+        /* Comparación de Apps */
+        .app-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .app-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .app-header {
+            padding: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .whatsapp-header {
+            background: var(--whatsapp);
+        }
+
+        .messenger-header {
+            background: var(--messenger);
+        }
+
+        .app-icon {
+            font-size: 2.5rem;
+        }
+
+        .app-body {
+            padding: 25px;
+        }
+
+        .app-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        /* Consejos rápidos */
+        .quick-tips {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            margin-top: 30px;
+        }
+
+        .quick-tips h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .tip-item {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .tip-item:hover {
+            border-color: var(--primary);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            nav {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            nav a {
+                margin: 5px;
+            }
+            
+            .logo {
+                justify-content: center;
+                min-width: auto;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .app-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+            
+            .card h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-img {
+                max-width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 12px;">
+                    <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+                </a>
+            </div>
+            <nav>
+            <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+        <a href="/" class="btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver al Inicio
+        </a>
+        
+        <div class="card">
+            <h1><i class="fas fa-comment-shield"></i> Seguridad en WhatsApp y Messenger</h1>
+            <p class="card-description">
+                Protege tus conversaciones y aprende a detectar mensajes falsos en las principales aplicaciones de mensajería.
+            </p>
+            
+            <!-- Introducción -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-info-circle"></i> ¿Por qué proteger tus mensajes?
+                </h2>
+                <div class="section-content">
+                    <p>WhatsApp y Messenger son herramientas esenciales de comunicación, pero también son objetivos frecuentes de ciberataques. Proteger tu privacidad en estas plataformas es crucial para evitar robos de información, suplantación de identidad y fraudes.</p>
+                    
+                    <div class="warning-box">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Datos Importantes</h3>
+                        <p>Según estudios de ciberseguridad, más del 70% de los usuarios de mensajería han recibido intentos de phishing o mensajes fraudulentos en el último año.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Configuraciones de Seguridad -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-cogs"></i> Configuraciones Esenciales de Seguridad
+                </h2>
+                <div class="info-grid">
+                    <div class="info-card whatsapp">
+                        <h3><i class="fab fa-whatsapp"></i> WhatsApp</h3>
+                        <ul class="checklist">
+                            <li>Activa la <strong>verificación en dos pasos</strong> en Ajustes → Cuenta → Verificación en dos pasos</li>
+                            <li>Configura quién puede ver tu <strong>foto de perfil, información y estado</strong></li>
+                            <li>Habilita las <strong>notificaciones de seguridad</strong> para detectar cambios</li>
+                            <li>Revisa periódicamente los <strong>dispositivos vinculados</strong></li>
+                            <li>Activa el <strong>bloqueo con huella o Face ID</strong> para mayor seguridad</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card messenger">
+                        <h3><i class="fab fa-facebook-messenger"></i> Messenger</h3>
+                        <ul class="checklist">
+                            <li>Activa la <strong>autenticación en dos factores</strong> en Configuración → Seguridad</li>
+                            <li>Configura quién puede contactarte y enviarte solicitudes</li>
+                            <li>Gestiona tus <strong>conversaciones secretas</strong> con cifrado extremo a extremo</li>
+                            <li>Revisa los <strong>inicios de sesión activos</strong> regularmente</li>
+                            <li>Configura las <strong>opciones de privacidad</strong> para tu perfil y actividad</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Comparación de Apps -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-balance-scale"></i> Comparación de Características de Seguridad
+                </h2>
+                <div class="app-comparison">
+                    <div class="app-card">
+                        <div class="app-header whatsapp-header">
+                            <i class="fab fa-whatsapp app-icon"></i>
+                            <div>
+                                <h3>WhatsApp</h3>
+                                <p>+2 mil millones de usuarios</p>
+                            </div>
+                        </div>
+                        <div class="app-body">
+                            <div class="app-feature">
+                                <i class="fas fa-lock" style="color: var(--success);"></i>
+                                <div>
+                                    <strong>Cifrado extremo a extremo</strong>
+                                    <p>Activado por defecto en todos los chats</p>
+                                </div>
+                            </div>
+                            <div class="app-feature">
+                                <i class="fas fa-eye" style="color: var(--success);"></i>
+                                <div>
+                                    <strong>Verificación en dos pasos</strong>
+                                    <p>Protección adicional para tu cuenta</p>
+                                </div>
+                            </div>
+                            <div class="app-feature">
+                                <i class="fas fa-user-shield" style="color: var(--success);"></i>
+                                <div>
+                                    <strong>Controles de privacidad</strong>
+                                    <p>Gestión detallada de quién puede verte</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="app-card">
+                        <div class="app-header messenger-header">
+                            <i class="fab fa-facebook-messenger app-icon"></i>
+                            <div>
+                                <h3>Messenger</h3>
+                                <p>+1.3 mil millones de usuarios</p>
+                            </div>
+                        </div>
+                        <div class="app-body">
+                            <div class="app-feature">
+                                <i class="fas fa-lock" style="color: var(--success);"></i>
+                                <div>
+                                    <strong>Cifrado extremo a extremo</strong>
+                                    <p>Solo en "Conversaciones secretas"</p>
+                                </div>
+                            </div>
+                            <div class="app-feature">
+                                <i class="fas fa-eye" style="color: var(--success);"></i>
+                                <div>
+                                    <strong>Autenticación en dos factores</strong>
+                                    <p>Integrada con Facebook</p>
+                                </div>
+                            </div>
+                            <div class="app-feature">
+                                <i class="fas fa-user-shield" style="color: var(--success);"></i>
+                                <div>
+                                    <strong>Controles de mensajes</strong>
+                                    <p>Gestión de quién puede contactarte</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Detección de Amenazas -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-exclamation-triangle"></i> Cómo Detectar Mensajes Sospechosos
+                </h2>
+                <div class="section-content">
+                    <div class="danger-box">
+                        <h3><i class="fas fa-ban"></i> Señales de Alerta en Mensajes:</h3>
+                        <ul class="checklist danger-list">
+                            <li>Mensajes que piden <strong>dinero urgente</strong>, especialmente de contactos conocidos</li>
+                            <li>Enlaces acortados o URLs sospechosas</li>
+                            <li>Solicitudes de <strong>códigos de verificación</strong> o datos personales</li>
+                            <li>Mensajes que crean <strong>urgencia artificial</strong> o miedo</li>
+                            <li>Ofertas que parecen <strong>demasiado buenas para ser verdad</strong></li>
+                            <li>Errores gramaticales evidentes en mensajes de "empresas"</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="success-box">
+                        <h3><i class="fas fa-check-double"></i> Qué Hacer si Recibes un Mensaje Sospechoso:</h3>
+                        <ul class="checklist">
+                            <li><strong>No hagas clic</strong> en enlaces sospechosos</li>
+                            <li><strong>Verifica directamente</strong> con el contacto si el mensaje es legítimo</li>
+                            <li><strong>Reporta y bloquea</strong> números o perfiles sospechosos</li>
+                            <li><strong>Nunca compartas</strong> códigos de verificación o contraseñas</li>
+                            <li><strong>Actualiza</strong> la aplicación a la última versión</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Consejos Adicionales -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-graduation-cap"></i> Consejos Adicionales de Seguridad
+                </h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3><i class="fas fa-backup"></i> Copias de Seguridad</h3>
+                        <ul>
+                            <li>Realiza <strong>copias de seguridad regulares</strong> de tus conversaciones importantes</li>
+                            <li>Almacena las copias en un <strong>lugar seguro y cifrado</strong></li>
+                            <li>WhatsApp: Google Drive o iCloud</li>
+                            <li>Messenger: No disponible directamente</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-mobile-alt"></i> Dispositivos Múltiples</h3>
+                        <ul>
+                            <li>WhatsApp Web: <strong>cierra sesión</strong> en computadoras públicas</li>
+                            <li>Messenger: Revisa los <strong>inicios de sesión activos</strong> regularmente</li>
+                            <li>No uses la opción "Recordar contraseña" en dispositivos compartidos</li>
+                            <li>Evita conectarte a <strong>redes WiFi públicas</strong> sin VPN</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-user-friends"></i> Grupos y Contactos</h3>
+                        <ul>
+                            <li>Configura quién puede <strong>agregarte a grupos</strong></li>
+                            <li>Revisa periódicamente los <strong>grupos en los que estás</strong></li>
+                            <li>No aceptes solicitudes de <strong>contactos desconocidos</strong></li>
+                            <li>Usa la función de <strong>bloqueo y reporte</strong> sin dudar</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Consejos rápidos -->
+            <div class="quick-tips">
+                <h3><i class="fas fa-lightbulb"></i> Acciones Rápidas de Seguridad</h3>
+                <div class="tips-grid">
+                    <div class="tip-item">
+                        <i class="fas fa-lock"></i> Verificación 2 Pasos
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-user-check"></i> Revisar Dispositivos
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-ban"></i> Reportar Sospechosos
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-link"></i> No Clicar Enlaces Raros
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-sync-alt"></i> Actualizar Apps
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-shield-alt"></i> Configurar Privacidad
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recursos adicionales -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-life-ring"></i> En Caso de Problemas
+                </h2>
+                <div class="section-content">
+                    <p>Si sospechas que tu cuenta ha sido comprometida o has sido víctima de un ataque:</p>
+                    <ul>
+                        <li><strong>WhatsApp:</strong> Ve a Ajustes → Ayuda → Contactarnos</li>
+                        <li><strong>Messenger:</strong> Ve a Configuración → Ayuda y soporte</li>
+                        <li><strong>Cambia inmediatamente</strong> tu contraseña y PIN de verificación</li>
+                        <li><strong>Revoca el acceso</strong> a todos los dispositivos vinculados</li>
+                        <li><strong>Reporta el incidente</strong> a las autoridades si involucra delitos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer>
+        <p>&copy; 2025 FORENCOMMUNITY · Tu privacidad es tu derecho</p>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+            <i class="fas fa-comment-shield"></i> Mensajea Seguro, Protege tu Privacidad
+        </p>
+    </footer>
+</body>
+</html>
