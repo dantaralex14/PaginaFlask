@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FORENCOMMUNITY · Tu privacidad es tu derecho</title>
+  <meta name="description" content="Proyecto FORENCOMMUNITY: Guías y herramientas para proteger tu privacidad digital." />
+  <meta property="og:title" content="FORENCOMMUNITY · Tu privacidad es tu derecho" />
+  <meta property="og:description" content="Guías y herramientas sencillas para proteger tus datos personales." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #1E3A8A;
+      --primary-dark: #162c6d;
+      --secondary: #458091;
+      --accent: #FF9E1A;
+      --light: #F9FAFB;
+      --dark: #171717;
+      --gray: #6B7280;
+      --muted: #383868;
+      --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --maxw: 1000px;
+      --radius: 12px;
+      
+      /* Colores para iconos */
+      --icon-privacy: #3B82F6;
+      --icon-leak: #EF4444;
+      --icon-security: #10B981;
+      --icon-password: #F59E0B;
+      --icon-search: #8B5CF6;
+      --icon-encrypt: #06B6D4;
+      --icon-network: #6366F1;
+      --icon-phone: #EC4899;
+      --icon-scanner: #84CC16;
+      --icon-image: #F97316;
+      --icon-header: #8B5CF6;
+      --icon-device: #06B6D4;
+      --icon-photo: #EC4899;
+      --icon-messaging: #25D366;
+      --icon-vpn: #8B5CF6;
+      --icon-email: #8B5CF6;
+      --icon-speed: #3B82F6;
+      --icon-monitor: #8B5CF6;
+      --icon-game: #9C27B0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--dark);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      padding: 15px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-content {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+    }
+
+    .logo-img {
+      height: 50px;
+      width: auto;
+      max-width: 220px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      margin-left: 14px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--accent);
+    }
+
+    .container {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .hero {
+      max-width: var(--maxw);
+      margin: 0 auto 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .hero > div:first-child {
+      flex: 1;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    section {
+      margin-bottom: 40px;
+      scroll-margin-top: 100px;
+    }
+    
+    section h2 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    p.small {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .card h3 {
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .card h3 i {
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+    
+    .card p {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    
+    .icon-privacy { color: var(--icon-privacy); }
+    .icon-leak { color: var(--icon-leak); }
+    .icon-security { color: var(--icon-security); }
+    .icon-password { color: var(--icon-password); }
+    .icon-search { color: var(--icon-search); }
+    .icon-encrypt { color: var(--icon-encrypt); }
+    .icon-network { color: var(--icon-network); }
+    .icon-phone { color: var(--icon-phone); }
+    .icon-scanner { color: var(--icon-scanner); }
+    .icon-image { color: var(--icon-image); }
+    .icon-header { color: var(--icon-header); }
+    .icon-device { color: var(--icon-device); }
+    .icon-photo { color: var(--icon-photo); }
+    .icon-messaging { color: var(--icon-messaging); }
+    .icon-vpn { color: var(--icon-vpn); }
+    .icon-email { color: var(--icon-email); }
+    .icon-speed { color: var(--icon-speed); }
+    .icon-monitor { color: var(--icon-monitor); }
+    .icon-game { color: var(--icon-game); }
+    
+    .btn {
+      background: var(--primary);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn i {
+      margin-right: 8px;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .tab-btn {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .tab-btn.active {
+      color: var(--primary);
+    }
+    
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--primary);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 30px 0;
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    .info-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      max-width: 280px;
+      z-index: 9999;
+    }
+
+    .info-box.show {
+      opacity: 1;
+    }
+
+    .comunidad-integrada {
+      text-align: center;
+      padding: 40px 0;
+    }
+    
+    .comunidad-hero {
+      background: linear-gradient(135deg, #e6f0ff 0%, #d4e6ff 100%);
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 40px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .comunidad-icon {
+      font-size: 4rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    
+    .comunidad-text {
+      margin-bottom: 30px; 
+    }
+    
+    .comunidad-text p {
+      margin-bottom: 15px; 
+      line-height: 1.6;
+    }
+    
+    .btn-facebook {
+      background: #1877F2;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      margin-top: 20px; 
+      margin-bottom: 10px; 
+      display: inline-block; 
+    }
+    
+    .btn-facebook:hover {
+      background: #166FE5;
+    }
+    
+    .comunidad-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+    
+    .feature {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .feature-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+    
+    .feature h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+      }
+      
+      nav {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      nav a {
+        margin: 5px;
+      }
+      
+      .logo {
+        justify-content: center;
+        min-width: auto;
+      }
+      
+      .logo-img {
+        max-width: 180px;
+      }
+      
+      .tabs {
+        flex-direction: column;
+      }
+      
+      .tab-btn {
+        width: 100%;
+        text-align: center;
+      }
+      
+      .comunidad-features {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+      
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .logo {
+        font-size: 1.5rem;
+      }
+      
+      .logo-img {
+        height: 40px;
+        max-width: 150px;
+      }
+      
+      nav a {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+      }
+      
+      .comunidad-hero {
+        padding: 20px;
+      }
+      
+      .comunidad-icon {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <a href="/" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 12px;">
+          <img src="{{ url_for('static', filename='images/Logo_FOREN.png') }}" alt="FORENCOMMUNITY" class="logo-img">
+        </a>
+      </div>
+      <nav>
+        <a href="/#inicio">Inicio</a>
+        <a href="/#quienes-somos">Quiénes Somos</a>
+        <a href="/#recursos">Recursos</a>
+        <a href="/#comunidad">Comunidad</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- INICIO -->
+    <section id="inicio" class="hero">
+      <div>
+        <h1>Protege tu privacidad digital</h1>
+        <p>Guías y herramientas sencillas para que cualquier persona pueda proteger sus datos personales.</p>
+        <a class="btn" href="#recursos">
+          <i class="fas fa-arrow-right"></i> Comienza ahora
+        </a>
+      </div>
+      <div style="width:240px;text-align:center;color:var(--muted)">
+        <svg width="140" height="140" viewBox="0 0 24 24" fill="none">
+          <rect x="1.5" y="4" width="21" height="16" rx="2" stroke="#cfe4ff" stroke-width="1.4" fill="#eaf4ff"/>
+          <path d="M7 10h10M7 14h6" stroke="#0b5ed7" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <div style="font-size:13px;margin-top:8px">Proyecto de concienciación y herramientas</div>
+      </div>
+    </section>
+
+    <!-- QUIÉNES SOMOS -->
+    <section id="quienes-somos">
+      <h2>Quiénes Somos</h2>
+      <div class="hero">
+        <div>
+          <p>FORENCOMMUNITY es un proyecto dedicado a la concientización y protección de la privacidad digital. Nuestra misión es empoderar a las personas con el conocimiento y las herramientas necesarias para proteger sus datos personales en el entorno digital.</p>
+          <p>Creemos que la privacidad es un derecho fundamental y trabajamos para hacerla accesible para todos, independientemente de su nivel de conocimiento técnico.</p>
+          <p><strong>Visión:</strong> Ser la comunidad de referencia en educación sobre privacidad digital para hispanohablantes.</p>
+          <p><strong>Valores:</strong> Transparencia, educación accesible, empoderamiento digital y comunidad colaborativa.</p>
+        </div>
+        <div style="width:240px;text-align:center;color:var(--muted)">
+          <img src="{{ url_for('static', filename='images/ComuSegu.png') }}" alt="ComuSegu" style="width: 140px; height: auto; border-radius: 8px;">
+          <div style="font-size:13px;margin-top:8px">Comunidad de protección de datos</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECURSOS -->
+    <section id="recursos">
+      <h2>Recursos</h2>
+      <p class="small">Explora nuestras guías y herramientas para proteger tu privacidad digital.</p>
+      
+      <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'herramientas')">Herramientas</button>
+        <button class="tab-btn" onclick="openTab(event, 'guias')">Guías</button>
+      </div>
+      
+      <div id="herramientas" class="tab-content active">
+        <div class="grid">
+          <div class="card">
+            <h3><i class="fas fa-network-wired icon-monitor"></i> Analizador de red</h3>
+            <p>Analiza conexiones de red en tiempo real y detecta actividades sospechosas en tu dispositivo.</p>
+            <a class="btn" href="{{ url_for('redanalisis') }}">
+              <i class="fas fa-tools"></i> Ir al analizador
+            </a>
+          </div>
+          
+          <div class="card">
+            <h3><i class="fas fa-key icon-password"></i> Generador de contraseñas</h3>
+            <p>Crea contraseñas seguras y fáciles de recordar usando palabras, números y símbolos.</p>
+            <a class="btn" href="{{ url_for('generador') }}">
+              <i class="fas fa-tools"></i> Ir al generador
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-search icon-search"></i> Chequeador de huella digital</h3>
+            <p>Verifica si tu correo electrónico aparece en bases de datos filtradas.</p>
+            <a class="btn" href="{{ url_for('huella') }}">
+              <i class="fas fa-tools"></i> Ir al chequeador
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-lock icon-encrypt"></i> Encriptador de texto</h3>
+            <p>Convierte texto en formato seguro como Base64 o SHA256 de forma sencilla.</p>
+            <a class="btn" href="{{ url_for('encriptador') }}">
+              <i class="fas fa-tools"></i> Ir al encriptador
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-globe icon-network"></i> Verificador de IP</h3>
+            <p>Consulta tu IP pública y su localización aproximada.</p>
+            <a class="btn" href="{{ url_for('verificador_ip') }}">
+              <i class="fas fa-tools"></i> Ir al verificador
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-phone icon-phone"></i> Verificador de Teléfono</h3>
+            <p>Analiza números de teléfono para detectar riesgos de spam, fraudes y seguridad.</p>
+            <a class="btn" href="{{ url_for('telefono') }}">
+              <i class="fas fa-tools"></i> Ir al verificador
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-network-wired icon-scanner"></i> Nmap Web Scanner</h3>
+            <p>Escaneo activo real de hosts y servicios de red desde tu navegador.</p>
+            <a class="btn" href="{{ url_for('hosts') }}">
+              <i class="fas fa-tools"></i> Ir al scanner
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-code icon-header"></i> Escáner de Cabeceras</h3>
+            <p>Analiza cabeceras HTTP de sitios web para detectar vulnerabilidades de seguridad.</p>
+            <a class="btn" href="{{ url_for('escaner') }}">
+              <i class="fas fa-tools"></i> Ir al escáner
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-image icon-image"></i> Analizador de Imágenes</h3>
+            <p>Analiza imágenes desde múltiples perspectivas de seguridad y privacidad.</p>
+            <a class="btn" href="{{ url_for('imagen') }}">
+              <i class="fas fa-tools"></i> Ir al analizador
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-envelope icon-email"></i> Correos Temporales</h3>
+            <p>Genera correos electrónicos desechables para proteger tu identidad en registros online.</p>
+            <a class="btn" href="{{ url_for('correo') }}">
+              <i class="fas fa-tools"></i> Ir al generador
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-tachometer-alt icon-speed"></i> Test de Velocidad</h3>
+            <p>Mide tu velocidad de internet de forma precisa y segura con algoritmos optimizados.</p>
+            <a class="btn" href="{{ url_for('internetest') }}">
+              <i class="fas fa-tools"></i> Ir al test
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div id="guias" class="tab-content">
+        <div class="grid">
+          <div class="card">
+            <h3><i class="fas fa-gamepad icon-game"></i> Cyber Defender - Simulador</h3>
+            <p>Juego interactivo para aprender a identificar amenazas cibernéticas y prácticas de seguridad.</p>
+            <a class="btn" href="{{ url_for('minijuego') }}">
+              <i class="fas fa-book-open"></i> Jugar y aprender
+            </a>
+          </div>
+          
+          <div class="card">
+            <h3><i class="fas fa-laptop-house icon-device"></i> Buenas Prácticas en Dispositivos</h3>
+            <p>Protege tu computadora, smartphone y tablet con medidas esenciales de seguridad digital.</p>
+            <a class="btn" href="{{ url_for('guiadis') }}">
+              <i class="fas fa-book-open"></i> Ver guía
+            </a>
+          </div>
+          
+          <div class="card">
+            <h3><i class="fas fa-camera-retro icon-photo"></i> Privacidad en Fotos y Metadatos</h3>
+            <p>Aprende a proteger tu privacidad eliminando la información oculta que tus fotos comparten.</p>
+            <a class="btn" href="{{ url_for('guiafotos') }}">
+              <i class="fas fa-book-open"></i> Ver guía
+            </a>
+          </div>
+          
+          <div class="card">
+            <h3><i class="fab fa-whatsapp icon-messaging"></i> Seguridad en Mensajería</h3>
+            <p>Protege tus conversaciones en WhatsApp y Messenger y aprende a detectar mensajes falsos.</p>
+            <a class="btn" href="{{ url_for('guiasegu') }}">
+              <i class="fas fa-book-open"></i> Ver guía
+            </a>
+          </div>
+          
+          <div class="card">
+            <h3><i class="fas fa-shield-virus icon-vpn"></i> Guía Completa de VPN</h3>
+            <p>Protege tu privacidad, evita la censura y navega de forma segura con una Red Privada Virtual.</p>
+            <a class="btn" href="{{ url_for('guiavpn') }}">
+              <i class="fas fa-book-open"></i> Ver guía
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-lock icon-privacy"></i> Privacidad en Redes Sociales</h3>
+            <p>Aprende a configurar tus redes para proteger tu información.</p>
+            <a class="btn" href="{{ url_for('guiapriv') }}">
+              <i class="fas fa-book-open"></i> Ver guía
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-shield-alt icon-leak"></i> Evita filtraciones de datos</h3>
+            <p>Consejos para prevenir que tu información personal quede expuesta.</p>
+            <a class="btn" href="{{ url_for('guiafiltra') }}">
+              <i class="fas fa-book-open"></i> Ver guía
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-key icon-security"></i> Protege tus cuentas</h3>
+            <p>Buenas prácticas para crear contraseñas seguras y autenticación.</p>
+            <a class="btn" href="{{ url_for('guiaprotegecuentas') }}">
+              <i class="fas fa-book-open"></i> Ver guía
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-fish icon-leak"></i> Detectar Phishing</h3>
+            <p>Aprende a identificar y evitar ataques de phishing que buscan robar tu información.</p>
+            <a class="btn" href="{{ url_for('guiaphishing') }}">
+              <i class="fas fa-book-open"></i> Ver guía
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-user-shield icon-leak"></i> Navegación Segura</h3>
+            <p>Aprende sobre una navegación segura por el internet.</p>
+            <a class="btn" href="{{ url_for('guianavsegu') }}">
+              <i class="fas fa-book-open"></i> Ver guía
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-shield-alt" style="color: #1E3A8A;"></i> Deteccion de puertos y mas</h3>
+            <p>Aprende sobre la seguridad avanzada y deteccion de puertos.</p>
+            <a class="btn" href="{{ url_for('guiapuertos') }}">
+              <i class="fas fa-book-open"></i> Ver guía
+            </a>
+          </div>
+
+          <div class="card">
+            <h3><i class="fas fa-user-secret" style="color: #764ba2;"></i> Simulador de Ingeniería Social</h3>
+            <p>Pon a prueba tu capacidad para detectar phishing, vishing, baiting y otros ataques de manipulación psicológica en 10 escenarios reales.</p>
+            <a class="btn" href="{{ url_for('simusocial') }}">
+              <i class="fas fa-gamepad"></i> Iniciar simulación
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMUNIDAD -->
+    <section id="comunidad" class="comunidad-integrada">
+      <h2>Comunidad y Foro</h2>
+      
+      <div class="comunidad-hero">
+        <div class="comunidad-icon">
+          <i class="fab fa-facebook"></i>
+        </div>
+        <h2>Nuestro Foro en Facebook</h2>
+        
+        <div class="comunidad-text">
+          <p>Únete a nuestra comunidad en Facebook donde funcionamos como foro de discusión sobre privacidad digital.</p>
+          <p>Participa en debates, comparte tus experiencias y resuelve tus dudas con otros miembros.</p>
+        </div>
+        
+        <a class="btn btn-facebook" target="_blank" href="https://www.facebook.com/profile.php?id=61579995598572">
+          <i class="fab fa-facebook-f"></i> Unirse al foro comunitario
+        </a>
+      </div>
+      
+      <div class="comunidad-features">
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <h3>Discusiones Activas</h3>
+          <p>Participa en conversaciones sobre privacidad, seguridad digital y protección de datos.</p>
+        </div>
+        
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-question-circle"></i>
+          </div>
+          <h3>Resuelve Dudas</h3>
+          <p>Haz preguntas y obtén respuestas de otros miembros de la comunidad.</p>
+        </div>
+        
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-newspaper"></i>
+          </div>
+          <h3>Noticias y Alertas</h3>
+          <p>Mantente informado sobre las últimas amenazas y novedades en privacidad digital.</p>
+        </div>
+      </div>
+      
+      <p class="small">También puedes explorar nuestros <a href="{{ url_for('blogs') }}" style="color: var(--primary); font-weight: 500;">blogs recomendados</a> con recursos adicionales sobre ciberseguridad.</p>
+    </section>
+  </div>
+  
+  <footer>
+    © 2025 Proyecto de concientización sobre privacidad — Aviso de privacidad | Contacto
+  </footer>
+
+  <script>
+    function openTab(evt, tabName) {
+      var i, tabcontent, tabbuttons;
+      
+      tabcontent = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList.remove("active");
+      }
+      
+      tabbuttons = document.getElementsByClassName("tab-btn");
+      for (i = 0; i < tabbuttons.length; i++) {
+        tabbuttons[i].classList.remove("active");
+      }
+      
+      document.getElementById(tabName).classList.add("active");
+      evt.currentTarget.classList.add("active");
+    }
+    
+    document.querySelectorAll('nav a').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const href = this.getAttribute('href');
+        
+        if (href.startsWith('/#')) {
+          const targetId = href.substring(2);
+          const targetElement = document.getElementById(targetId);
+          
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 100,
+              behavior: 'smooth'
+            });
+          }
+        } else if (href.startsWith('#')) {
+          const targetId = href.substring(1);
+          const targetElement = document.getElementById(targetId);
+          
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 100,
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

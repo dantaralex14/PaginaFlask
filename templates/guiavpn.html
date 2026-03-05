@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de VPN | FORENCOMMUNITY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-dark: #162c6d;
+            --secondary: #458091;
+            --accent: #FF9E1A;
+            --light: #F9FAFB;
+            --dark: #171717;
+            --gray: #6B7280;
+            --muted: #383868;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --maxw: 1000px;
+            --radius: 12px;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+            --vpn-color: #8B5CF6;
+            --icon-vpn: #8B5CF6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Header con el estilo de FORENCOMMUNITY */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 280px;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            max-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            margin-left: 14px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Botón volver */
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .btn-volver i {
+            margin-right: 8px;
+        }
+
+        .btn-volver:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Cards principales */
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .card h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .card-description {
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-content {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--dark);
+        }
+
+        /* Grids y cards de información */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--vpn-color);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            color: var(--vpn-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card ul {
+            padding-left: 20px;
+        }
+
+        .info-card li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        /* Boxes de alerta */
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .success-box {
+            background: #dcfce7;
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .danger-box {
+            background: #fee2e2;
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Listas con check */
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            margin-bottom: 15px;
+            padding-left: 35px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 25px;
+            height: 25px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .danger-list li:before {
+            content: "!";
+            background: var(--danger);
+        }
+
+        /* Visualización de VPN */
+        .vpn-visualization {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .vpn-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .vpn-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-icon {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.8rem;
+            color: var(--vpn-color);
+        }
+
+        .step-arrow {
+            position: absolute;
+            top: 35px;
+            font-size: 2rem;
+            color: white;
+            z-index: 1;
+        }
+
+        /* Comparación de VPN */
+        .vpn-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .vpn-type {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .vpn-type:hover {
+            transform: translateY(-5px);
+        }
+
+        .vpn-header {
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .premium-header {
+            background: var(--success);
+        }
+
+        .free-header {
+            background: var(--danger);
+        }
+
+        .vpn-body {
+            padding: 25px;
+        }
+
+        .vpn-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        /* Consejos rápidos */
+        .quick-tips {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            margin-top: 30px;
+        }
+
+        .quick-tips h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .tip-item {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .tip-item:hover {
+            border-color: var(--primary);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            nav {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            nav a {
+                margin: 5px;
+            }
+            
+            .logo {
+                justify-content: center;
+                min-width: auto;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .vpn-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .vpn-steps {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .step-arrow {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+            
+            .card h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-img {
+                max-width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 12px;">
+                    <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+                </a>
+            </div>
+            <nav>
+            <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+        <a href="/" class="btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver al Inicio
+        </a>
+        
+        <div class="card">
+            <h1><i class="fas fa-shield-virus"></i> Guía Completa de Uso de VPN</h1>
+            <p class="card-description">
+                Protege tu privacidad, evita la censura y navega de forma segura con una Red Privada Virtual (VPN).
+            </p>
+            
+            <!-- Introducción -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-info-circle"></i> ¿Qué es una VPN y por qué necesitas una?
+                </h2>
+                <div class="section-content">
+                    <p>Una VPN (Red Privada Virtual) crea un túnel cifrado entre tu dispositivo e internet, protegiendo tu información de miradas indiscretas y permitiéndote navegar de forma anónima y segura.</p>
+                    
+                    <div class="warning-box">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Sin VPN tu información está expuesta</h3>
+                        <p>En una conexión normal, tu proveedor de internet, gobiernos y potenciales atacantes pueden ver toda tu actividad en línea, incluyendo los sitios que visitas y los datos que envías.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visualización de cómo funciona VPN -->
+            <div class="vpn-visualization">
+                <h3><i class="fas fa-random"></i> ¿Cómo funciona una VPN?</h3>
+                <div class="vpn-steps">
+                    <div class="vpn-step">
+                        <div class="step-icon">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                        <p>Tu dispositivo</p>
+                    </div>
+                    <div class="step-arrow" style="left: 25%;">→</div>
+                    <div class="vpn-step">
+                        <div class="step-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <p>Conexión cifrada</p>
+                    </div>
+                    <div class="step-arrow" style="left: 50%;">→</div>
+                    <div class="vpn-step">
+                        <div class="step-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <p>Servidor VPN</p>
+                    </div>
+                    <div class="step-arrow" style="left: 75%;">→</div>
+                    <div class="vpn-step">
+                        <div class="step-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <p>Internet</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Beneficios -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-star"></i> Beneficios Principales de Usar VPN
+                </h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3><i class="fas fa-user-secret"></i> Privacidad y Anonimato</h3>
+                        <ul class="checklist">
+                            <li><strong>Oculta tu dirección IP real</strong> y ubicación</li>
+                            <li>Protege tu identidad en línea de rastreadores</li>
+                            <li>Evita que tu proveedor de internet monitoree tu actividad</li>
+                            <li>Protege tu información personal de ciberdelincuentes</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-wifi"></i> Seguridad en Redes Públicas</h3>
+                        <ul class="checklist">
+                            <li><strong>Protege tu navegación en WiFi públicas</strong> (cafés, aeropuertos)</li>
+                            <li>Encripta todo tu tráfico de internet</li>
+                            <li>Evita ataques "Man-in-the-Middle"</li>
+                            <li>Protege tus contraseñas y datos bancarios</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-unlock"></i> Libertad en Internet</h3>
+                        <ul class="checklist">
+                            <li><strong>Accede a contenido restringido por región</strong></li>
+                            <li>Evita la censura gubernamental</li>
+                            <li>Usa servicios de streaming de otros países</li>
+                            <li>Accede a sitios web bloqueados en tu ubicación</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Comparación VPN Premium vs Gratuita -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-balance-scale"></i> VPN Premium vs VPN Gratuita
+                </h2>
+                <div class="vpn-comparison">
+                    <div class="vpn-type">
+                        <div class="vpn-header premium-header">
+                            <h3>VPN Premium</h3>
+                            <p>Recomendado para seguridad real</p>
+                        </div>
+                        <div class="vpn-body">
+                            <div class="vpn-feature">
+                                <i class="fas fa-check" style="color: var(--success);"></i>
+                                <div>
+                                    <strong>Sin límites de datos</strong>
+                                    <p>Uso ilimitado sin restricciones</p>
+                                </div>
+                            </div>
+                            <div class="vpn-feature">
+                                <i class="fas fa-check" style="color: var(--success);"></i>
+                                <div>
+                                    <strong>Sin registro de actividad</strong>
+                                    <p>Política estricta de no logs</p>
+                                </div>
+                            </div>
+                            <div class="vpn-feature">
+                                <i class="fas fa-check" style="color: var(--success);"></i>
+                                <div>
+                                    <strong>Alta velocidad</strong>
+                                    <p>Servidores optimizados</p>
+                                </div>
+                            </div>
+                            <div class="vpn-feature">
+                                <i class="fas fa-check" style="color: var(--success);"></i>
+                                <div>
+                                    <strong>Múltiples dispositivos</strong>
+                                    <p>Conecta varios dispositivos simultáneamente</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="vpn-type">
+                        <div class="vpn-header free-header">
+                            <h3>VPN Gratuita</h3>
+                            <p>Riesgos significativos</p>
+                        </div>
+                        <div class="vpn-body">
+                            <div class="vpn-feature">
+                                <i class="fas fa-times" style="color: var(--danger);"></i>
+                                <div>
+                                    <strong>Límites estrictos</strong>
+                                    <p>Datos limitados y velocidad reducida</p>
+                                </div>
+                            </div>
+                            <div class="vpn-feature">
+                                <i class="fas fa-times" style="color: var(--danger);"></i>
+                                <div>
+                                    <strong>Venden tus datos</strong>
+                                    <p>Monetizan tu información personal</p>
+                                </div>
+                            </div>
+                            <div class="vpn-feature">
+                                <i class="fas fa-times" style="color: var(--danger);"></i>
+                                <div>
+                                    <strong>Anuncios intrusivos</strong>
+                                    <p>Publicidad agresiva y malware potencial</p>
+                                </div>
+                            </div>
+                            <div class="vpn-feature">
+                                <i class="fas fa-times" style="color: var(--danger);"></i>
+                                <div>
+                                    <strong>Seguridad cuestionable</strong>
+                                    <p>Encriptación débil o inexistente</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cómo elegir una VPN -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-check-circle"></i> Cómo Elegir una VPN Confiable
+                </h2>
+                <div class="section-content">
+                    <div class="success-box">
+                        <h3><i class="fas fa-thumbs-up"></i> Características de una VPN Confiable:</h3>
+                        <ul class="checklist">
+                            <li><strong>Política estricta de no registro</strong> (no logs)</li>
+                            <li><strong>Encriptación fuerte</strong> (AES-256 como mínimo)</li>
+                            <li><strong>Servidores en múltiples países</strong></li>
+                            <li><strong>Conexiones simultáneas</strong> para varios dispositivos</li>
+                            <li><strong>Kill Switch</strong> que corta internet si la VPN falla</li>
+                            <li><strong>Protocolos modernos</strong> como WireGuard o OpenVPN</li>
+                            <li><strong>Buena reputación</strong> y revisiones independientes</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="danger-box">
+                        <h3><i class="fas fa-ban"></i> VPN que Debes Evitar:</h3>
+                        <ul class="checklist danger-list">
+                            <li>VPN gratuitas con <strong>mala reputación</strong></li>
+                            <li>Servicios que <strong>registran tu actividad</strong></li>
+                            <li>Proveedores con <strong>historial de fugas de datos</strong></li>
+                            <li>VPN basadas en <strong>países con leyes de vigilancia</strong></li>
+                            <li>Servicios con <strong>políticas de privacidad confusas</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Configuración y Uso -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-cogs"></i> Configuración y Uso Correcto
+                </h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3><i class="fas fa-mobile-alt"></i> En Dispositivos Móviles</h3>
+                        <ul>
+                            <li>Descarga la app oficial desde tiendas oficiales</li>
+                            <li>Configura la conexión automática en redes WiFi públicas</li>
+                            <li>Activa el Kill Switch si está disponible</li>
+                            <li>Usa servidores cercanos para mejor velocidad</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-desktop"></i> En Computadoras</h3>
+                        <ul>
+                            <li>Instala el cliente oficial del proveedor</li>
+                            <li>Configura la conexión al iniciar el sistema</li>
+                            <li>Usa extensiones del navegador para protección adicional</li>
+                            <li>Verifica regularmente que la VPN esté activa</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-network-wired"></i> En Routers</h3>
+                        <ul>
+                            <li>Protege todos los dispositivos de tu red</li>
+                            <li>Configuración más compleja pero más completa</li>
+                            <li>Ideal para dispositivos IoT y consolas</li>
+                            <li>Requiere router compatible con VPN</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Consejos rápidos -->
+            <div class="quick-tips">
+                <h3><i class="fas fa-lightbulb"></i> Mejores Prácticas con VPN</h3>
+                <div class="tips-grid">
+                    <div class="tip-item">
+                        <i class="fas fa-shield-alt"></i> Siempre Activa en WiFi Público
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-ban"></i> Evita VPN Gratuitas
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-sync-alt"></i> Actualiza Regularmente
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-server"></i> Elige Servidores Cercanos
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-check-circle"></i> Verifica la Conexión
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-book"></i> Lee las Políticas
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recomendaciones -->
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-award"></i> VPN Recomendadas
+                </h2>
+                <div class="section-content">
+                    <p>Basado en revisiones independientes y pruebas de seguridad, estas VPN son generalmente consideradas confiables:</p>
+                    <ul>
+                        <li><strong>ExpressVPN</strong> - Velocidad excelente y seguridad comprobada</li>
+                        <li><strong>NordVPN</strong> - Características avanzadas y auditorías independientes</li>
+                        <li><strong>ProtonVPN</strong> - Desarrollado por creadores de ProtonMail, fuerte enfoque en privacidad</li>
+                        <li><strong>Mullvad</strong> - Enfoque extremo en anonimato y privacidad</li>
+                        <li><strong>IVPN</strong> - Transparencia total y políticas estrictas de no registro</li>
+                    </ul>
+                    <div class="warning-box">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <strong>Importante:</strong> Investiga siempre antes de elegir una VPN. Las condiciones pueden cambiar y es crucial verificar las políticas actuales de privacidad.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer>
+        <p>&copy; 2025 FORENCOMMUNITY · Tu privacidad es tu derecho</p>
+        <p style="margin-top: 10px; font-size: 0.9rem;">
+            <i class="fas fa-shield-virus"></i> Navega Seguro, Protege tu Identidad
+        </p>
+    </footer>
+</body>
+</html>

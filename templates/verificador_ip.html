@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Suite | FORENCOMMUNITY</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    :root {
+      --primary: #1E3A8A;
+      --primary-dark: #162c6d;
+      --secondary: #458091;
+      --accent: #FF9E1A;
+      --light: #F9FAFB;
+      --dark: #171717;
+      --gray: #6B7280;
+      --muted: #383868;
+      --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --maxw: 1200px;
+      --radius: 12px;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --info: #2563eb;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--dark);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      padding: 20px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .header-content {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-img {
+      height: 50px;
+      width: auto;
+      max-width: 220px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      margin-left: 14px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--accent);
+    }
+
+    .container {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .btn-volver i {
+      margin-right: 8px;
+    }
+
+    .btn-volver:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+    .tabs-container {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    .tabs-header {
+      display: flex;
+      background: var(--light);
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 20px;
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .tab-btn:hover {
+      background: rgba(30, 58, 138, 0.05);
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      background: white;
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 30px;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 30px;
+    }
+
+    .card h1 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .card-description {
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.1rem;
+    }
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 1.1rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      width: 100%;
+    }
+
+    .btn i {
+      margin-right: 10px;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    .result-container {
+      margin-top: 30px;
+      padding: 25px;
+      border-radius: var(--radius);
+      display: none;
+    }
+
+    .result-local {
+      background: #f0fdf4;
+      border: 2px solid #bbf7d0;
+      color: #166534;
+    }
+
+    .result-public {
+      background: #dbeafe;
+      border: 2px solid #bfdbfe;
+      color: #1e40af;
+    }
+
+    .result-error {
+      background: #fef2f2;
+      border: 2px solid #fecaca;
+      color: #dc2626;
+    }
+
+    .result-vpn {
+      background: #fffbeb;
+      border: 2px solid #fde68a;
+      color: #d97706;
+    }
+
+    .info-row {
+      display: flex;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .info-label {
+      font-weight: 600;
+      min-width: 120px;
+      color: var(--muted);
+    }
+
+    .info-value {
+      flex: 1;
+      font-weight: 500;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      background: #f8fafc;
+    }
+
+    .status-icon {
+      margin-right: 10px;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .status-success {
+      color: var(--success);
+    }
+
+    .status-warning {
+      color: var(--warning);
+    }
+
+    .status-danger {
+      color: var(--danger);
+    }
+
+    .status-info {
+      color: var(--info);
+    }
+
+    .info-note {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-style: italic;
+    }
+
+    .security-section {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      border-left: 4px solid var(--info);
+    }
+
+    .security-section h4 {
+      margin-bottom: 10px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
+
+    .security-section h4 i {
+      margin-right: 10px;
+    }
+    .map-container {
+      height: 300px;
+      width: 100%;
+      border-radius: var(--radius);
+      margin-top: 20px;
+      display: none;
+      border: 2px solid #e5e7eb;
+    }
+    .loading {
+      text-align: center;
+      padding: 20px;
+      display: none;
+    }
+
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 30px 0;
+      margin-top: 50px;
+      text-align: center;
+    }
+    .webrtc-test-section {
+      margin: 25px 0;
+      padding: 25px;
+      border-radius: 10px;
+      background: #f8f9fa;
+    }
+
+    .leak-info {
+      background: #e3f2fd;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 15px 0;
+      border-left: 4px solid var(--primary);
+    }
+
+    .risk-card {
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      border-left: 5px solid;
+    }
+
+    .risk-high { border-left-color: var(--danger); background: #f8d7da; }
+    .risk-medium { border-left-color: var(--warning); background: #fff3cd; }
+    .risk-low { border-left-color: var(--success); background: #d4edda; }
+
+    .ip-display {
+      font-family: 'Courier New', monospace;
+      font-size: 1.2em;
+      padding: 15px;
+      background: var(--dark);
+      color: white;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+    @media (max-width: 900px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+      }
+      
+      nav {
+        margin-top: 15px;
+        justify-content: center;
+      }
+      
+      nav a {
+        margin: 5px;
+      }
+      
+      .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+      
+      .info-label {
+        min-width: auto;
+      }
+
+      .tabs-header {
+        flex-direction: column;
+      }
+
+      .tab-btn {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 20px;
+      }
+      
+      .card h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ENCABEZADO -->
+  <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 12px;">
+                    <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+                </a>
+            </div>
+            <nav>
+            <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+            </nav>
+        </div>
+    </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="container">
+    <a href="/" class="btn-volver">
+      <i class="fas fa-arrow-left"></i> Volver al Inicio
+    </a>
+    
+    <div class="tabs-container">
+      <!-- Pestañas -->
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="ip-verifier">
+          <i class="fas fa-map-marker-alt"></i> Verificador IP
+        </button>
+        <button class="tab-btn" data-tab="webrtc-detector">
+          <i class="fas fa-shield-alt"></i> Detector WebRTC
+        </button>
+        <button class="tab-btn" data-tab="security-suite">
+          <i class="fas fa-lock"></i> Suite Seguridad
+        </button>
+      </div>
+
+      <!-- Contenido de pestañas -->
+      
+      <!-- Pestaña 1: Verificador IP -->
+      <div class="tab-content active" id="ip-verifier">
+        <div class="card">
+          <h1><i class="fas fa-map-marker-alt"></i> Verificador de IP y VPN</h1>
+          <p class="card-description">Analiza tu conexión, detecta fugas DNS, verifica VPNs y comprueba tu privacidad.</p>
+          
+          <form id="ipForm">
+            <div class="form-group">
+              <label for="ip">Dirección IP (opcional):</label>
+              <input type="text" id="ip" name="ip" placeholder="Deja vacío para analizar tu conexión actual">
+            </div>
+
+            <button type="submit" class="btn">
+              <i class="fas fa-search"></i> Analizar Conexión
+            </button>
+          </form>
+          
+          <div class="loading" id="loadingIP">
+            <div class="loading-spinner"></div>
+            <p>Analizando tu conexión y verificando seguridad...</p>
+          </div>
+          
+          <div class="result-container" id="resultIP"></div>
+          <div class="map-container" id="mapIP"></div>
+        </div>
+      </div>
+
+      <!-- Pestaña 2: Detector WebRTC -->
+      <div class="tab-content" id="webrtc-detector">
+        <div class="card">
+          <h1><i class="fas fa-shield-alt"></i> Detector de Fugas WebRTC</h1>
+          <p class="card-description">Descubre si tu VPN/Proxy está filtrando tu IP real mediante WebRTC</p>
+          
+          <div class="leak-info">
+            <h3>⚠️ ¿Qué es una fuga WebRTC?</h3>
+            <p>WebRTC permite comunicaciones en tiempo real, pero puede revelar tu IP real incluso cuando usas VPN.</p>
+          </div>
+
+          <div class="webrtc-test-section">
+            <h3>🌐 Tu IP Pública Detectada</h3>
+            <button class="btn" onclick="detectPublicIP()">
+              <i class="fas fa-search"></i> Detectar IP Pública
+            </button>
+            <div id="publicIPResult" class="ip-display">Esperando detección...</div>
+          </div>
+
+          <div class="webrtc-test-section">
+            <h3>🔓 Test de Fuga WebRTC</h3>
+            <button class="btn" onclick="testWebRTCLeak()">
+              <i class="fas fa-bug"></i> Iniciar Test WebRTC
+            </button>
+            <div id="webrtcResults"></div>
+          </div>
+
+          <div class="webrtc-test-section">
+            <h3>🛡️ Análisis de Huella Digital</h3>
+            <button class="btn" onclick="analyzeBrowserFingerprint()">
+              <i class="fas fa-fingerprint"></i> Analizar Navegador
+            </button>
+            <div id="fingerprintResults"></div>
+          </div>
+
+          <div class="webrtc-test-section">
+            <h3>💡 Recomendaciones de Seguridad</h3>
+            <div id="recommendations"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pestaña 3: Suite de Seguridad -->
+      <div class="tab-content" id="security-suite">
+        <div class="card">
+          <h1><i class="fas fa-lock"></i> Suite Completa de Seguridad</h1>
+          <p class="card-description">Análisis integral de tu privacidad y configuración de red</p>
+          
+          <div class="security-section">
+            <h4><i class="fas fa-sync"></i> Análisis Automático Completo</h4>
+            <button class="btn" onclick="runFullSecurityScan()">
+              <i class="fas fa-play-circle"></i> Ejecutar Escaneo Completo
+            </button>
+            <div id="fullScanResults"></div>
+          </div>
+
+          <div class="security-section">
+            <h4><i class="fas fa-file-alt"></i> Reporte de Seguridad</h4>
+            <div id="securityReport"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIE DE PÁGINA -->
+  <footer>
+    <p>&copy; 2025 FORENCOMMUNITY · Tu privacidad es tu derecho</p>
+  </footer>
+
+  <script>
+    // ==================== SISTEMA DE PESTAÑAS ====================
+    document.querySelectorAll('.tab-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ==================== VERIFICADOR IP (FUNCIONAL) ====================
+    let map = null;
+
+    function initMap() {
+      if (!map) {
+        map = L.map('mapIP').setView([19.4326, -99.1332], 2); 
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+      }
+      return map;
+    }
+
+    function isValidIP(ip) {
+      if (!ip) return true;
+      const ipv4Pattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+      if (ipv4Pattern.test(ip)) {
+        const parts = ip.split('.');
+        return parts.every(part => {
+          const num = parseInt(part, 10);
+          return num >= 0 && num <= 255;
+        });
+      }
+      return false;
+    }
+
+    function isLocalIP(ip) {
+      if (!ip) return false;
+      const localRanges = [
+        /^10\./, /^172\.(1[6-9]|2[0-9]|3[0-1])\./, /^192\.168\./, 
+        /^127\./, /^169\.254\./, /^::1$/, /^fc00::/, /^fe80::/,
+        /^100\.(6[4-9]|[7-9][0-9]|1[0-1][0-9]|12[0-7])\./
+      ];
+      return localRanges.some(range => range.test(ip));
+    }
+
+    function isVPNorHostingProvider(org) {
+      if (!org) return false;
+      const vpnKeywords = [
+        'vpn', 'proxy', 'hosting', 'datacenter', 'server', 'cloud',
+        'network', 'infrastructure', 'as', 'llc', 'inc', 'ltd', 'corp'
+      ];
+      const orgLower = org.toLowerCase();
+      return vpnKeywords.some(keyword => orgLower.includes(keyword));
+    }
+
+    async function getIPInfo(ip) {
+      try {
+        let originalIP = ip;
+        
+        if (!ip || isLocalIP(ip)) {
+          // Obtener IP pública usando ipify (solo para saber la IP, no para datos)
+          try {
+            const publicIPResponse = await fetch('https://api.ipify.org?format=json');
+            const publicIPData = await publicIPResponse.json();
+            ip = publicIPData.ip;
+          } catch(e) {
+            // Si falla ipify, usar la IP que envió el servidor Flask
+            ip = document.querySelector('[data-user-ip]')?.dataset.userIp || ip;
+          }
+        }
+        
+        // Usar el endpoint Flask como proxy (ip-api.com, más fiable, sin CORS)
+        const response = await fetch('/api/ip-info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ip })
+        });
+        
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Error en la API');
+        }
+        
+        const data = await response.json();
+        
+        return {
+          success: true,
+          ip: data.ip,
+          originalIP: originalIP,
+          city: data.ciudad || 'Desconocida',
+          region: data.region || 'Desconocida',
+          country: data.pais || 'Desconocido',
+          org: data.isp || data.organizacion || 'Desconocido',
+          latitude: data.latitud,
+          longitude: data.longitud,
+          isLocal: isLocalIP(originalIP) || data.es_privada,
+          isVPN: data.es_proxy || data.es_hosting || isVPNorHostingProvider(data.isp || ''),
+          timezone: data.zona_horaria || 'Desconocido',
+          as_info: data.as_info || '',
+          codigo_pais: data.codigo_pais || '',
+          fuente: data.fuente || 'ip-api.com'
+        };
+        
+      } catch (error) {
+        console.error('Error obteniendo información:', error);
+        return {
+          success: false,
+          error: 'No se pudo obtener la información de la conexión',
+          details: 'El servicio puede estar temporalmente no disponible'
+        };
+      }
+    }
+
+    document.getElementById('ipForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const ip = document.getElementById('ip').value.trim();
+      const resultDiv = document.getElementById('resultIP');
+      const loadingDiv = document.getElementById('loadingIP');
+      const mapDiv = document.getElementById('mapIP');
+      
+      if (ip && !isValidIP(ip)) {
+        resultDiv.className = 'result-container result-error';
+        resultDiv.innerHTML = `
+          <div class="info-row">
+            <i class="fas fa-exclamation-circle"></i>
+            <span><strong>Error:</strong> La dirección IP no es válida</span>
+          </div>
+          <div class="info-note">
+            <i class="fas fa-info-circle"></i> Por favor ingresa una dirección IP válida (IPv4)
+          </div>
+        `;
+        resultDiv.style.display = 'block';
+        return;
+      }
+      
+      loadingDiv.style.display = 'block';
+      resultDiv.style.display = 'none';
+      mapDiv.style.display = 'none';
+      
+      try {
+        const data = await getIPInfo(ip);
+        loadingDiv.style.display = 'none';
+        
+        if (!data.success) {
+          showErrorResult(resultDiv, data.error, data.details);
+          return;
+        }
+
+        if (data.isLocal) {
+          showLocalIPResult(resultDiv, data);
+        } else {
+          showPublicIPResult(resultDiv, data, mapDiv);
+        }
+        
+      } catch (error) {
+        loadingDiv.style.display = 'none';
+        showErrorResult(resultDiv, 'Error de conexión', 'No se pudo contactar al servicio');
+      }
+    });
+
+    function showErrorResult(resultDiv, error, details) {
+      resultDiv.className = 'result-container result-error';
+      resultDiv.innerHTML = `
+        <div class="info-row">
+          <i class="fas fa-exclamation-circle"></i>
+          <span><strong>Error:</strong> ${error}</span>
+        </div>
+        ${details ? `
+        <div class="info-note">
+          <i class="fas fa-info-circle"></i> ${details}
+        </div>
+        ` : ''}
+      `;
+      resultDiv.style.display = 'block';
+    }
+
+    function showLocalIPResult(resultDiv, data) {
+      resultDiv.className = 'result-container result-local';
+      resultDiv.innerHTML = `
+        <div class="info-row">
+          <span class="info-label">🔒 IP Ingresada:</span>
+          <span class="info-value"><strong>${data.originalIP}</strong> (privada)</span>
+        </div>
+        
+        <div class="info-row">
+          <span class="info-label">📡 Resultado:</span>
+          <span class="info-value">No se puede geolocalizar ← Es una IP interna</span>
+        </div>
+        
+        <div class="info-row">
+          <span class="info-label">🌐 IP Pública:</span>
+          <span class="info-value"><strong>${data.ip}</strong></span>
+        </div>
+        
+        <div class="info-note">
+          <i class="fas fa-info-circle"></i> 
+          <strong>¿Por qué?</strong> Las IPs privadas (192.168.x.x, 10.x.x.x) solo funcionan 
+          dentro de redes locales. Para geolocalización, se usa la IP pública de tu router.
+        </div>
+      `;
+      resultDiv.style.display = 'block';
+    }
+
+    function showPublicIPResult(resultDiv, data, mapDiv) {
+      const isVPN = data.isVPN;
+      resultDiv.className = isVPN ? 'result-container result-vpn' : 'result-container result-public';
+      
+      let resultadoHTML = `
+        <div class="info-row">
+          <span class="info-label">🌐 IP Pública:</span>
+          <span class="info-value"><strong>${data.ip}</strong></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">🏙️ Ciudad:</span>
+          <span class="info-value">${data.city}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">🗺️ Región:</span>
+          <span class="info-value">${data.region}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">🇺🇳 País:</span>
+          <span class="info-value">${data.country}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">🏢 Proveedor:</span>
+          <span class="info-value">${data.org}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">⏰ Zona Horaria:</span>
+          <span class="info-value">${data.timezone}</span>
+        </div>
+      `;
+      
+      resultadoHTML += `
+        <div class="security-section">
+          <h4><i class="fas fa-shield-alt"></i> Análisis de Seguridad</h4>
+          
+          <div class="status-item">
+            <div class="status-icon ${data.isVPN ? 'status-warning' : 'status-success'}">
+              <i class="fas ${data.isVPN ? 'fa-user-secret' : 'fa-globe'}"></i>
+            </div>
+            <div>
+              <strong>${data.isVPN ? 'VPN/Proxy Detectado' : 'Conexión Directa'}</strong><br>
+              <small>${data.isVPN ? 'Esta IP pertenece a un servicio de intermediación' : 'Conexión estándar sin intermediarios'}</small>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      if (data.isVPN) {
+        resultadoHTML += `
+          <div class="info-note" style="background: #fffbeb; border-left: 4px solid var(--warning);">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Aviso de VPN:</strong> Esta IP pertenece a un proveedor de servicios. 
+            La ubicación mostrada puede no corresponder a tu ubicación física real.
+          </div>
+        `;
+      }
+      
+      resultDiv.innerHTML = resultadoHTML;
+      resultDiv.style.display = 'block';
+      
+      if (data.latitude && data.longitude) {
+        mapDiv.style.display = 'block';
+        const map = initMap();
+        map.setView([data.latitude, data.longitude], 10);
+        map.eachLayer(layer => { 
+          if (layer instanceof L.Marker) map.removeLayer(layer); 
+        });
+        
+        L.marker([data.latitude, data.longitude])
+          .addTo(map)
+          .bindPopup(`<b>${data.ip}</b><br>${data.city}, ${data.region}<br>${data.country}`)
+          .openPopup();
+      }
+    }
+
+    // ==================== DETECTOR WEBRTC ====================
+    async function detectPublicIP() {
+      try {
+        publicIPResult.innerHTML = "🔄 Detectando...";
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        publicIPResult.innerHTML = `📍 <strong>IP Pública:</strong> ${data.ip}`;
+      } catch (error) {
+        publicIPResult.innerHTML = "❌ Error detectando IP pública";
+      }
+    }
+
+    async function testWebRTCLeak() {
+      webrtcResults.innerHTML = "<div class='risk-card risk-medium'>🔄 Analizando conexiones WebRTC...</div>";
+      
+      try {
+        const leaks = await detectWebRTCLeaks();
+        displayWebRTCResults(leaks);
+      } catch (error) {
+        webrtcResults.innerHTML = `<div class='risk-card risk-medium'>❌ Error en el test: ${error.message}</div>`;
+      }
+    }
+
+    function detectWebRTCLeaks() {
+      return new Promise((resolve) => {
+        const leaks = {
+          localIP: null,
+          publicIP: null,
+          hasLeak: false,
+          connectionTypes: []
+        };
+
+        const RTCPeerConnection = window.RTCPeerConnection || 
+                                window.mozRTCPeerConnection || 
+                                window.webkitRTCPeerConnection;
+
+        if (!RTCPeerConnection) {
+          resolve({ error: "WebRTC no soportado en este navegador" });
+          return;
+        }
+
+        const pc = new RTCPeerConnection({ 
+          iceServers: [{ urls: "stun:stun.l.google.com:19302" }] 
+        });
+        
+        pc.onicecandidate = (event) => {
+          if (!event.candidate) {
+            setTimeout(() => {
+              pc.close();
+              resolve(leaks);
+            }, 1000);
+            return;
+          }
+          
+          const candidate = event.candidate.candidate;
+          console.log("Candidato ICE:", candidate);
+          
+          // Detectar IP local
+          const localIPMatch = candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3})/);
+          if (localIPMatch && isLocalIP(localIPMatch[1])) {
+            leaks.localIP = localIPMatch[1];
+          }
+          
+          // Detectar IP pública en candidatos srflx (server reflexive)
+          if (candidate.includes('srflx')) {
+            const publicIPMatch = candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3})/);
+            if (publicIPMatch && !isLocalIP(publicIPMatch[1])) {
+              leaks.publicIP = publicIPMatch[1];
+              leaks.hasLeak = true;
+            }
+          }
+        };
+
+        pc.createDataChannel("");
+        pc.createOffer()
+          .then(offer => pc.setLocalDescription(offer))
+          .catch(error => {
+            console.error("Error creando oferta:", error);
+            pc.close();
+            resolve({ error: "Error en conexión WebRTC" });
+          });
+
+        setTimeout(() => {
+          pc.close();
+          resolve(leaks);
+        }, 3000);
+      });
+    }
+
+    function displayWebRTCResults(leaks) {
+      let html = '';
+      
+      if (leaks.error) {
+        html = `<div class="risk-card risk-medium">⚠️ ${leaks.error}</div>`;
+      } else {
+        if (leaks.localIP) {
+          html += `<div class="risk-card risk-low">
+                      ✅ <strong>IP Local Detectada:</strong> ${leaks.localIP}
+                  </div>`;
+        }
+        
+        if (leaks.hasLeak && leaks.publicIP) {
+          html += `<div class="risk-card risk-high">
+                      🚨 <strong>FUGA WEBRTC DETECTADA:</strong> IP ${leaks.publicIP} expuesta
+                      <br><small>Tu VPN/proxy está filtrando tu IP real a través de WebRTC</small>
+                  </div>`;
+        } else if (!leaks.hasLeak) {
+          html += `<div class="risk-card risk-low">
+                      ✅ <strong>Sin fugas WebRTC detectadas</strong>
+                      <br><small>No se encontraron IPs públicas en los candidatos ICE</small>
+                  </div>`;
+        }
+        
+        if (!leaks.localIP && !leaks.publicIP) {
+          html += `<div class="risk-card risk-medium">
+                      🔍 <strong>No se detectaron candidatos ICE</strong>
+                      <br><small>El navegador podría estar bloqueando WebRTC</small>
+                  </div>`;
+        }
+      }
+      
+      webrtcResults.innerHTML = html;
+      generateRecommendations(leaks);
+    }
+
+    function analyzeBrowserFingerprint() {
+      const fingerprint = {
+        userAgent: navigator.userAgent.substring(0, 80) + '...',
+        language: navigator.language,
+        platform: navigator.platform,
+        cookiesEnabled: navigator.cookieEnabled ? 'Sí' : 'No',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        screenResolution: `${screen.width}x${screen.height}`,
+        colorDepth: `${screen.colorDepth} bits`,
+        plugins: navigator.plugins.length
+      };
+
+      let html = `<div class="risk-card risk-medium">
+                  <h4>📊 Huella Digital del Navegador</h4>`;
+      
+      Object.entries(fingerprint).forEach(([key, value]) => {
+        html += `<div style="margin: 8px 0;"><strong>${key}:</strong> ${value}</div>`;
+      });
+      
+      html += `<br><small>⚠️ Esta información puede ser utilizada para tracking y fingerprinting</small>
+              </div>`;
+      
+      fingerprintResults.innerHTML = html;
+    }
+
+    function generateRecommendations(leaks) {
+      let html = '<div class="risk-card risk-medium"><h4>🛡️ Recomendaciones de Seguridad</h4>';
+      
+      if (leaks.hasLeak) {
+        html += `
+          <div style="margin: 10px 0;"><strong>🔧 Acciones inmediatas:</strong></div>
+          <ul style="margin-left: 20px;">
+            <li>Instala la extensión "WebRTC Leak Prevent"</li>
+            <li>En Firefox: about:config → media.peerconnection.enabled = false</li>
+            <li>En Chrome: usa extensiones para bloquear WebRTC</li>
+            <li>Verifica que tu VPN tenga protección contra fugas WebRTC</li>
+            <li>Considera usar navegadores como Brave que bloquean WebRTC por defecto</li>
+          </ul>
+        `;
+      } else {
+        html += `
+          <div style="margin: 10px 0;"><strong>✅ Buenas prácticas:</strong></div>
+          <ul style="margin-left: 20px;">
+            <li>Mantén tu navegador actualizado</li>
+            <li>Usa HTTPS siempre que sea posible</li>
+            <li>Considera usar uBlock Origin para bloqueo de trackers</li>
+            <li>Revisa regularmente tus configuraciones de privacidad</li>
+            <li>Usa navegadores enfocados en privacidad (Firefox, Brave)</li>
+          </ul>
+        `;
+      }
+      
+      html += `</div>`;
+      recommendations.innerHTML = html;
+    }
+
+    async function runFullSecurityScan() {
+      fullScanResults.innerHTML = `
+        <div class="loading">
+          <div class="loading-spinner"></div>
+          <p>Ejecutando análisis de seguridad completo...</p>
+        </div>
+      `;
+
+      try {
+        // Obtener información de IP
+        const ipInfo = await getIPInfo('');
+        
+        // Ejecutar test WebRTC
+        const webrtcLeaks = await detectWebRTCLeaks();
+        
+        // Generar reporte
+        generateSecurityReport(ipInfo, webrtcLeaks);
+        
+      } catch (error) {
+        fullScanResults.innerHTML = `
+          <div class="risk-card risk-high">
+            ❌ Error en el análisis completo: ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    function generateSecurityReport(ipInfo, webrtcLeaks) {
+      let score = 100;
+      let issues = [];
+      let recommendations = [];
+
+      // Evaluar VPN
+      if (ipInfo.isVPN) {
+        score -= 10;
+        issues.push("Conexión a través de VPN/Proxy detectada");
+        recommendations.push("Verifica que tu VPN sea confiable y no registre tus datos");
+      }
+
+      // Evaluar WebRTC
+      if (webrtcLeaks.hasLeak) {
+        score -= 30;
+        issues.push("Fuga crítica de WebRTC detectada");
+        recommendations.push("Bloquea WebRTC inmediatamente para proteger tu IP real");
+      } else if (webrtcLeaks.localIP) {
+        score -= 5;
+        issues.push("WebRTC activo pero sin fugas detectadas");
+        recommendations.push("Considera deshabilitar WebRTC para mayor seguridad");
+      }
+
+      // Evaluar éxito de la conexión
+      if (!ipInfo.success) {
+        score -= 15;
+        issues.push("Problemas de conectividad con servicios externos");
+        recommendations.push("Verifica tu conexión a internet");
+      }
+
+      const statusClass = score >= 80 ? 'risk-low' : score >= 60 ? 'risk-medium' : 'risk-high';
+      const statusIcon = score >= 80 ? '✅' : score >= 60 ? '⚠️' : '🚨';
+
+      const html = `
+        <div class="risk-card ${statusClass}">
+          <h3>${statusIcon} Reporte de Seguridad - Puntuación: ${score}/100</h3>
+          
+          <div class="info-row">
+            <span class="info-label">IP Analizada:</span>
+            <span class="info-value">${ipInfo.ip}</span>
+          </div>
+          
+          <div class="info-row">
+            <span class="info-label">Estado VPN:</span>
+            <span class="info-value">${ipInfo.isVPN ? '🔍 Detectada' : '✅ No detectada'}</span>
+          </div>
+          
+          <div class="info-row">
+            <span class="info-label">Fuga WebRTC:</span>
+            <span class="info-value">${webrtcLeaks.hasLeak ? '🚨 Crítica' : webrtcLeaks.localIP ? '⚠️ Activo' : '✅ Controlada'}</span>
+          </div>
+          
+          ${issues.length > 0 ? `
+            <div class="security-section">
+              <h4><i class="fas fa-exclamation-triangle"></i> Problemas Detectados</h4>
+              <ul>
+                ${issues.map(issue => `<li>${issue}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+          
+          ${recommendations.length > 0 ? `
+            <div class="security-section">
+              <h4><i class="fas fa-lightbulb"></i> Recomendaciones</h4>
+              <ul>
+                ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+              </ul>
+            </div>
+          ` : `
+            <div class="security-section">
+              <h4><i class="fas fa-check-circle"></i> Estado Óptimo</h4>
+              <p>Tu configuración de seguridad es excelente. Mantén tus buenas prácticas.</p>
+            </div>
+          `}
+        </div>
+      `;
+
+      fullScanResults.innerHTML = html;
+      securityReport.innerHTML = html;
+    }
+
+    // ==================== INICIALIZACIÓN ====================
+    document.addEventListener('DOMContentLoaded', function() {
+      // Inicializar mapa
+      initMap();
+      
+      // Cargar IP automáticamente
+      setTimeout(async () => {
+        try {
+          const publicIPResponse = await fetch('https://api.ipify.org?format=json');
+          const publicIPData = await publicIPResponse.json();
+          document.getElementById('ip').value = publicIPData.ip;
+        } catch (error) {
+          console.log('No se pudo obtener la IP automáticamente');
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

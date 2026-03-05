@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comunidad | FORENCOMMUNITY</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1E3A8A;
+      --primary-dark: #162c6d;
+      --secondary: #458091;
+      --accent: #FF9E1A;
+      --dark: #171717;
+      --light: #F9FAFB;
+      --muted: #6B7280;
+      --maxw: 1000px;
+      --radius: 12px;
+      --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      padding: 20px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-img {
+      height: 50px;
+      width: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botón volver debajo del logo */
+    .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-volver i {
+      margin-right: 8px;
+    }
+
+    .btn-volver:hover {
+      background: white;
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* Contenedor principal */
+    .container {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      color: var(--primary);
+      text-align: center;
+      margin: 20px 0 30px;
+      font-size: 2.2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 30px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 25px;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .card h2 {
+      color: var(--secondary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+    }
+
+    .card h2 i {
+      margin-right: 12px;
+      color: var(--accent);
+    }
+
+    .card p {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 1.1rem;
+    }
+
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 30px 0;
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .header-content {
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .logo {
+        font-size: 1.5rem;
+      }
+      
+      .logo-img {
+        height: 40px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .card {
+        padding: 20px;
+      }
+      
+      .card h2 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <img src="/static/images/Logo_FOREN.jpg" alt="FORENCOMMUNITY" class="logo-img">
+      </div>
+      <!-- Botón Volver debajo del logo -->
+      <a href="/" class="btn-volver">
+        <i class="fas fa-arrow-left"></i> Volver al Inicio
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1><i class="fas fa-users"></i> Nuestra Comunidad</h1>
+    
+    <div class="card">
+      <h2><i class="fas fa-bullseye"></i> Misión</h2>
+      <p>
+        Fomentar una cultura de ciberseguridad y protección de datos, brindando 
+        herramientas y conocimientos accesibles para que cualquier persona 
+        pueda resguardar su privacidad en el mundo digital.
+      </p>
+    </div>
+    <div class="card">
+      <h2><i class="fas fa-eye"></i> Visión</h2>
+      <p>
+        Ser una comunidad referente en la defensa de la privacidad digital, 
+        donde la información y la tecnología se utilicen de manera responsable, 
+        garantizando un internet más seguro para todos.
+      </p>
+    </div>
+  </div>
+  <footer>
+    <p>&copy; 2025 FORENCOMMUNITY · Tu privacidad es tu derecho</p>
+  </footer>
+</body>
+</html>

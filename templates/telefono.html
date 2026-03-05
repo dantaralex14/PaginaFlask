@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de Teléfono | FORENCOMMUNITY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* TUS ESTILOS ORIGINALES - FUNCIONALES */
+        :root {
+            --primary: #1E3A8A;
+            --primary-dark: #162c6d;
+            --secondary: #458091;
+            --accent: #FF9E1A;
+            --light: #F9FAFB;
+            --dark: #171717;
+            --gray: #6B7280;
+            --muted: #383868;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --maxw: 1200px;
+            --radius: 12px;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --info: #2563eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            max-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            margin-left: 14px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-volver i {
+            margin-right: 8px;
+        }
+
+        .btn-volver:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .card h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card-description {
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+
+        input[type="tel"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+        }
+
+        .btn i {
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: var(--radius);
+            display: none;
+        }
+
+        .result-seguro {
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .result-riesgo {
+            background: #fffbeb;
+            border: 2px solid #fde68a;
+            color: #d97706;
+        }
+
+        .result-peligro {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            color: #dc2626;
+        }
+
+        .result-error {
+            background: #f3f4f6;
+            border: 2px solid #d1d5db;
+            color: #6b7280;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .info-label {
+            font-weight: 600;
+            min-width: 150px;
+            color: var(--muted);
+        }
+
+        .info-value {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            background: #f8fafc;
+        }
+
+        .status-icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .status-success {
+            color: var(--success);
+        }
+
+        .status-warning {
+            color: var(--warning);
+        }
+
+        .status-danger {
+            color: var(--danger);
+        }
+
+        .status-info {
+            color: var(--info);
+        }
+
+        .info-note {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .security-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            border-left: 4px solid var(--info);
+        }
+
+        .security-section h4 {
+            margin-bottom: 10px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .security-section h4 i {
+            margin-right: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+
+        .loading-steps {
+            margin-top: 20px;
+        }
+
+        .loading-step {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-step.active {
+            opacity: 1;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .risk-bar {
+            height: 20px;
+            background: #ddd;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .risk-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+
+        .low-risk { background: var(--success); }
+        .medium-risk { background: var(--warning); }
+        .high-risk { background: var(--danger); }
+
+        .risk-assessment {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .analysis-details {
+            margin: 20px 0;
+        }
+
+        .analysis-section {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid var(--info);
+        }
+
+        .analysis-section h4 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        @media (max-width: 900px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            nav {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            nav a {
+                margin: 5px;
+            }
+            
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .info-label {
+                min-width: auto;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+            
+            .card h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 12px;">
+                    <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+                </a>
+            </div>
+            <nav>
+                <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="/" class="btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver al Inicio
+        </a>
+        
+        <div class="card">
+            <h1><i class="fas fa-phone"></i> Verificador de Teléfono</h1>
+            <p class="card-description">Analiza cualquier número telefónico para detectar riesgos de spam, fraudes y seguridad</p>
+            
+            <div class="form-group">
+                <label for="phoneInput">Número de teléfono:</label>
+                <input type="tel" id="phoneInput" placeholder="Ejemplo: +52 312 118 7312, 55 1234 5678, 312-118-7312" value="52 312 118 7312">
+                <small style="color: var(--gray); margin-top: 5px; display: block;">
+                    <i class="fas fa-info-circle"></i> Acepta cualquier formato: con/sin código de país, espacios, guiones
+                </small>
+            </div>
+
+            <button class="btn" onclick="checkPhone()">
+                <i class="fas fa-search"></i> Verificar Número
+            </button>
+            
+            <div class="loading" id="loadingPhone">
+                <div class="loading-spinner"></div>
+                <p>Analizando número telefónico...</p>
+                <div class="loading-steps">
+                    <div class="loading-step" id="step1">
+                        <i class="fas fa-search"></i> Verificando formato
+                    </div>
+                    <div class="loading-step" id="step2">
+                        <i class="fas fa-database"></i> Consultando bases de datos
+                    </div>
+                    <div class="loading-step" id="step3">
+                        <i class="fas fa-chart-bar"></i> Generando análisis
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-container" id="result"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 FORENCOMMUNITY · Tu privacidad es tu derecho</p>
+    </footer>
+
+    <script>
+        // CÓDIGO SIMPLIFICADO QUE SÍ FUNCIONA
+        
+        // Base de datos simple
+        const reportedNumbers = {
+            '+521551234567': { type: 'spam', reports: 15 },
+            '+521553215678': { type: 'fraud', reports: 8 },
+            '+521557894561': { type: 'scam', reports: 22 },
+            '+523121187312': { type: 'información', reports: 0 }
+        };
+
+        // Función principal - SIMPLE Y FUNCIONAL
+        async function checkPhone() {
+            const phoneInput = document.getElementById('phoneInput').value;
+            const loading = document.getElementById('loadingPhone');
+            const resultDiv = document.getElementById('result');
+            
+            if (!phoneInput || phoneInput.trim().length < 7) {
+                showError('Por favor ingresa un número de teléfono válido');
+                return;
+            }
+
+            loading.style.display = 'block';
+            resultDiv.style.display = 'none';
+            
+            try {
+                const resp = await fetch('/api/check-phone', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: phoneInput })
+                });
+
+                loading.style.display = 'none';
+
+                const data = await resp.json();
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                // Construir resultado a partir de datos reales
+                const analysis = {
+                    originalPhone: phoneInput,
+                    cleanPhone: data.phone,
+                    formattedPhone: data.formato_internacional || data.phone,
+                    nationalFormat: data.formato_nacional || '',
+                    isValid: data.es_valido,
+                    country: data.pais || 'Desconocido',
+                    countryCode: data.codigo_pais || '',
+                    carrier: data.operadora || 'No disponible',
+                    lineType: data.tipo_linea || 'Desconocido',
+                    riskLevel: data.risk_level || 'bajo',
+                    riskFactors: data.reasons || [],
+                    timezones: data.zonas_horarias || [],
+                    fuente: data.fuente || 'Análisis real',
+                    nota: data.nota || ''
+                };
+
+                showResultReal(analysis);
+
+            } catch (e) {
+                loading.style.display = 'none';
+                showError('Error de conexión: ' + e.message);
+            }
+        }
+
+        function showResultReal(analysis) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+
+            const riskColors = { bajo: '#10B981', medio: '#F59E0B', alto: '#EF4444' };
+            const riskLabels = { bajo: 'BAJO RIESGO', medio: 'RIESGO MEDIO', alto: 'ALTO RIESGO' };
+            const riskIcons = { bajo: 'check-circle', medio: 'exclamation-triangle', alto: 'times-circle' };
+
+            const riskColor = riskColors[analysis.riskLevel] || '#6B7280';
+            const riskLabel = riskLabels[analysis.riskLevel] || 'DESCONOCIDO';
+            const riskIcon = riskIcons[analysis.riskLevel] || 'question-circle';
+
+            const factoresHTML = analysis.riskFactors.length > 0
+                ? analysis.riskFactors.map(f => `<li style="margin:6px 0;"><i class="fas fa-exclamation-circle" style="color:${riskColor};margin-right:8px;"></i>${f}</li>`).join('')
+                : `<li style="margin:6px 0;"><i class="fas fa-check-circle" style="color:#10B981;margin-right:8px;"></i>Sin factores de riesgo conocidos</li>`;
+
+            resultDiv.innerHTML = `
+                <div style="border-radius: 12px; padding: 25px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                    
+                    <!-- Nivel de riesgo -->
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <div style="display: inline-flex; align-items: center; gap: 12px; background: ${riskColor}18; border: 2px solid ${riskColor}; border-radius: 50px; padding: 12px 25px;">
+                            <i class="fas fa-${riskIcon}" style="color: ${riskColor}; font-size: 1.5rem;"></i>
+                            <span style="font-size: 1.3rem; font-weight: 700; color: ${riskColor};">${riskLabel}</span>
+                        </div>
+                    </div>
+
+                    <!-- Datos del número -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div style="background: #f8fafc; border-radius: 8px; padding: 15px;">
+                            <div style="color: var(--gray); font-size: 0.85rem;">Número Formateado</div>
+                            <div style="font-weight: 700; font-size: 1.1rem; margin-top: 4px; color: var(--dark);">${analysis.formattedPhone}</div>
+                            ${analysis.nationalFormat ? `<div style="color: var(--gray); font-size: 0.85rem;">${analysis.nationalFormat}</div>` : ''}
+                        </div>
+                        <div style="background: #f8fafc; border-radius: 8px; padding: 15px;">
+                            <div style="color: var(--gray); font-size: 0.85rem;">País</div>
+                            <div style="font-weight: 700; font-size: 1.1rem; margin-top: 4px; color: var(--dark);">${analysis.country} ${analysis.countryCode ? '(' + analysis.countryCode + ')' : ''}</div>
+                        </div>
+                        <div style="background: #f8fafc; border-radius: 8px; padding: 15px;">
+                            <div style="color: var(--gray); font-size: 0.85rem;">Operadora</div>
+                            <div style="font-weight: 700; margin-top: 4px; color: var(--dark);">${analysis.carrier}</div>
+                        </div>
+                        <div style="background: #f8fafc; border-radius: 8px; padding: 15px;">
+                            <div style="color: var(--gray); font-size: 0.85rem;">Tipo de Línea</div>
+                            <div style="font-weight: 700; margin-top: 4px; color: var(--dark);">${analysis.lineType}</div>
+                        </div>
+                        <div style="background: ${analysis.isValid ? '#d1fae5' : '#fee2e2'}; border-radius: 8px; padding: 15px;">
+                            <div style="color: var(--gray); font-size: 0.85rem;">Validez</div>
+                            <div style="font-weight: 700; margin-top: 4px; color: ${analysis.isValid ? '#059669' : '#dc2626'};">
+                                <i class="fas fa-${analysis.isValid ? 'check' : 'times'}"></i> ${analysis.isValid ? 'Número válido' : 'Número inválido'}
+                            </div>
+                        </div>
+                        ${analysis.timezones.length > 0 ? `
+                        <div style="background: #f8fafc; border-radius: 8px; padding: 15px;">
+                            <div style="color: var(--gray); font-size: 0.85rem;">Zona Horaria</div>
+                            <div style="font-weight: 600; margin-top: 4px; color: var(--dark); font-size: 0.9rem;">${analysis.timezones[0]}</div>
+                        </div>` : ''}
+                    </div>
+
+                    <!-- Factores de riesgo -->
+                    <div style="background: #f8fafc; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                        <h4 style="color: var(--primary); margin-bottom: 10px;"><i class="fas fa-shield-alt"></i> Análisis de Seguridad</h4>
+                        <ul style="list-style: none; padding: 0;">${factoresHTML}</ul>
+                    </div>
+
+                    <!-- Fuente -->
+                    <div style="text-align: center; color: var(--gray); font-size: 0.8rem;">
+                        <i class="fas fa-database"></i> Fuente: ${analysis.fuente}
+                        ${analysis.nota ? `<br><small>${analysis.nota}</small>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Limpieza SIMPLE que SÍ funciona
+        function cleanPhoneSimple(phone) {
+            // Quitar todo excepto números
+            let cleaned = phone.replace(/\D/g, '');
+            
+            // Si empieza con 52 y tiene 12 dígitos, agregar +
+            if (cleaned.startsWith('52') && cleaned.length === 12) {
+                return '+' + cleaned;
+            }
+            // Si tiene 10 dígitos, asumir México
+            else if (cleaned.length === 10) {
+                return '+52' + cleaned;
+            }
+            // Si ya tiene más de 10 dígitos, agregar +
+            else if (cleaned.length > 10 && !cleaned.startsWith('+')) {
+                return '+' + cleaned;
+            }
+            
+            return cleaned;
+        }
+
+        // Análisis SIMPLE
+        function analyzePhoneSimple(cleanPhone, originalPhone) {
+            // Información básica del número
+            const country = cleanPhone.startsWith('+52') ? 'México' : 'Internacional';
+            const areaCode = cleanPhone.startsWith('+52') ? cleanPhone.substring(3, 6) : 'N/A';
+            
+            // Determinar riesgo básico
+            let riskScore = 0;
+            let riskLevel = "BAJO";
+            let factors = [];
+            
+            // Verificar en base de datos
+            if (reportedNumbers[cleanPhone]) {
+                const report = reportedNumbers[cleanPhone];
+                if (report.reports > 0) {
+                    riskScore = Math.min(report.reports * 10, 80);
+                    riskLevel = riskScore >= 70 ? "ALTO" : riskScore >= 40 ? "MEDIO" : "BAJO";
+                    factors.push(`Reportado como ${report.type} (${report.reports} reportes)`);
+                } else {
+                    factors.push('Número verificado - sin reportes');
+                }
+            } else {
+                // Análisis básico de patrones
+                const digits = cleanPhone.replace('+', '');
+                if (/(\d)\1{4,}/.test(digits)) {
+                    riskScore += 30;
+                    factors.push('Patrón: Números repetidos');
+                }
+                if (/12345|23456|34567/.test(digits)) {
+                    riskScore += 20;
+                    factors.push('Patrón: Secuencia numérica');
+                }
+                
+                riskLevel = riskScore >= 50 ? "MEDIO" : "BAJO";
+                factors.push('No encontrado en bases de datos reportadas');
+            }
+            
+            return {
+                original: originalPhone,
+                clean: cleanPhone,
+                country: country,
+                areaCode: areaCode,
+                riskScore: riskScore,
+                riskLevel: riskLevel,
+                factors: factors,
+                timestamp: new Date().toLocaleString()
+            };
+        }
+
+        // Mostrar resultado SIMPLE
+        function showResultSimple(analysis) {
+            const riskClass = analysis.riskLevel === "ALTO" ? "peligro" : 
+                            analysis.riskLevel === "MEDIO" ? "riesgo" : "seguro";
+            
+            const riskColor = analysis.riskLevel === "ALTO" ? "#dc2626" : 
+                            analysis.riskLevel === "MEDIO" ? "#d97706" : "#16a34a";
+            
+            let html = `
+                <div class="result-${riskClass}">
+                    <h3><i class="fas fa-chart-bar"></i> Análisis Completado</h3>
+                    
+                    <div class="info-row">
+                        <span class="info-label">📞 Número analizado:</span>
+                        <span class="info-value"><strong>${analysis.original}</strong></span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">🔍 Número limpio:</span>
+                        <span class="info-value">${analysis.clean}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">🌎 País:</span>
+                        <span class="info-value">${analysis.country}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">📅 Fecha de análisis:</span>
+                        <span class="info-value">${analysis.timestamp}</span>
+                    </div>
+                </div>
+
+                <div class="risk-assessment">
+                    <h4><i class="fas fa-chart-line"></i> Evaluación de Riesgo: 
+                        <span style="color: ${riskColor}">${analysis.riskLevel}</span>
+                    </h4>
+                    <div class="risk-bar">
+                        <div class="risk-fill ${analysis.riskLevel.toLowerCase()}-risk" 
+                             style="width: ${analysis.riskScore}%"></div>
+                    </div>
+                    <p><strong>Puntaje de riesgo:</strong> ${analysis.riskScore}/100</p>
+                </div>
+            `;
+
+            // Factores de riesgo
+            if (analysis.factors.length > 0) {
+                html += `<div class="analysis-section">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Factores Detectados</h4>
+                    <ul style="padding-left: 20px;">`;
+                
+                analysis.factors.forEach(factor => {
+                    html += `<li style="margin-bottom: 8px;">${factor}</li>`;
+                });
+                
+                html += `</ul></div>`;
+            }
+
+            // Recomendaciones
+            const recommendations = analysis.riskLevel === "ALTO" ? [
+                "🚫 NO contestes llamadas de este número",
+                "🔕 Bloquéalo inmediatamente",
+                "📢 Reporta como spam"
+            ] : analysis.riskLevel === "MEDIO" ? [
+                "⚠️ Ten precaución al responder",
+                "🔍 Verifica la identidad del llamante",
+                "🚫 No compartas información sensible"
+            ] : [
+                "✅ Parece ser un número seguro",
+                "✅ Puedes responder con normalidad", 
+                "🔒 Mantén precauciones básicas"
+            ];
+
+            html += `<div class="security-section">
+                <h4><i class="fas fa-lightbulb"></i> Recomendaciones</h4>`;
+            
+            recommendations.forEach(rec => {
+                html += `<div class="status-item">
+                    <i class="fas fa-check-circle status-success"></i>
+                    ${rec}
+                </div>`;
+            });
+            
+            html += `</div>`;
+
+            document.getElementById('result').innerHTML = html;
+            document.getElementById('result').className = `result-container result-${riskClass}`;
+            document.getElementById('result').style.display = 'block';
+        }
+
+        function showError(message) {
+            document.getElementById('result').innerHTML = `
+                <div class="result-error">
+                    <h3><i class="fas fa-exclamation-circle"></i> Error</h3>
+                    <p>${message}</p>
+                    <p><strong>Ejemplos que SÍ funcionan:</strong></p>
+                    <ul>
+                        <li>52 312 118 7312</li>
+                        <li>3121187312</li>
+                        <li>+52 312 118 7312</li>
+                        <li>312-118-7312</li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('result').className = 'result-container result-error';
+            document.getElementById('result').style.display = 'block';
+        }
+
+        // Event listener para Enter
+        document.getElementById('phoneInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPhone();
+            }
+        });
+
+        // Auto-focus al cargar
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('phoneInput').focus();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

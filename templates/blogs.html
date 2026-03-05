@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogs Recomendados | FORENCOMMUNITY</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1E3A8A;
+      --primary-dark: #162c6d;
+      --secondary: #458091;
+      --accent: #FF9E1A;
+      --light: #F9FAFB;
+      --dark: #171717;
+      --gray: #6B7280;
+      --muted: #383868;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 0;
+    }
+    
+    /* Header reorganizado */
+    header { 
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      padding: 15px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo-img {
+      height: 50px;
+      width: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .site-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    /* Navegación separada del logo */
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    
+    nav a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Botón volver a la izquierda */
+    .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-volver i {
+      margin-right: 8px;
+    }
+
+    .btn-volver:hover {
+      background: white;
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .container { 
+      max-width: 800px; 
+      margin: 30px auto; 
+      padding: 30px; 
+      background: white; 
+      border-radius: 12px; 
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    h1 { 
+      color: var(--secondary); 
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    p {
+      color: var(--muted);
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+    
+    ul { 
+      list-style: none; 
+      padding: 0; 
+      margin-bottom: 30px;
+    }
+    
+    li { 
+      margin: 20px 0; 
+      padding: 15px;
+      background: var(--light);
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+    
+    li:hover {
+      transform: translateX(5px);
+    }
+    
+    a { 
+      text-decoration: none; 
+      color: var(--primary); 
+      font-weight: bold; 
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    a:hover { 
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+    
+    /* Botón de volver al inicio (también en la parte inferior) */
+    .btn {
+      background: var(--primary);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn i {
+      margin-right: 8px;
+    }
+    
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .btn-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 20px 0;
+      margin-top: 50px;
+      text-align: center;
+    }
+    
+    @media (max-width: 900px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+      }
+      
+      nav {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .btn-volver {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <!-- Botón de volver a la izquierda -->
+      <a href="index.html" class="btn-volver">
+        <i class="fas fa-arrow-left"></i> Volver al inicio
+      </a>
+      
+      <div class="logo">
+        <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+      </div>
+      <nav>
+            <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+      </nav>
+    </div>
+  </header>
+  
+  <div class="container">
+    <h1>Blogs Recomendados</h1>
+    <p>
+      Aquí encontrarás enlaces a blogs confiables sobre <strong>ciberseguridad y privacidad digital</strong> que recomendamos en FORENCOMMUNITY:
+    </p>
+    
+    <ul>
+      <li>🌍 <a href="https://www.derechosdigitales.org/" target="_blank">Derechos Digitales</a></li>
+      <li>🛡️ <a href="https://www.kaspersky.es/blog/" target="_blank">Kaspersky Blog en Español</a></li>
+      <li>🔒 <a href="https://www.incibe.es/protege-tu-empresa/blog" target="_blank">INCIBE Blog (Instituto Nacional de Ciberseguridad - España)</a></li>
+      <li>📚 <a href="https://www.welivesecurity.com/la-es/" target="_blank">WeLiveSecurity (ESET en Español)</a></li>
+    </ul>
+    
+    <div class="btn-container">
+      <a href="/" class="btn">
+        <i class="fas fa-home"></i> Volver al Inicio
+      </a>
+    </div>
+  </div>
+  
+  <footer>
+    © 2025 Proyecto de concientización sobre privacidad — Aviso de privacidad | Contacto
+  </footer>
+</body>
+</html>

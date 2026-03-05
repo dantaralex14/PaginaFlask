@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Avanzada de Puertos y Seguridad | FORENCOMMUNITY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-dark: #162c6d;
+            --secondary: #458091;
+            --accent: #FF9E1A;
+            --light: #F9FAFB;
+            --dark: #171717;
+            --gray: #6B7280;
+            --muted: #383868;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --maxw: 1200px;
+            --radius: 12px;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --info: #2563eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            max-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            margin-left: 14px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+        }
+
+        .container {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-volver i {
+            margin-right: 8px;
+        }
+
+        .btn-volver:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .card h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card-description {
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Content Sections */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section h3 {
+            color: var(--secondary);
+            margin: 25px 0 15px 0;
+            font-size: 1.4rem;
+        }
+
+        /* Port Grid */
+        .ports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .port-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--info);
+            transition: transform 0.3s ease;
+        }
+
+        .port-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .port-card.critical {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        .port-card.warning {
+            border-left-color: var(--warning);
+            background: #fffbeb;
+        }
+
+        .port-card.safe {
+            border-left-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .port-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .port-number {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .port-risk {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .risk-critical { background: var(--danger); }
+        .risk-high { background: #ea580c; }
+        .risk-medium { background: var(--warning); }
+        .risk-low { background: var(--success); }
+
+        .port-service {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .port-description {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .port-vulnerabilities {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .vuln-item {
+            margin: 8px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .vuln-item:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+        }
+
+        /* Case Studies */
+        .case-study {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .case-study h4 {
+            color: #0369a1;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .case-timeline {
+            margin: 20px 0;
+            padding-left: 20px;
+            border-left: 3px solid #0ea5e9;
+        }
+
+        .timeline-item {
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .timeline-item:before {
+            content: "→";
+            position: absolute;
+            left: -25px;
+            color: #0ea5e9;
+            font-weight: bold;
+        }
+
+        /* Command Examples */
+        .command-box {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            border-left: 4px solid var(--accent);
+        }
+
+        .command-comment {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        /* Best Practices */
+        .practice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .practice-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .practice-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .practice-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        /* Tool Table */
+        .tools-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .tools-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .tools-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tools-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .tool-tag {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .tag-free { background: #dcfce7; color: #166534; }
+        .tag-paid { background: #fef3c7; color: #92400e; }
+        .tag-open { background: #dbeafe; color: #1e40af; }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            nav {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            nav a {
+                margin: 5px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                justify-content: center;
+            }
+            
+            .ports-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+            
+            .card h1 {
+                font-size: 1.8rem;
+            }
+            
+            .practice-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tools-table {
+                font-size: 0.9rem;
+            }
+            
+            .tools-table th,
+            .tools-table td {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 12px;">
+                    <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+                </a>
+            </div>
+            <nav>
+            <a href="/">Inicio</a>
+            <a href="/#quienes-somos">Quiénes Somos</a>
+            <a href="/#recursos">Recursos</a>
+            <a href="/#comunidad">Comunidad</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+        <a href="/" class="btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver al Inicio
+        </a>
+        
+        <div class="card">
+            <h1><i class="fas fa-shield-alt"></i> Guía Avanzada de Puertos y Seguridad de Red</h1>
+            <p class="card-description">Domina la seguridad de puertos y redes con esta guía completa para profesionales</p>
+
+            <!-- Navegación por pestañas -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab(event, 'puertos')">
+                    <i class="fas fa-door-open"></i> Puertos Críticos
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'herramientas')">
+                    <i class="fas fa-tools"></i> Herramientas
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'casos')">
+                    <i class="fas fa-bug"></i> Casos Reales
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'consejos')">
+                    <i class="fas fa-graduation-cap"></i> Consejos Avanzados
+                </button>
+            </div>
+
+            <!-- Contenido de Puertos Críticos -->
+            <div id="puertos" class="tab-content active">
+                <div class="section">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Puertos Críticos y sus Riesgos</h2>
+                    <p>Los puertos son puertas de entrada a tus sistemas. Conocer cuáles son críticos te ayuda a proteger tu infraestructura.</p>
+                    
+                    <div class="ports-grid">
+                        <!-- Puerto 21 - FTP -->
+                        <div class="port-card critical">
+                            <div class="port-header">
+                                <div class="port-number">21</div>
+                                <div class="port-risk risk-critical">CRÍTICO</div>
+                            </div>
+                            <div class="port-service">FTP (File Transfer Protocol)</div>
+                            <div class="port-description">
+                                Protocolo de transferencia de archivos sin encriptación. Credenciales viajan en texto plano.
+                            </div>
+                            <div class="port-vulnerabilities">
+                                <div class="vuln-item">Ataques de fuerza bruta a credenciales</div>
+                                <div class="vuln-item">Sniffing de contraseñas</div>
+                                <div class="vuln-item">Banner grabbing para fingerprinting</div>
+                            </div>
+                        </div>
+
+                        <!-- Puerto 22 - SSH -->
+                        <div class="port-card safe">
+                            <div class="port-header">
+                                <div class="port-number">22</div>
+                                <div class="port-risk risk-low">SEGURO</div>
+                            </div>
+                            <div class="port-service">SSH (Secure Shell)</div>
+                            <div class="port-description">
+                                Conexión segura encriptada. Bien configurado es seguro, mal configurado es peligroso.
+                            </div>
+                            <div class="port-vulnerabilities">
+                                <div class="vuln-item">Ataques de fuerza bruta con diccionarios</div>
+                                <div class="vuln-item">Versiones vulnerables de OpenSSH</div>
+                                <div class="vuln-item">Claves SSH débiles o comprometidas</div>
+                            </div>
+                        </div>
+
+                        <!-- Puerto 23 - Telnet -->
+                        <div class="port-card critical">
+                            <div class="port-header">
+                                <div class="port-number">23</div>
+                                <div class="port-risk risk-critical">CRÍTICO</div>
+                            </div>
+                            <div class="port-service">Telnet</div>
+                            <div class="port-description">
+                                Protocolo antiguo sin encriptación. TODO viaja en texto plano. Extremadamente peligroso.
+                            </div>
+                            <div class="port-vulnerabilities">
+                                <div class="vuln-item">Intercepción completa de sesiones</div>
+                                <div class="vuln-item">Robo de credenciales en texto plano</div>
+                                <div class="vuln-item">Ataques de replay</div>
+                            </div>
+                        </div>
+
+                        <!-- Puerto 80/443 - Web -->
+                        <div class="port-card warning">
+                            <div class="port-header">
+                                <div class="port-number">80/443</div>
+                                <div class="port-risk risk-medium">MEDIO</div>
+                            </div>
+                            <div class="port-service">HTTP/HTTPS</div>
+                            <div class="port-description">
+                                Tráfico web. HTTP sin encriptar, HTTPS encriptado. Vulnerabilidades en aplicaciones web.
+                            </div>
+                            <div class="port-vulnerabilities">
+                                <div class="vuln-item">Ataques a aplicaciones web (SQLi, XSS)</div>
+                                <div class="vuln-item">Certificados SSL/TLS mal configurados</div>
+                                <div class="vuln-item">Servidores web vulnerables</div>
+                            </div>
+                        </div>
+
+                        <!-- Puerto 135-139 - NetBIOS -->
+                        <div class="port-card critical">
+                            <div class="port-header">
+                                <div class="port-number">135-139</div>
+                                <div class="port-risk risk-high">ALTO</div>
+                            </div>
+                            <div class="port-service">NetBIOS (Windows)</div>
+                            <div class="port-description">
+                                Servicios de red de Windows. Usados para compartir archivos e impresoras.
+                            </div>
+                            <div class="port-vulnerabilities">
+                                <div class="vuln-item">EternalBlue (WannaCry)</div>
+                                <div class="vuln-item">Enumeración de usuarios y recursos</div>
+                                <div class="vuln-item">Ataques SMB relay</div>
+                            </div>
+                        </div>
+
+                        <!-- Puerto 3389 - RDP -->
+                        <div class="port-card critical">
+                            <div class="port-header">
+                                <div class="port-number">3389</div>
+                                <div class="port-risk risk-critical">CRÍTICO</div>
+                            </div>
+                            <div class="port-service">RDP (Remote Desktop)</div>
+                            <div class="port-description">
+                                Escritorio remoto de Windows. Objetivo frecuente de ransomware y ataques.
+                            </div>
+                            <div class="port-vulnerabilities">
+                                <div class="vuln-item">BlueKeep (CVE-2019-0708)</div>
+                                <div class="vuln-item">Ataques de fuerza bruta masivos</div>
+                                <div class="vuln-item">Credential stuffing</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido de Herramientas -->
+            <div id="herramientas" class="tab-content">
+                <div class="section">
+                    <h2><i class="fas fa-toolbox"></i> Herramientas Esenciales</h2>
+                    <p>Conoce las herramientas que los profesionales usan para analizar y proteger puertos.</p>
+                    
+                    <table class="tools-table">
+                        <thead>
+                            <tr>
+                                <th>Herramienta</th>
+                                <th>Tipo</th>
+                                <th>Propósito</th>
+                                <th>Comando Ejemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Nmap</strong></td>
+                                <td><span class="tool-tag tag-free">Gratuita</span></td>
+                                <td>Escaneo de puertos y servicios</td>
+                                <td><code>nmap -sS -sV 192.168.1.1</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Masscan</strong></td>
+                                <td><span class="tool-tag tag-free">Gratuita</span></td>
+                                <td>Escaneo masivo ultrarrápido</td>
+                                <td><code>masscan -p1-65535 10.0.0.0/8</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Netcat</strong></td>
+                                <td><span class="tool-tag tag-free">Gratuita</span></td>
+                                <td>Herramienta de red multipropósito</td>
+                                <td><code>nc -zv 192.168.1.1 22</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Wireshark</strong></td>
+                                <td><span class="tool-tag tag-free">Gratuita</span></td>
+                                <td>Análisis de tráfico de red</td>
+                                <td><code>wireshark -i eth0</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Metasploit</strong></td>
+                                <td><span class="tool-tag tag-free">Gratuita</span></td>
+                                <td>Framework de pruebas de penetración</td>
+                                <td><code>use exploit/windows/smb/ms17_010_eternalblue</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nessus</strong></td>
+                                <td><span class="tool-tag tag-paid">Comercial</span></td>
+                                <td>Escáner de vulnerabilidades</td>
+                                <td>Interfaz gráfica</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Comandos Avanzados de Nmap</h3>
+                    <div class="command-box">
+                        <span class="command-comment"># Escaneo sigiloso (SYN scan) + detección de servicios</span><br>
+                        nmap -sS -sV -T4 192.168.1.0/24<br><br>
+                        
+                        <span class="command-comment"># Escaneo de vulnerabilidades con scripts</span><br>
+                        nmap --script vuln 192.168.1.1<br><br>
+                        
+                        <span class="command-comment"># Detección de sistema operativo</span><br>
+                        nmap -O 192.168.1.1<br><br>
+                        
+                        <span class="command-comment"># Escaneo completo con todos los scripts</span><br>
+                        nmap -sC -sV -O -p- 192.168.1.1
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido de Casos Reales -->
+            <div id="casos" class="tab-content">
+                <div class="section">
+                    <h2><i class="fas fa-history"></i> Casos Reales de Explotación</h2>
+                    <p>Estudia casos reales donde puertos mal configurados llevaron a brechas de seguridad masivas.</p>
+
+                    <div class="case-study">
+                        <h4><i class="fas fa-virus"></i> Caso 1: WannaCry - Puerto 445 SMB</h4>
+                        <p><strong>Vulnerabilidad:</strong> EternalBlue (MS17-010) en protocolo SMB</p>
+                        <p><strong>Impacto:</strong> 200,000+ computadoras infectadas en 150 países</p>
+                        
+                        <div class="case-timeline">
+                            <div class="timeline-item">
+                                <strong>Paso 1:</strong> Escaneo masivo buscando puerto 445 abierto
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Paso 2:</strong> Explotación de EternalBlue para ejecución remota de código
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Paso 3:</strong> Instalación del ransomware y cifrado de archivos
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Paso 4:</strong> Propagación automática a través de la red interna
+                            </div>
+                        </div>
+
+                        <div class="command-box">
+                            <span class="command-comment"># Cómo detectar sistemas vulnerables</span><br>
+                            nmap --script smb-vuln-ms17-010 192.168.1.0/24
+                        </div>
+                    </div>
+
+                    <div class="case-study">
+                        <h4><i class="fas fa-server"></i> Caso 2: Equifax - Puerto 443 HTTPS</h4>
+                        <p><strong>Vulnerabilidad:</strong> Apache Struts CVE-2017-5638</p>
+                        <p><strong>Impacto:</strong> 147 millones de registros personales expuestos</p>
+                        
+                        <div class="case-timeline">
+                            <div class="timeline-item">
+                                <strong>Paso 1:</strong> Aplicación web vulnerable en puerto 443
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Paso 2:</strong> Explotación de Struts para ejecutar comandos
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Paso 3:</strong> Movimiento lateral en la red interna
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Paso 4:</strong> Extracción masiva de datos de bases de datos
+                            </div>
+                        </div>
+
+                        <div class="command-box">
+                            <span class="command-comment"># Detección de servicios web vulnerables</span><br>
+                            nmap -sV --script http-vuln* 10.0.0.1
+                        </div>
+                    </div>
+
+                    <div class="case-study">
+                        <h4><i class="fas fa-user-secret"></i> Caso 3: Ataque RDP - Puerto 3389</h4>
+                        <p><strong>Vulnerabilidad:</strong> BlueKeep (CVE-2019-0708)</p>
+                        <p><strong>Impacto:</strong> Múltiples organizaciones comprometidas</p>
+                        
+                        <div class="case-timeline">
+                            <div class="timeline-item">
+                                <strong>Paso 1:</strong> Escaneo de internet buscando RDP expuesto
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Paso 2:</strong> Explotación de BlueKeep sin autenticación
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Paso 3:</strong> Ejecución de código como SYSTEM
+                            </div>
+                            <div class="timeline-item">
+                                <strong>Paso 4:</strong> Instalación de minería de criptomonedas
+                            </div>
+                        </div>
+
+                        <div class="command-box">
+                            <span class="command-comment"># Buscar RDP expuesto en tu red</span><br>
+                            nmap -p 3389 --script rdp-enum-encryption 192.168.1.0/24
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido de Consejos Avanzados -->
+            <div id="consejos" class="tab-content">
+                <div class="section">
+                    <h2><i class="fas fa-user-shield"></i> Consejos Avanzados de Seguridad</h2>
+                    <p>Mejora tu postura de seguridad con estas prácticas profesionales.</p>
+
+                    <div class="practice-grid">
+                        <div class="practice-card">
+                            <div class="practice-icon">
+                                <i class="fas fa-filter"></i>
+                            </div>
+                            <h3>Principio del Mínimo Privilegio</h3>
+                            <p>Solo abre los puertos estrictamente necesarios. Cierra todo lo demás.</p>
+                        </div>
+
+                        <div class="practice-card">
+                            <div class="practice-icon">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <h3>Segmentación de Red</h3>
+                            <p>Divide tu red en zonas de seguridad separadas con firewalls.</p>
+                        </div>
+
+                        <div class="practice-card">
+                            <div class="practice-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <h3>Monitoreo Continuo</h3>
+                            <p>Implementa SIEM para detectar escaneos y conexiones sospechosas.</p>
+                        </div>
+
+                        <div class="practice-card">
+                            <div class="practice-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <h3>Autenticación Fuerte</h3>
+                            <p>Usa 2FA y claves SSH en lugar de contraseñas para servicios críticos.</p>
+                        </div>
+                    </div>
+
+                    <h3>Checklist de Seguridad de Puertos</h3>
+                    <div class="command-box">
+                        <span class="command-comment"># 1. Identificar puertos abiertos</span><br>
+                        netstat -tulpn<br><br>
+                        
+                        <span class="command-comment"># 2. Escanear desde fuera</span><br>
+                        nmap -sS -p- tu_ip_publica<br><br>
+                        
+                        <span class="command-comment"># 3. Verificar servicios</span><br>
+                        nmap -sV -sC ip_del_servidor<br><br>
+                        
+                        <span class="command-comment"># 4. Buscar vulnerabilidades</span><br>
+                        nmap --script vuln ip_del_servidor
+                    </div>
+
+                    <h3>Configuración Segura de Firewall</h3>
+                    <div class="command-box">
+                        <span class="command-comment"># Ejemplo iptables - Política restrictiva por defecto</span><br>
+                        iptables -P INPUT DROP<br>
+                        iptables -P FORWARD DROP<br>
+                        iptables -P OUTPUT ACCEPT<br><br>
+                        
+                        <span class="command-comment"># Permitir solo lo necesario</span><br>
+                        iptables -A INPUT -p tcp --dport 22 -j ACCEPT  <span class="command-comment"># SSH</span><br>
+                        iptables -A INPUT -p tcp --dport 80 -j ACCEPT  <span class="command-comment"># HTTP</span><br>
+                        iptables -A INPUT -p tcp --dport 443 -j ACCEPT <span class="command-comment"># HTTPS</span><br>
+                        iptables -A INPUT -i lo -j ACCEPT              <span class="command-comment"># localhost</span>
+                    </div>
+
+                    <h3>Detección de Intrusos</h3>
+                    <div class="command-box">
+                        <span class="command-comment"># Monitorear conexiones sospechosas</span><br>
+                        netstat -an | grep ESTABLISHED<br><br>
+                        
+                        <span class="command-comment"># Buscar procesos escuchando en puertos</span><br>
+                        lsof -i -P | grep LISTEN<br><br>
+                        
+                        <span class="command-comment"># Verificar conexiones inusuales</span><br>
+                        ss -tulpn | grep -E ':(21|23|135|139|445|3389)'
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer>
+        <p>&copy; 2025 FORENCOMMUNITY · Guía Avanzada de Seguridad de Puertos</p>
+    </footer>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tabbuttons;
+            
+            // Ocultar todos los contenidos de pestañas
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            // Desactivar todos los botones de pestañas
+            tabbuttons = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].classList.remove("active");
+            }
+            
+            // Mostrar la pestaña específica y activar el botón
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Smooth scrolling para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

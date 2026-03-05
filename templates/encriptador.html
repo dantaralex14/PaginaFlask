@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encriptador Avanzado PRO | FORENCOMMUNITY</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1E3A8A;
+      --primary-dark: #162c6d;
+      --secondary: #458091;
+      --accent: #FF9E1A;
+      --light: #F9FAFB;
+      --dark: #171717;
+      --gray: #6B7280;
+      --muted: #383868;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --info: #2563eb;
+      --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --maxw: 1400px;
+      --radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: var(--maxw);
+      margin: 0 auto;
+    }
+
+    /* Header estilo index */
+    header {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      padding: 15px 30px;
+      border-radius: var(--radius);
+      margin-bottom: 30px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-img {
+      height: 50px;
+      width: auto;
+      max-width: 220px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      margin-left: 14px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--accent);
+    }
+
+    /* Botón volver estilo index */
+    .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .btn-volver i {
+      margin-right: 8px;
+    }
+
+    .btn-volver:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Cards estilo index */
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 30px;
+    }
+
+    .card h1 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .card-description {
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.1rem;
+    }
+
+    /* Tabs principales */
+    .main-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .main-tab {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .main-tab.active {
+      color: var(--primary);
+    }
+
+    .main-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Info tabs */
+    .info-tabs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .info-tab {
+      padding: 12px;
+      background: #f1f5f9;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .info-tab:hover {
+      background: #e2e8f0;
+    }
+
+    .info-tab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .info-content {
+      display: none;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .info-content.active {
+      display: block;
+    }
+
+    /* Grid layout */
+    .encryptor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .encryptor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Form elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    textarea, input, select {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+
+    textarea:focus, input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    /* Botones */
+    .btn-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      padding: 14px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      gap: 8px;
+    }
+
+    .btn i {
+      font-size: 1.1rem;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background: var(--success);
+    }
+
+    .btn-success:hover {
+      background: #0da271;
+    }
+
+    .btn-warning {
+      background: var(--warning);
+    }
+
+    .btn-warning:hover {
+      background: #d97706;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-copy {
+      background: var(--secondary);
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .btn-copy:hover {
+      background: #3a7080;
+    }
+
+    /* Resultado */
+    .resultado {
+      background: #f1f5f9;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 1.1rem;
+      text-align: left;
+      margin: 20px 0;
+      word-break: break-all;
+      border: 2px dashed #cbd5e1;
+      min-height: 100px;
+    }
+
+    .resultado:empty::before {
+      content: "El resultado aparecerá aquí...";
+      color: #94a3b8;
+      font-style: italic;
+      font-family: sans-serif;
+    }
+
+    /* Stats cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      padding: 20px;
+      border-radius: var(--radius);
+      text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    /* History panel */
+    .history-panel {
+      background: #f8fafc;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 30px;
+    }
+
+    .history-panel h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .history-list {
+      list-style: none;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #e2e8f0;
+      font-family: monospace;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 30px;
+      display: none;
+    }
+
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Alert messages */
+    .alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 8px;
+      color: white;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+
+    .alert-success { background: var(--success); }
+    .alert-warning { background: var(--warning); }
+    .alert-error { background: var(--danger); }
+    .alert-info { background: var(--info); }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Footer */
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 30px 0;
+      margin-top: 50px;
+      text-align: center;
+      border-radius: var(--radius);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+      }
+      
+      nav {
+        margin-top: 15px;
+        justify-content: center;
+      }
+      
+      nav a {
+        margin: 5px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 20px;
+      }
+      
+      .card h1 {
+        font-size: 1.8rem;
+      }
+      
+      .main-tabs {
+        flex-direction: column;
+      }
+      
+      .main-tab {
+        width: 100%;
+        text-align: center;
+      }
+      
+      .encryptor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header estilo index -->
+    <header>
+      <div class="logo">
+        <img src="/static/images/Logo_FOREN.png" alt="FORENCOMMUNITY" class="logo-img">
+      </div>
+      <nav>
+        <a href="/">Inicio</a>
+        <a href="/#quienes-somos">Quiénes Somos</a>
+        <a href="/#recursos">Recursos</a>
+        <a href="/#comunidad">Comunidad</a>
+      </nav>
+    </header>
+
+    <!-- Botón Volver estilo index -->
+    <a href="/" class="btn-volver">
+      <i class="fas fa-arrow-left"></i> Volver al Inicio
+    </a>
+
+    <!-- Contenedor de alertas -->
+    <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+
+    <!-- Card Principal -->
+    <div class="card">
+      <h1><i class="fas fa-lock"></i> Encriptador Avanzado PRO</h1>
+      <p class="card-description">Herramienta completa para cifrado, descifrado y análisis de hashes</p>
+      
+      <!-- Tabs principales -->
+      <div class="main-tabs">
+        <button class="main-tab active" onclick="switchTab('encryptor')">Cifrado/Descifrado</button>
+        <button class="main-tab" onclick="switchTab('comparator')">Comparador de Hashes</button>
+        <button class="main-tab" onclick="switchTab('analyzer')">Analizador</button>
+        <button class="main-tab" onclick="switchTab('history')">Historial</button>
+      </div>
+
+      <!-- TAB 1: CIFRADO/DESCIFRADO -->
+      <div id="encryptor" class="tab-content active">
+        <div class="info-tabs">
+          <div class="info-tab active" onclick="showAlgorithmInfo('base64')">Base64</div>
+          <div class="info-tab" onclick="showAlgorithmInfo('base32')">Base32</div>
+          <div class="info-tab" onclick="showAlgorithmInfo('md5')">MD5</div>
+          <div class="info-tab" onclick="showAlgorithmInfo('sha1')">SHA1</div>
+          <div class="info-tab" onclick="showAlgorithmInfo('sha256')">SHA256</div>
+          <div class="info-tab" onclick="showAlgorithmInfo('sha512')">SHA512</div>
+          <div class="info-tab" onclick="showAlgorithmInfo('aes')">AES</div>
+          <div class="info-tab" onclick="showAlgorithmInfo('rot13')">ROT13</div>
+          <div class="info-tab" onclick="showAlgorithmInfo('reverse')">Reverse</div>
+          <div class="info-tab" onclick="showAlgorithmInfo('caesar')">César</div>
+        </div>
+
+        <div class="info-content active" id="info-base64">
+          <h4><i class="fas fa-info-circle"></i> Base64</h4>
+          <p><strong>Codificación reversible</strong> que convierte datos binarios a ASCII. Muy usado para transferir datos en web.</p>
+          <p><b>Características:</b> Reversible, aumenta tamaño en ~33%, seguro para texto.</p>
+        </div>
+
+        <div class="info-content" id="info-base32">
+          <h4><i class="fas fa-info-circle"></i> Base32</h4>
+          <p><strong>Codificación similar a Base64</strong> pero usa solo mayúsculas y dígitos (2-7).</p>
+          <p><b>Características:</b> Reversible, más legible que Base64, usado en URLs y códigos de verificación.</p>
+        </div>
+
+        <div class="info-content" id="info-md5">
+          <h4><i class="fas fa-info-circle"></i> MD5</h4>
+          <p><strong>Función hash de 128 bits</strong>. <b>Irreversible</b> pero considerado inseguro para criptografía.</p>
+          <p><b>Características:</b> Irreversible, vulnerable a colisiones, útil para checksums de archivos.</p>
+        </div>
+
+        <div class="info-content" id="info-sha1">
+          <h4><i class="fas fa-info-circle"></i> SHA1</h4>
+          <p><strong>Función hash de 160 bits</strong>. Considerado débil pero aún usado.</p>
+          <p><b>Características:</b> Irreversible, más seguro que MD5, pero reemplazado por SHA256.</p>
+        </div>
+
+        <div class="info-content" id="info-sha256">
+          <h4><i class="fas fa-info-circle"></i> SHA256</h4>
+          <p><strong>Función hash criptográfica de 256 bits</strong>. Estándar actual de seguridad.</p>
+          <p><b>Características:</b> Irreversible, extremadamente seguro, usado en blockchain y certificados SSL.</p>
+        </div>
+
+        <div class="info-content" id="info-sha512">
+          <h4><i class="fas fa-info-circle"></i> SHA512</h4>
+          <p><strong>Función hash de 512 bits</strong>. Más seguro que SHA256.</p>
+          <p><b>Características:</b> Irreversible, mayor longitud, usado en sistemas de alta seguridad.</p>
+        </div>
+
+        <div class="info-content" id="info-aes">
+          <h4><i class="fas fa-info-circle"></i> AES</h4>
+          <p><strong>Advanced Encryption Standard</strong>. Cifrado simétrico con clave.</p>
+          <p><b>Características:</b> Reversible con clave, estándar gubernamental, usado en VPNs y cifrado de archivos.</p>
+        </div>
+
+        <div class="info-content" id="info-rot13">
+          <h4><i class="fas fa-info-circle"></i> ROT13</h4>
+          <p><strong>Cifrado por sustitución</strong> que desplaza cada letra 13 posiciones.</p>
+          <p><b>Características:</b> Reversible, mismo algoritmo para cifrar/descifrar, usado para ocultar spoilers.</p>
+        </div>
+
+        <div class="info-content" id="info-reverse">
+          <h4><i class="fas fa-info-circle"></i> Reverse</h4>
+          <p><strong>Inversión de texto</strong>. Simplemente da vuelta al string.</p>
+          <p><b>Características:</b> Reversible, ofuscación básica, útil para pruebas.</p>
+        </div>
+
+        <div class="info-content" id="info-caesar">
+          <h4><i class="fas fa-info-circle"></i> Cifrado César</h4>
+          <p><strong>Cifrado por desplazamiento</strong> clásico usado por Julio César.</p>
+          <p><b>Características:</b> Reversible con desplazamiento conocido, inseguro pero educativo.</p>
+        </div>
+
+        <div class="encryptor-grid">
+          <!-- Panel izquierdo - Input -->
+          <div>
+            <div class="form-group">
+              <label for="texto"><i class="fas fa-pencil-alt"></i> Texto a procesar:</label>
+              <textarea id="texto" placeholder="Escribe aquí el texto que deseas cifrar o descifrar..."></textarea>
+            </div>
+
+            <div class="form-group" id="key-container" style="display: none;">
+              <label for="key">Clave (para AES):</label>
+              <input type="text" id="key" placeholder="Ingresa la clave (mínimo 8 caracteres)" minlength="8">
+            </div>
+
+            <div class="form-group" id="shift-container" style="display: none;">
+              <label for="shift">Desplazamiento (1-25):</label>
+              <input type="number" id="shift" min="1" max="25" value="3">
+            </div>
+
+            <div class="form-group" id="algorithm-selector" style="display: none;">
+              <label for="algorithm">Algoritmo:</label>
+              <select id="algorithm">
+                <option value="md5">MD5</option>
+                <option value="sha1">SHA1</option>
+                <option value="sha256" selected>SHA256</option>
+                <option value="sha512">SHA512</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Panel derecho - Acciones rápidas -->
+          <div>
+            <h3 style="color: var(--primary); margin-bottom: 15px;">⚡ Acciones rápidas</h3>
+            <div class="btn-container" style="grid-template-columns: 1fr 1fr;">
+              <button class="btn btn-outline" onclick="encrypt('base64')">
+                <i class="fas fa-code"></i> Base64
+              </button>
+              <button class="btn btn-outline" onclick="encrypt('base32')">
+                <i class="fas fa-layer-group"></i> Base32
+              </button>
+              <button class="btn btn-outline" onclick="encrypt('md5')">
+                <i class="fas fa-hashtag"></i> MD5
+              </button>
+              <button class="btn btn-outline" onclick="encrypt('sha1')">
+                <i class="fas fa-fingerprint"></i> SHA1
+              </button>
+              <button class="btn btn-outline" onclick="encrypt('sha256')">
+                <i class="fas fa-shield-alt"></i> SHA256
+              </button>
+              <button class="btn btn-outline" onclick="encrypt('sha512')">
+                <i class="fas fa-lock"></i> SHA512
+              </button>
+              <button class="btn btn-outline" onclick="encrypt('rot13')">
+                <i class="fas fa-exchange-alt"></i> ROT13
+              </button>
+              <button class="btn btn-outline" onclick="encrypt('reverse')">
+                <i class="fas fa-retweet"></i> Reverse
+              </button>
+              <button class="btn btn-outline" onclick="encrypt('aes')">
+                <i class="fas fa-key"></i> AES
+              </button>
+              <button class="btn btn-outline" onclick="encrypt('caesar')">
+                <i class="fas fa-font"></i> César
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones principales -->
+        <div class="btn-container">
+          <button class="btn" id="encrypt-btn" onclick="encryptCurrent()">
+            <i class="fas fa-lock"></i> Cifrar
+          </button>
+          <button class="btn btn-success" id="decrypt-btn" onclick="decryptCurrent()">
+            <i class="fas fa-unlock"></i> Descifrar
+          </button>
+          <button class="btn btn-warning" onclick="clearText()">
+            <i class="fas fa-eraser"></i> Limpiar
+          </button>
+        </div>
+
+        <!-- Resultado -->
+        <div class="resultado" id="resultado"></div>
+
+        <!-- Estadísticas -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="input-length">0</div>
+            <div class="stat-label">Caracteres originales</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="output-length">0</div>
+            <div class="stat-label">Caracteres resultado</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="ratio">0%</div>
+            <div class="stat-label">Relación tamaño</div>
+          </div>
+        </div>
+
+        <!-- Acciones adicionales -->
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button class="btn btn-outline" onclick="copyResult()">
+            <i class="fas fa-copy"></i> Copiar resultado
+          </button>
+          <button class="btn btn-outline" onclick="saveToHistory()">
+            <i class="fas fa-save"></i> Guardar
+          </button>
+          <button class="btn btn-outline" onclick="downloadResult()">
+            <i class="fas fa-download"></i> Descargar
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 2: COMPARADOR DE HASHES -->
+      <div id="comparator" class="tab-content">
+        <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fas fa-balance-scale"></i> Comparador de Hashes</h3>
+        <p>Compara dos hashes para verificar si son iguales (útil para verificar integridad de archivos).</p>
+        
+        <div class="encryptor-grid">
+          <div class="form-group">
+            <label for="hash1">Hash 1:</label>
+            <textarea id="hash1" placeholder="Pega el primer hash aquí..." rows="4"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="hash2">Hash 2:</label>
+            <textarea id="hash2" placeholder="Pega el segundo hash aquí..." rows="4"></textarea>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button class="btn" onclick="compareHashes()">
+            <i class="fas fa-equals"></i> Comparar Hashes
+          </button>
+          <button class="btn btn-outline" onclick="clearHashes()">
+            <i class="fas fa-eraser"></i> Limpiar
+          </button>
+        </div>
+        
+        <div class="resultado" id="hash-result"></div>
+      </div>
+
+      <!-- TAB 3: ANALIZADOR -->
+      <div id="analyzer" class="tab-content">
+        <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fas fa-chart-bar"></i> Analizador de Hashes</h3>
+        
+        <div class="form-group">
+          <label for="hash-to-analyze">Hash a analizar:</label>
+          <input type="text" id="hash-to-analyze" placeholder="Pega el hash aquí...">
+        </div>
+        
+        <button class="btn" onclick="analyzeHash()">
+          <i class="fas fa-search"></i> Analizar Hash
+        </button>
+        
+        <div id="analysis-result" class="resultado" style="margin-top: 20px;"></div>
+      </div>
+
+      <!-- TAB 4: HISTORIAL -->
+      <div id="history" class="tab-content">
+        <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fas fa-history"></i> Historial de Operaciones</h3>
+        
+        <div class="history-panel">
+          <ul class="history-list" id="history-list">
+            <li class="history-item" style="text-align: center;">No hay operaciones guardadas</li>
+          </ul>
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn btn-outline" onclick="clearHistory()">
+              <i class="fas fa-trash"></i> Limpiar historial
+            </button>
+            <button class="btn btn-outline" onclick="exportHistory()">
+              <i class="fas fa-download"></i> Exportar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 FORENCOMMUNITY · Encriptador Avanzado PRO</p>
+    </footer>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script>
+    // ============================================
+    // ENCRIPTADOR AVANZADO PRO
+    // ============================================
+
+    let history = JSON.parse(localStorage.getItem('encryptHistory') || '[]');
+    let currentAlgorithm = 'base64';
+    let currentKey = '';
+    let currentShift = 3;
+
+    // Cambiar tabs principales
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.main-tab').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+      if (tabId === 'history') updateHistoryDisplay();
+    }
+
+    // Mostrar información de algoritmo
+    function showAlgorithmInfo(algo) {
+      document.querySelectorAll('.info-content').forEach(content => content.classList.remove('active'));
+      document.querySelectorAll('.info-tab').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(`info-${algo}`).classList.add('active');
+      event.target.classList.add('active');
+      
+      currentAlgorithm = algo;
+      
+      // Mostrar/ocultar campos según algoritmo
+      document.getElementById('key-container').style.display = algo === 'aes' ? 'block' : 'none';
+      document.getElementById('shift-container').style.display = algo === 'caesar' ? 'block' : 'none';
+      document.getElementById('algorithm-selector').style.display = ['md5', 'sha1', 'sha256', 'sha512'].includes(algo) ? 'block' : 'none';
+    }
+
+    // Cifrar con algoritmo actual
+    async function encryptCurrent() {
+      const text = document.getElementById('texto').value;
+      if (!text) {
+        showAlert('Por favor ingresa un texto', 'warning');
+        return;
+      }
+
+      let result = '';
+      let method = currentAlgorithm;
+
+      if (currentAlgorithm === 'aes') {
+        const key = document.getElementById('key').value;
+        if (!key || key.length < 8) {
+          showAlert('La clave debe tener al menos 8 caracteres', 'warning');
+          return;
+        }
+        currentKey = key;
+      }
+
+      if (currentAlgorithm === 'caesar') {
+        currentShift = parseInt(document.getElementById('shift').value);
+      }
+
+      if (['md5', 'sha1', 'sha256', 'sha512'].includes(currentAlgorithm)) {
+        method = document.getElementById('algorithm').value;
+      }
+
+      try {
+        const response = await fetch('/api/encrypt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: text,
+            method: method,
+            key: currentKey,
+            shift: currentShift
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.error) {
+          showAlert(data.error, 'error');
+          return;
+        }
+
+        result = data.encrypted;
+        document.getElementById('resultado').textContent = result;
+        updateStats(text, result);
+        showAlert('✅ Texto cifrado correctamente', 'success');
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error al cifrar el texto', 'error');
+      }
+    }
+
+    // Descifrar
+    async function decryptCurrent() {
+      const text = document.getElementById('texto').value;
+      if (!text) {
+        showAlert('Por favor ingresa un texto', 'warning');
+        return;
+      }
+
+      let method = currentAlgorithm;
+
+      if (currentAlgorithm === 'aes') {
+        const key = document.getElementById('key').value;
+        if (!key || key.length < 8) {
+          showAlert('La clave debe tener al menos 8 caracteres', 'warning');
+          return;
+        }
+        currentKey = key;
+      }
+
+      if (currentAlgorithm === 'caesar') {
+        currentShift = parseInt(document.getElementById('shift').value);
+      }
+
+      try {
+        const response = await fetch('/api/decrypt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: text,
+            method: method,
+            key: currentKey,
+            shift: currentShift
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.error) {
+          showAlert(data.error, 'error');
+          return;
+        }
+
+        document.getElementById('resultado').textContent = data.decrypted;
+        showAlert('✅ Texto descifrado correctamente', 'success');
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error al descifrar el texto', 'error');
+      }
+    }
+
+    // Acción rápida de cifrado
+    function encrypt(method) {
+      currentAlgorithm = method;
+      encryptCurrent();
+    }
+
+    // Actualizar estadísticas
+    function updateStats(input, output) {
+      document.getElementById('input-length').textContent = input.length;
+      document.getElementById('output-length').textContent = output.length;
+      
+      if (input.length > 0) {
+        const ratio = ((output.length / input.length) * 100).toFixed(1);
+        document.getElementById('ratio').textContent = ratio + '%';
+      }
+    }
+
+    // Comparar hashes
+    function compareHashes() {
+      const hash1 = document.getElementById('hash1').value.trim();
+      const hash2 = document.getElementById('hash2').value.trim();
+      
+      if (!hash1 || !hash2) {
+        showAlert('Ingresa ambos hashes', 'warning');
+        return;
+      }
+      
+      const resultDiv = document.getElementById('hash-result');
+      const cleanHash1 = hash1.replace(/\s+/g, '').toLowerCase();
+      const cleanHash2 = hash2.replace(/\s+/g, '').toLowerCase();
+      
+      if (cleanHash1 === cleanHash2) {
+        resultDiv.innerHTML = `
+          <div style="color: var(--success);">
+            <i class="fas fa-check-circle"></i>
+            <strong>¡Los hashes coinciden!</strong>
+            <p>Los archivos o textos son idénticos.</p>
+          </div>
+        `;
+      } else {
+        resultDiv.innerHTML = `
+          <div style="color: var(--danger);">
+            <i class="fas fa-times-circle"></i>
+            <strong>Los hashes NO coinciden</strong>
+            <p>Los archivos o textos son diferentes.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Analizar hash
+    function analyzeHash() {
+      const hash = document.getElementById('hash-to-analyze').value.trim();
+      if (!hash) {
+        showAlert('Ingresa un hash', 'warning');
+        return;
+      }
+
+      const length = hash.length;
+      let type = 'Desconocido';
+      let bits = 0;
+
+      if (length === 32) type = 'MD5 (128 bits)';
+      else if (length === 40) type = 'SHA1 (160 bits)';
+      else if (length === 64) type = 'SHA256 (256 bits)';
+      else if (length === 128) type = 'SHA512 (512 bits)';
+      else if (length === 16) type = 'CRC32 (32 bits)';
+      else if (/^[A-Fa-f0-9]+$/.test(hash)) type = 'Hash hexadecimal desconocido';
+      else if (/^[A-Za-z0-9+/=]+$/.test(hash)) type = 'Posible Base64';
+
+      document.getElementById('analysis-result').innerHTML = `
+        <div>
+          <h4>Resultado del análisis:</h4>
+          <p><strong>Longitud:</strong> ${length} caracteres</p>
+          <p><strong>Posible tipo:</strong> ${type}</p>
+          <p><strong>Caracteres:</strong> ${/^[A-Fa-f0-9]+$/.test(hash) ? 'Hexadecimal' : 'Alfanumérico'}</p>
+        </div>
+      `;
+    }
+
+    // Limpiar texto
+    function clearText() {
+      document.getElementById('texto').value = '';
+      document.getElementById('resultado').innerHTML = '';
+      document.getElementById('input-length').textContent = '0';
+      document.getElementById('output-length').textContent = '0';
+      document.getElementById('ratio').textContent = '0%';
+    }
+
+    function clearHashes() {
+      document.getElementById('hash1').value = '';
+      document.getElementById('hash2').value = '';
+      document.getElementById('hash-result').innerHTML = '';
+    }
+
+    // Copiar resultado
+    function copyResult() {
+      const result = document.getElementById('resultado').textContent;
+      if (result) {
+        navigator.clipboard.writeText(result);
+        showAlert('✅ Resultado copiado', 'success');
+      }
+    }
+
+    // Descargar resultado
+    function downloadResult() {
+      const result = document.getElementById('resultado').textContent;
+      if (!result) {
+        showAlert('No hay resultado para descargar', 'warning');
+        return;
+      }
+
+      const blob = new Blob([result], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `resultado-${currentAlgorithm}-${Date.now()}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showAlert('✅ Archivo descargado', 'success');
+    }
+
+    // Guardar en historial
+    function saveToHistory() {
+      const input = document.getElementById('texto').value;
+      const output = document.getElementById('resultado').textContent;
+      
+      if (!input || !output) {
+        showAlert('No hay operación para guardar', 'warning');
+        return;
+      }
+
+      history.unshift({
+        input: input.substring(0, 30) + (input.length > 30 ? '...' : ''),
+        output: output.substring(0, 30) + (output.length > 30 ? '...' : ''),
+        algorithm: currentAlgorithm,
+        date: new Date().toLocaleString()
+      });
+
+      if (history.length > 10) history.pop();
+      localStorage.setItem('encryptHistory', JSON.stringify(history));
+      updateHistoryDisplay();
+      showAlert('✅ Guardado en historial', 'success');
+    }
+
+    function updateHistoryDisplay() {
+      const list = document.getElementById('history-list');
+      if (!list) return;
+
+      if (history.length === 0) {
+        list.innerHTML = '<li class="history-item" style="text-align: center;">No hay operaciones guardadas</li>';
+        return;
+      }
+
+      list.innerHTML = history.map(item => `
+        <li class="history-item">
+          <div>
+            <strong>${item.algorithm}</strong><br>
+            <small>${item.date}</small>
+          </div>
+          <span class="history-badge" style="background: var(--primary); color: white;">
+            ${item.input} → ${item.output}
+          </span>
+        </li>
+      `).join('');
+    }
+
+    function clearHistory() {
+      history = [];
+      localStorage.removeItem('encryptHistory');
+      updateHistoryDisplay();
+      showAlert('🗑️ Historial limpiado', 'info');
+    }
+
+    function exportHistory() {
+      if (history.length === 0) {
+        showAlert('No hay historial para exportar', 'warning');
+        return;
+      }
+
+      const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `historial-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showAlert('✅ Historial exportado', 'success');
+    }
+
+    function showAlert(message, type) {
+      const container = document.getElementById('alertContainer');
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type}`;
+      alert.innerHTML = message;
+      container.appendChild(alert);
+      setTimeout(() => alert.remove(), 3000);
+    }
+
+    // Auto-actualizar estadísticas
+    document.getElementById('texto').addEventListener('input', function() {
+      const output = document.getElementById('resultado').textContent;
+      if (output) updateStats(this.value, output);
+    });
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      updateHistoryDisplay();
+    });
+  </script>
+</body>
+</html>

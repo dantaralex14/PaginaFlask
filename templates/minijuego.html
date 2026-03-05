@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cyber Defender - Simulador de Ciberseguridad</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a3a, #0d1b2a);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Botón Volver al Inicio */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .back-button:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+
+            .back-button {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+        
+        .panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .stat-name {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .threat-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .threat-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .threat-description {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        .threat-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+        
+        .tutorial {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid var(--secondary);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .tutorial h3 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        .threat-history {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .history-correct {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .history-incorrect {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .start-screen, .end-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+        }
+        
+        .start-content, .end-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .start-btn, .restart-btn {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+        }
+        
+        .threat-type {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Botón Volver al Inicio -->
+    <button class="back-button" onclick="goBackToIndex()">
+        <i class="fas fa-arrow-left"></i>
+        Volver al Inicio
+    </button>
+
+    <div class="container">
+        <header>
+            <h1>CYBER DEFENDER</h1>
+            <p class="subtitle">Identifica y neutraliza amenazas cibernéticas</p>
+        </header>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="score">0</div>
+                <div class="stat-name">PUNTUACIÓN</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="level">1</div>
+                <div class="stat-name">NIVEL</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="lives">3</div>
+                <div class="stat-name">VIDAS</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="game-area">
+            <div class="panel">
+                <h2>AMENAZA ACTUAL</h2>
+                <div class="threat-container" id="threatContainer">
+                    <div class="threat-icon" id="threatIcon">🔒</div>
+                    <div class="threat-description" id="threatDescription">Haz clic en "Comenzar" para iniciar el juego</div>
+                    <div class="threat-type" id="threatType"></div>
+                </div>
+                
+                <div class="threat-options">
+                    <button class="btn btn-primary" id="safeBtn" onclick="checkAnswer(true)">SEGURO</button>
+                    <button class="btn btn-danger" id="dangerBtn" onclick="checkAnswer(false)">PELIGROSO</button>
+                </div>
+                
+                <div class="message success" id="successMessage">¡Correcto! Has identificado la amenaza correctamente.</div>
+                <div class="message error" id="errorMessage">Incorrecto. Esa no era la respuesta correcta.</div>
+            </div>
+            
+            <div class="panel">
+                <h2>HISTORIAL</h2>
+                <div class="threat-history" id="threatHistory">
+                    <!-- El historial se llenará dinámicamente -->
+                </div>
+                
+                <div class="tutorial">
+                    <h3>¿CÓMO JUGAR?</h3>
+                    <p>Tu objetivo es identificar si la situación mostrada es una amenaza cibernética o es segura.</p>
+                    <p><strong>SEGURO:</strong> Situaciones normales o prácticas de seguridad.</p>
+                    <p><strong>PELIGROSO:</strong> Posibles ataques o vulnerabilidades.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="start-screen" id="startScreen">
+        <div class="start-content">
+            <h2>CYBER DEFENDER</h2>
+            <p>Conviértete en un experto en ciberseguridad identificando amenazas en línea.</p>
+            <p>¿Podrás detectar todos los peligros?</p>
+            <button class="btn btn-primary start-btn" onclick="startGame()">COMENZAR JUEGO</button>
+        </div>
+    </div>
+    
+    <div class="end-screen" id="endScreen" style="display: none;">
+        <div class="end-content">
+            <h2>JUEGO TERMINADO</h2>
+            <p>Tu puntuación final: <span id="finalScore">0</span></p>
+            <p>Nivel alcanzado: <span id="finalLevel">1</span></p>
+            <button class="btn btn-primary restart-btn" onclick="restartGame()">JUGAR DE NUEVO</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CONFIGURACIÓN DEL JUEGO ====================
+        
+        const gameState = {
+            score: 0,
+            level: 1,
+            lives: 3,
+            currentThreat: null,
+            threatsAnswered: 0,
+            threatsPerLevel: 5,
+            gameActive: false
+        };
+        
+        // ==================== BASE DE DATOS DE AMENAZAS ====================
+        
+        const threats = [
+            // Amenazas reales (peligrosas)
+            {
+                type: "Phishing",
+                description: "Correo electrónico que parece ser de tu banco solicitando que actualices tus datos de acceso",
+                icon: "📧",
+                isDangerous: true
+            },
+            {
+                type: "Malware",
+                description: "Un archivo adjunto en un correo de un remitente desconocido con un nombre sospechoso como 'factura.exe'",
+                icon: "🦠",
+                isDangerous: true
+            },
+            {
+                type: "Ransomware",
+                description: "Un mensaje emergente que dice que tu computadora ha sido bloqueada y exige un pago para desbloquearla",
+                icon: "🔐",
+                isDangerous: true
+            },
+            {
+                type: "Ingeniería Social",
+                description: "Una llamada telefónica de alguien que dice ser de soporte técnico pidiendo tus credenciales de acceso",
+                icon: "📞",
+                isDangerous: true
+            },
+            {
+                type: "WiFi Inseguro",
+                description: "Una red WiFi pública sin contraseña en un café o aeropuerto",
+                icon: "📶",
+                isDangerous: true
+            },
+            {
+                type: "Falsa Actualización",
+                description: "Un pop-up que se parece a una actualización legítima de software pero proviene de un sitio web no oficial",
+                icon: "⚠️",
+                isDangerous: true
+            },
+            {
+                type: "Smishing",
+                description: "Un SMS que dice que tu paquete no se puede entregar con un enlace para 'rastrearlo'",
+                icon: "📱",
+                isDangerous: true
+            },
+            {
+                type: "Keylogger",
+                description: "Un programa gratuito descargado de internet que promete 'acelerar tu computadora'",
+                icon: "⌨️",
+                isDangerous: true
+            },
+            {
+                type: "Suplantación de Identidad",
+                description: "Un perfil en redes sociales que se hace pasar por un reclutador ofreciendo un trabajo demasiado bueno para ser verdad",
+                icon: "👤",
+                isDangerous: true
+            },
+            {
+                type: "Fake Shopping",
+                description: "Un sitio web que ofrece productos de marca con descuentos extremadamente altos",
+                icon: "🛒",
+                isDangerous: true
+            },
+            
+            // Situaciones seguras
+            {
+                type: "Práctica Segura",
+                description: "Usar un gestor de contraseñas para crear y almacenar contraseñas únicas",
+                icon: "🔑",
+                isDangerous: false
+            },
+            {
+                type: "Práctica Segura",
+                description: "Actualizar el sistema operativo cuando aparece una notificación oficial",
+                icon: "🔄",
+                isDangerous: false
+            },
+            {
+                type: "Práctica Segura",
+                description: "Usar autenticación de dos factores para tus cuentas importantes",
+                icon: "✅",
+                isDangerous: false
+            },
+            {
+                type: "Práctica Segura",
+                description: "Hacer una copia de seguridad regular de tus archivos importantes",
+                icon: "💾",
+                isDangerous: false
+            },
+            {
+                type: "Práctica Segura",
+                description: "Verificar que un sitio web usa HTTPS antes de ingresar información personal",
+                icon: "🔒",
+                isDangerous: false
+            },
+            {
+                type: "Práctica Segura",
+                description: "Usar una VPN cuando te conectas a redes WiFi públicas",
+                icon: "🛡️",
+                isDangerous: false
+            },
+            {
+                type: "Práctica Segura",
+                description: "Revisar los permisos de las aplicaciones antes de instalarlas",
+                icon: "📲",
+                isDangerous: false
+            },
+            {
+                type: "Práctica Segura",
+                description: "Cerrar sesión en computadoras públicas después de usarlas",
+                icon: "🚪",
+                isDangerous: false
+            },
+            {
+                type: "Práctica Segura",
+                description: "Usar diferentes contraseñas para diferentes servicios en línea",
+                icon: "🎯",
+                isDangerous: false
+            },
+            {
+                type: "Práctica Segura",
+                description: "Revisar regularmente los movimientos de tu cuenta bancaria en línea",
+                icon: "💰",
+                isDangerous: false
+            }
+        ];
+        
+        // ==================== FUNCIONES DEL JUEGO ====================
+        
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            gameState.gameActive = true;
+            gameState.score = 0;
+            gameState.level = 1;
+            gameState.lives = 3;
+            gameState.threatsAnswered = 0;
+            
+            updateUI();
+            showNextThreat();
+        }
+        
+        function restartGame() {
+            document.getElementById('endScreen').style.display = 'none';
+            startGame();
+        }
+        
+        function showNextThreat() {
+            if (!gameState.gameActive) return;
+            
+            // Seleccionar una amenaza aleatoria
+            const randomIndex = Math.floor(Math.random() * threats.length);
+            gameState.currentThreat = threats[randomIndex];
+            
+            // Actualizar la interfaz
+            document.getElementById('threatIcon').textContent = gameState.currentThreat.icon;
+            document.getElementById('threatDescription').textContent = gameState.currentThreat.description;
+            document.getElementById('threatType').textContent = `Tipo: ${gameState.currentThreat.type}`;
+            
+            // Ocultar mensajes anteriores
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Actualizar la barra de progreso
+            const progress = (gameState.threatsAnswered / gameState.threatsPerLevel) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+        
+        function checkAnswer(userSaidDangerous) {
+            if (!gameState.gameActive) return;
+            
+            const isCorrect = userSaidDangerous === gameState.currentThreat.isDangerous;
+            
+            // Añadir al historial
+            addToHistory(gameState.currentThreat, isCorrect);
+            
+            if (isCorrect) {
+                // Respuesta correcta
+                gameState.score += 10 * gameState.level;
+                document.getElementById('successMessage').style.display = 'block';
+                
+                gameState.threatsAnswered++;
+                
+                // Subir de nivel
+                if (gameState.threatsAnswered >= gameState.threatsPerLevel) {
+                    gameState.level++;
+                    gameState.threatsAnswered = 0;
+                    
+                    // Mostrar mensaje de nivel
+                    document.getElementById('successMessage').textContent = 
+                        `¡Correcto! Has subido al nivel ${gameState.level}.`;
+                }
+            } else {
+                // Respuesta incorrecta
+                document.getElementById('errorMessage').style.display = 'block';
+                gameState.lives--;
+                
+                if (gameState.lives <= 0) {
+                    endGame();
+                    return;
+                }
+            }
+            
+            updateUI();
+            
+            // Mostrar siguiente amenaza después de un breve delay
+            setTimeout(showNextThreat, 2000);
+        }
+        
+        function addToHistory(threat, isCorrect) {
+            const historyContainer = document.getElementById('threatHistory');
+            const historyItem = document.createElement('div');
+            
+            historyItem.className = `history-item ${isCorrect ? 'history-correct' : 'history-incorrect'}`;
+            historyItem.innerHTML = `
+                <span>${threat.icon} ${threat.type}</span>
+                <span>${isCorrect ? '✅' : '❌'}</span>
+            `;
+            
+            historyContainer.prepend(historyItem);
+            
+            // Limitar el historial a 10 elementos
+            if (historyContainer.children.length > 10) {
+                historyContainer.removeChild(historyContainer.lastChild);
+            }
+        }
+        
+        function updateUI() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('lives').textContent = gameState.lives;
+        }
+        
+        function endGame() {
+            gameState.gameActive = false;
+            
+            document.getElementById('finalScore').textContent = gameState.score;
+            document.getElementById('finalLevel').textContent = gameState.level;
+            document.getElementById('endScreen').style.display = 'flex';
+            
+            // Mostrar mensaje final personalizado
+            let message = "";
+            if (gameState.score >= 300) {
+                message = "¡Excelente! Eres un experto en ciberseguridad. 🏆";
+            } else if (gameState.score >= 200) {
+                message = "¡Muy buen trabajo! Tienes conocimientos sólidos de seguridad. ⭐";
+            } else if (gameState.score >= 100) {
+                message = "¡Buen trabajo! Vas por buen camino en seguridad digital. 👍";
+            } else {
+                message = "Sigue practicando para mejorar tus habilidades de seguridad. 💪";
+            }
+            
+            document.querySelector('.end-content p:nth-child(3)').textContent = message;
+        }
+
+        // ==================== FUNCIÓN VOLVER AL INICIO ====================
+        
+        function goBackToIndex() {
+            // Confirmar si el usuario quiere salir del juego si está en medio de una partida
+            if (gameState.gameActive) {
+                const confirmExit = confirm("¿Estás seguro de que quieres salir del juego? Se perderá tu progreso actual.");
+                if (!confirmExit) {
+                    return;
+                }
+            }
+            
+            // Redirigir al index.html
+            window.location.href = "/";
+        }
+        
+        // ==================== INICIALIZACIÓN ====================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // El juego comienza en la pantalla de inicio
+        });
+    </script>
+</body>
+</html>
