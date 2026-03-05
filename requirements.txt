@@ -6,3 +6,4 @@ requests==2.32.4
 pycryptodome==3.23.0
 phonenumbers
 gunicorn
+eventlet
